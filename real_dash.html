@@ -1,0 +1,163 @@
+<!DOCTYPE html><html class="" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;700&amp;family=Dm+Sans:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .jade-glow {
+            box-shadow: 0 0 20px rgba(47, 174, 155, 0.15);
+        }
+    </style>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"surface-tint": "#006b5e", "secondary-container": "#fed88b", "surface-container-high": "#eae8e4", "tertiary-fixed-dim": "#b9c9d2", surface: "#fbf9f5", "on-tertiary": "#ffffff", "tertiary-container": "#8f9fa7", "inverse-on-surface": "#f2f0ec", "primary-container": "#2fae9b", "secondary-fixed": "#ffdf9f", "on-tertiary-fixed-variant": "#3a4950", "on-surface-variant": "#3d4946", "milky-white": "#F8F6F2", "surface-dim": "#dbdad6", "on-primary": "#ffffff", "tertiary-fixed": "#d5e5ee", "on-tertiary-container": "#27363d", "surface-variant": "#e4e2de", primary: "#2fae9b", "on-surface": "#1b1c1a", outline: "#6d7a76", "on-secondary-container": "#785d1c", "error-container": "#ffdad6", "surface-container": "#efeeea", secondary: "#755a1a", "inverse-surface": "#30312e", "on-secondary-fixed-variant": "#5b4302", "surface-container-low": "#f5f3ef", "primary-fixed-dim": "#64dac5", "dark-slate": "#24333A", "on-primary-fixed-variant": "#005046", "primary-fixed": "#82f6e1", "on-error": "#ffffff", "jade-green": "#2FAE9B", "on-secondary-fixed": "#261a00", "secondary-fixed-dim": "#e6c277", "soft-gold": "#D6B36A", "outline-variant": "#bcc9c5", "on-background": "#1b1c1a", error: "#ba1a1a", "on-primary-container": "#003b33", "on-error-container": "#93000a", "glass-bg": "rgba(255, 255, 255, 0.18)", "surface-container-lowest": "#ffffff", "surface-container-highest": "#e4e2de", "inverse-primary": "#64dac5", "glass-border": "rgba(255, 255, 255, 0.1)", "on-secondary": "#ffffff", "on-tertiary-fixed": "#0e1e24", background: "#fbf9f5", "surface-bright": "#fbf9f5", "on-primary-fixed": "#00201b", tertiary: "#516168", "background-light": "#f6f8f7", "background-dark": "#131f1d"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}, spacing: {"margin-mobile": "20px", lg: "40px", md: "24px", gutter: "24px", xs: "4px", xl: "64px", base: "8px", "container-max-width": "1440px", sm: "12px"}, fontFamily: {"hero-stats": ["Inter"], "body-sm": ["Inter"], "label-caps": ["plusJakartaSans"], "cta-text": ["plusJakartaSans"], "card-title": ["Inter"], "section-title": ["Inter"], "hero-greeting-mobile": ["plusJakartaSans"], "body-lg": ["Inter"], headline: ["Sora"], display: ["Sora"], body: ["Dm Sans"], label: ["Plus Jakarta Sans"]}, fontSize: {"hero-stats": ["48px", {lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "600"}], "body-sm": ["14px", {lineHeight: "1.5", fontWeight: "400"}], "label-caps": ["12px", {lineHeight: "1", letterSpacing: "0.05em", fontWeight: "700"}], "cta-text": ["16px", {lineHeight: "1.2", fontWeight: "500"}], "card-title": ["18px", {lineHeight: "1.4", fontWeight: "600"}], "section-title": ["24px", {lineHeight: "1.4", fontWeight: "500"}], "hero-greeting-mobile": ["32px", {lineHeight: "1.2", fontWeight: "600"}], "body-lg": ["16px", {lineHeight: "1.6", fontWeight: "400"}]}}}};</script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background min-h-screen text-on-surface font-body-lg">
+<!-- Top AppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile py-base bg-glass-bg backdrop-blur-xl border-b border-glass-border shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-primary/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a serene-looking woman with natural makeup, set against a soft, out-of-focus wellness spa background. The lighting is bright and warm, emphasizing a clean and premium aesthetic consistent with high-end skincare brands. The overall color palette is composed of soft creams, whites, and subtle hints of jade green." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9nhlTIETttK_0q5DonKYUOhkNYlrkPzQZdYlP5X1Ea2x01TiCcE8Wlaa9dvW63_GdeZJYsO7V1baPHVCE8gjG3HA1HwG5r1eBL6MHptxAzK18y8HqbbnS3arK3QYowWwDeZbd5ukHq1jT7M0Br1aSSpqiF1ymHTlojakIzwYnifftThDhttzQfnsUyjBHnnHETyXe_xWj7ZPXmUrCgfzB_BuladKn0-aYSS18ltyXLwVL4NiBwong6siPY3tjsXriw-d7Pl9NPvA">
+</div>
+<h1 class="font-hero-greeting-mobile text-hero-greeting-mobile text-primary">Welcome back</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:opacity-80 transition-opacity duration-250 active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary">settings</span>
+</button>
+</header>
+<main class="pt-24 pb-32 px-margin-mobile max-w-container-max-width mx-auto">
+<!-- Hero Section: Treatment Journey -->
+<section class="mb-lg">
+<div class="glass-card rounded-xl p-md shadow-sm">
+<div class="flex flex-col items-center justify-center py-base">
+<div class="relative w-48 h-48 flex items-center justify-center">
+<!-- Circular Progress Background -->
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-container" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-jade-green" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552.92" stroke-dashoffset="165.87" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="font-hero-stats text-hero-stats text-primary">7/10</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">SESSIONS</span>
+</div>
+</div>
+<div class="mt-md text-center">
+<h2 class="font-section-title text-section-title text-on-surface">Deep Tissue Restoration</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Personalized Wellness Package</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid for Details -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Next Visit Card -->
+<div class="glass-card rounded-xl p-md border-l-4 border-jade-green shadow-sm flex flex-col justify-between">
+<div>
+<span class="font-label-caps text-label-caps text-jade-green tracking-widest block mb-2">NEXT VISIT</span>
+<h3 class="font-card-title text-card-title text-on-surface mb-1">Friday, June 2nd</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant">10:30 AM — 11:45 AM</p>
+</div>
+<div class="mt-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<span class="font-body-sm text-body-sm">ZenFlow Sanctuary, Suite 402</span>
+</div>
+<button class="mt-md w-full py-3 bg-primary text-on-primary rounded-lg font-cta-text text-cta-text hover:opacity-90 transition-all active:scale-95">
+                    Reschedule
+                </button>
+</div>
+<!-- Recommendation Card -->
+<div class="bg-primary-container/10 border border-primary-container/20 rounded-xl p-md shadow-sm jade-glow">
+<div class="flex items-start justify-between mb-md">
+<div>
+<span class="font-label-caps text-label-caps text-primary tracking-widest block mb-2">SKINCARE REC</span>
+<h3 class="font-card-title text-card-title text-on-surface">Hydrating Rose Serum</h3>
+</div>
+<div class="w-12 h-12 rounded-lg bg-white/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-jade-green" style="font-variation-settings: 'FILL' 1;">spa</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                    Based on your last session, our specialists recommend this serum to maintain skin elasticity and moisture balance between treatments.
+                </p>
+<div class="mt-md flex items-center justify-between bg-white/30 rounded-lg p-3">
+<span class="font-body-sm font-semibold">$84.00</span>
+<button class="font-label-caps text-label-caps text-primary hover:underline">ADD TO BAG</button>
+</div>
+</div>
+</div>
+<!-- Recent Activity / Timeline -->
+<section class="mt-lg">
+<h3 class="font-section-title text-section-title mb-md">Treatment History</h3>
+<div class="space-y-sm">
+<!-- History Item 1 -->
+<div class="glass-card rounded-xl p-sm flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-body-lg font-semibold">Session 7: Targeted Release</p>
+<p class="font-body-sm text-on-surface-variant">May 12, 2023</p>
+</div>
+</div>
+<span class="font-label-caps text-label-caps bg-surface-container-high px-3 py-1 rounded-full text-on-surface-variant">COMPLETED</span>
+</div>
+<!-- History Item 2 -->
+<div class="glass-card rounded-xl p-sm flex items-center justify-between opacity-80">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-body-lg font-semibold">Session 6: Alignment Therapy</p>
+<p class="font-body-sm text-on-surface-variant">April 28, 2023</p>
+</div>
+</div>
+<span class="font-label-caps text-label-caps bg-surface-container-high px-3 py-1 rounded-full text-on-surface-variant">COMPLETED</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom NavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-glass-bg backdrop-blur-xl border-t border-glass-border shadow-[0_-4px_24px_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-caps text-label-caps mt-1">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container/20 text-primary rounded-full px-4 py-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">spa</span>
+<span class="font-label-caps text-label-caps mt-1">Spa</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-caps text-label-caps mt-1">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-caps text-label-caps mt-1">Me</span>
+</a>
+</nav>
+</body></html>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { ROUTES } from "@/lib/constants";
 import {
@@ -28,6 +29,10 @@ export default function DashboardView() {
     updateAppointmentStatus,
     deleteAppointment,
   } = useSpaData();
+
+  const [selectedDate, setSelectedDate] = useState<number | null>(
+    new Date().getDate(),
+  );
 
   const todayLabel = formatLocaleDate(new Date(), "vi", {
     weekday: "long",
@@ -161,23 +166,32 @@ export default function DashboardView() {
               </div>
 
               <div className="grid grid-cols-7 gap-2 text-center">
-                {calendarDays.map((dayObj, i) => (
-                  <div
-                    key={i}
-                    className={`relative p-1.5 text-xs rounded-xl flex items-center justify-center transition-all ${
-                      dayObj.isToday
-                        ? "bg-primary text-white font-bold shadow-md shadow-primary/20"
-                        : dayObj.isCurrentMonth
-                          ? "hover:bg-primary/10 cursor-pointer text-dark-slate"
-                          : "text-on-surface-variant/30"
-                    }`}
-                  >
-                    {dayObj.day}
-                    {dayObj.hasAppointment && !dayObj.isToday && (
-                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></span>
-                    )}
-                  </div>
-                ))}
+                {calendarDays.map((dayObj, i) => {
+                  const isSelected =
+                    selectedDate === dayObj.day && dayObj.isCurrentMonth;
+                  return (
+                    <div
+                      key={i}
+                      onClick={() =>
+                        dayObj.isCurrentMonth && setSelectedDate(dayObj.day)
+                      }
+                      className={`relative p-1.5 text-xs rounded-xl flex items-center justify-center transition-all ${
+                        isSelected
+                          ? "bg-primary text-white font-bold shadow-md shadow-primary/20 cursor-pointer"
+                          : dayObj.isToday
+                            ? "border border-primary text-primary font-bold cursor-pointer"
+                            : dayObj.isCurrentMonth
+                              ? "hover:bg-primary/10 cursor-pointer text-dark-slate"
+                              : "text-on-surface-variant/30"
+                      }`}
+                    >
+                      {dayObj.day}
+                      {dayObj.hasAppointment && !isSelected && (
+                        <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -196,9 +210,13 @@ export default function DashboardView() {
         <div className="lg:col-span-8 xl:col-span-9 space-y-6">
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
             <h3 className="font-headline font-bold text-lg flex items-center gap-2">
-              {`Lịch hẹn hôm nay`}
+              {selectedDate === new Date().getDate()
+                ? `Lịch hẹn hôm nay`
+                : `Lịch hẹn ngày ${selectedDate}`}
               <span className="bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">
-                {`${stats.availableSlots} chỗ trống`}
+                {selectedDate === new Date().getDate()
+                  ? `${stats.availableSlots} chỗ trống`
+                  : "Đã lên lịch"}
               </span>
             </h3>
             <div className="flex gap-2">
@@ -215,13 +233,14 @@ export default function DashboardView() {
           </div>
 
           <div className="space-y-4 max-h-125 overflow-y-auto scrollbar-hide pr-1">
-            {appointments.length === 0 ? (
+            {appointments.length === 0 ||
+            (selectedDate !== new Date().getDate() && selectedDate !== 24) ? (
               <div className="glass-card p-12 rounded-2xl text-center border border-white/40">
                 <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">
                   calendar_today
                 </span>
                 <p className="text-on-surface-variant/80 text-sm">
-                  {`Chưa có lịch hẹn nào được ghi nhận cho hôm nay.`}
+                  {`Chưa có lịch hẹn nào được ghi nhận cho ngày ${selectedDate}.`}
                 </p>
               </div>
             ) : (

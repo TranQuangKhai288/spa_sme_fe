@@ -9,49 +9,357 @@ import { AppointmentCard } from "./AppointmentCard";
 
 const FILTERS = [
   { id: "all", label: "Tất cả" },
-  { id: "confirmed", label: "Đã xác nhận" },
-  { id: "in_progress", label: "Đang xử lý" },
+  { id: "upcoming", label: "Sắp tới" },
   { id: "completed", label: "Hoàn tất" },
   { id: "cancelled", label: "Đã hủy" },
 ] as const;
 
 export function AppointmentsView() {
-  const { appointments, updateAppointmentStatus, deleteAppointment } =
-    useSpaData();
+  const {
+    appointments,
+    therapists,
+    calendarDays,
+    updateAppointmentStatus,
+    deleteAppointment,
+  } = useSpaData();
   const [filter, setFilter] = useState<string>("all");
+  const [selectedTherapists, setSelectedTherapists] = useState<
+    Record<string, boolean>
+  >(Object.fromEntries(therapists.map((t) => [t.id, true])));
+
+  const todayIndex = calendarDays.findIndex((d) => d.isToday) || 0;
+  const [selectedDay, setSelectedDay] = useState<number>(
+    todayIndex >= 0 ? todayIndex : 0,
+  );
+
+  const toggleTherapist = (id: string) => {
+    setSelectedTherapists((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const filtered =
     filter === "all"
       ? appointments
-      : appointments.filter((a) => a.status === filter);
+      : filter === "upcoming"
+        ? appointments.filter(
+            (a) => a.status === "confirmed" || a.status === "in_progress",
+          )
+        : appointments.filter((a) => a.status === filter);
+
+  const visibleTherapists = therapists.filter((t) => selectedTherapists[t.id]);
+
+  const hours = Array.from({ length: 12 }, (_, i) => i + 9); // 09:00 to 20:00
+
+  const parseTime = (time: string) => {
+    const [h, m] = time.split(":").map(Number);
+    return h + m / 60;
+  };
 
   return (
     <div className="space-y-6">
+      {/* Header & Top Bar */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-headline text-2xl font-bold text-dark-slate sm:text-3xl">
+          <h1 className="font-headline text-2xl font-bold text-primary sm:text-3xl">
             Quản lý lịch hẹn
           </h1>
           <p className="text-sm text-on-surface-variant/80">
             {filtered.length} lịch hẹn
           </p>
         </div>
-        <div className="-mx-1 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-          {FILTERS.map((f) => (
-            <button
-              key={f.id}
-              type="button"
-              onClick={() => setFilter(f.id)}
-              className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
-                filter === f.id
-                  ? "bg-primary text-white"
-                  : "bg-white/40 text-on-surface-variant hover:bg-white/60"
-              }`}
+        <div className="flex items-center gap-4">
+          <div className="relative group hidden md:block">
+            <MaterialIcon
+              name="search"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant/50"
+            />
+            <input
+              className="pl-9 pr-4 py-2 bg-white/50 border border-glass-border rounded-full focus:ring-2 focus:ring-primary/20 outline-none w-64 text-sm transition-all focus:bg-white"
+              placeholder="Tìm kiếm khách hàng..."
+              type="text"
+            />
+          </div>
+          <div className="flex items-center gap-2 bg-white/50 border border-glass-border rounded-lg px-3 py-2 cursor-pointer hover:bg-white transition-colors">
+            <MaterialIcon
+              name="calendar_today"
+              className="text-primary text-[18px]"
+            />
+            <span className="text-sm font-medium">Hôm nay</span>
+          </div>
+          <div className="relative hidden md:block">
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="appearance-none bg-white/50 border border-glass-border rounded-lg px-4 py-2 pr-10 text-sm font-medium outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
             >
-              {f.label}
-            </button>
-          ))}
+              {FILTERS.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.label}
+                </option>
+              ))}
+            </select>
+            <MaterialIcon
+              name="expand_more"
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant"
+            />
+          </div>
+          <button className="bg-jade-green hover:bg-primary text-white px-6 py-2.5 rounded-full font-medium text-sm shadow-lg shadow-jade-green/20 hover:scale-[1.02] active:scale-95 transition-all hidden md:block">
+            + Tạo lịch hẹn
+          </button>
         </div>
+      </div>
+
+      {/* Main Body Area: Sidebar (left) + Timeline (right) layout */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Left Sidebar: Filters & Mini Calendar */}
+        <aside className="w-full lg:w-72 flex flex-col gap-6 shrink-0 hidden md:flex">
+          {/* Mini Calendar */}
+          <GlassCard className="rounded-2xl p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-headline text-base font-bold text-primary">
+                Tháng 5, 2026
+              </h3>
+              <div className="flex gap-1">
+                <button className="material-symbols-outlined text-[18px] p-1 hover:text-jade-green hover:bg-white/40 rounded-full transition-all">
+                  chevron_left
+                </button>
+                <button className="material-symbols-outlined text-[18px] p-1 hover:text-jade-green hover:bg-white/40 rounded-full transition-all">
+                  chevron_right
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-on-surface-variant mb-2">
+              <span>T2</span>
+              <span>T3</span>
+              <span>T4</span>
+              <span>T5</span>
+              <span>T6</span>
+              <span>T7</span>
+              <span>CN</span>
+            </div>
+
+            <div className="grid grid-cols-7 gap-1 text-center text-sm">
+              {calendarDays.map((dayObj, i) => {
+                const isSelected = selectedDay === i;
+                return (
+                  <div
+                    key={i}
+                    onClick={() => setSelectedDay(i)}
+                    className={`p-1.5 flex items-center justify-center rounded-lg transition-all cursor-pointer ${
+                      isSelected
+                        ? "bg-jade-green text-white font-bold hover:bg-primary shadow-md"
+                        : dayObj.isToday
+                          ? "bg-jade-green/20 text-jade-green font-bold hover:bg-jade-green/30"
+                          : dayObj.isCurrentMonth
+                            ? "hover:bg-jade-green/10 text-on-surface-variant"
+                            : "opacity-30 text-on-surface-variant"
+                    }`}
+                  >
+                    {dayObj.day}
+                  </div>
+                );
+              })}
+            </div>
+          </GlassCard>
+
+          {/* Therapist Filter */}
+          <GlassCard className="rounded-2xl p-6">
+            <h3 className="font-headline text-base font-bold text-primary mb-4">
+              Chuyên viên
+            </h3>
+            <div className="space-y-4">
+              {therapists.map((t) => (
+                <label
+                  key={t.id}
+                  className="flex items-center gap-3 cursor-pointer group"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedTherapists[t.id] ?? false}
+                    onChange={() => toggleTherapist(t.id)}
+                    className="w-5 h-5 rounded border-glass-border text-jade-green focus:ring-jade-green/20"
+                  />
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={t.avatar}
+                      alt={t.name}
+                      className="w-8 h-8 rounded-full object-cover border border-glass-border"
+                    />
+                    <span className="text-sm font-medium group-hover:text-jade-green transition-colors text-dark-slate">
+                      {t.name}
+                    </span>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </GlassCard>
+        </aside>
+
+        {/* Desktop: Timeline Schedule View (Stitch UI Design) */}
+        <section className="hidden md:flex flex-1 overflow-y-auto overflow-x-hidden flex-col glass-card p-0 rounded-2xl h-[750px] bg-white/30 backdrop-blur-3xl scroll-smooth">
+          {/* Grid Header */}
+          <div className="flex border-b border-surface-container bg-white/70 backdrop-blur-xl sticky top-0 z-40 w-full shadow-sm">
+            <div className="w-20 p-4 shrink-0 text-center font-bold text-[10px] text-on-surface-variant/50 border-r border-surface-container flex items-center justify-center uppercase tracking-wider">
+              TIME
+            </div>
+            <div
+              className="flex-1 grid"
+              style={{
+                gridTemplateColumns: `repeat(${Math.max(1, visibleTherapists.length)}, minmax(0, 1fr))`,
+              }}
+            >
+              {visibleTherapists.map((t) => (
+                <div
+                  key={t.id}
+                  className="p-4 text-center border-r border-surface-container last:border-r-0 flex flex-col xl:flex-row items-center justify-center gap-2 xl:gap-3"
+                >
+                  <img
+                    src={t.avatar}
+                    alt={t.name}
+                    className="w-8 h-8 rounded-full border border-glass-border shadow-sm object-cover"
+                  />
+                  <span className="font-bold text-sm text-primary truncate max-w-full">
+                    {t.name}
+                  </span>
+                </div>
+              ))}
+              {visibleTherapists.length === 0 && (
+                <div className="p-4 text-center text-on-surface-variant/60">
+                  Vui lòng chọn ít nhất 1 kỹ thuật viên bên trái.
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Grid Body */}
+          <div className="flex-1 relative w-full">
+            {/* Wrapper to give grid height */}
+            <div
+              className="relative w-full"
+              style={{ height: `${hours.length * 100}px` }}
+            >
+              {/* Time Rows */}
+              <div className="absolute inset-0 z-0 flex flex-col pointer-events-none">
+                {hours.map((hour) => (
+                  <div
+                    key={hour}
+                    className="flex h-[100px] border-b border-surface-container/50"
+                  >
+                    <div className="w-20 text-center py-2 text-xs font-medium text-on-surface-variant/60 border-r border-surface-container shrink-0 bg-white/20">
+                      {`${hour.toString().padStart(2, "0")}:00`}
+                    </div>
+                    <div
+                      className="flex-1 grid"
+                      style={{
+                        gridTemplateColumns: `repeat(${Math.max(1, visibleTherapists.length)}, minmax(0, 1fr))`,
+                      }}
+                    >
+                      {visibleTherapists.map((t) => (
+                        <div
+                          key={t.id}
+                          className="border-r border-surface-container/50 border-dashed last:border-r-0"
+                        ></div>
+                      ))}
+                      {visibleTherapists.length === 0 && <div></div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Absolute foreground for appointments */}
+              <div className="absolute inset-0 z-10 flex ml-20">
+                <div
+                  className="flex-1 grid"
+                  style={{
+                    gridTemplateColumns: `repeat(${Math.max(1, visibleTherapists.length)}, minmax(0, 1fr))`,
+                  }}
+                >
+                  {visibleTherapists.map((t) => {
+                    const therapistApts = filtered.filter(
+                      (a) => a.therapist === t.name || a.therapistId === t.id,
+                    );
+                    return (
+                      <div key={t.id} className="relative h-full w-full">
+                        {therapistApts.map((apt) => {
+                          const startH = parseTime(apt.startTime);
+                          const endH = parseTime(apt.endTime);
+                          const top = (startH - 9) * 100;
+                          const height = (endH - startH) * 100;
+
+                          let colorClass =
+                            "border-l-primary border-primary/20 hover:border-primary/40";
+                          let textColor = "text-primary";
+                          let labelBg = "bg-primary/10 text-primary";
+
+                          if (apt.status === "completed") {
+                            colorClass =
+                              "border-l-jade-green border-jade-green/20 hover:border-jade-green/40";
+                            textColor = "text-jade-green";
+                            labelBg = "bg-jade-green/10 text-jade-green";
+                          } else if (apt.status === "cancelled") {
+                            colorClass =
+                              "border-l-red-500 border-red-500/20 hover:border-red-500/40";
+                            textColor = "text-red-500";
+                            labelBg = "bg-red-500/10 text-red-500";
+                          } else if (
+                            apt.clientTier === "Kim Cương" ||
+                            apt.clientTier === "Bạch Kim"
+                          ) {
+                            colorClass =
+                              "border-l-soft-gold border-soft-gold/20 hover:border-soft-gold/40";
+                            textColor = "text-soft-gold";
+                            labelBg = "bg-soft-gold/10 text-soft-gold";
+                          }
+
+                          return (
+                            <div
+                              key={apt.id}
+                              className={`absolute overflow-hidden w-[calc(100%-16px)] ml-[8px] bg-white rounded-xl p-3 md:p-3 border-l-4 border-y border-r shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 hover:z-50 transition-all duration-300 cursor-pointer pointer-events-auto h-[90px] flex flex-col justify-between ${colorClass}`}
+                              style={{
+                                top: `${top + 1}px`,
+                                zIndex: 10,
+                              }}
+                            >
+                              <div className="w-full flex justify-between items-start gap-1">
+                                <h4 className="font-bold text-dark-slate truncate pr-2 flex-1 leading-tight">
+                                  {apt.clientName}
+                                </h4>
+                                <span
+                                  className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase shrink-0 ${labelBg}`}
+                                >
+                                  {apt.status === "confirmed"
+                                    ? "sắp tới"
+                                    : apt.statusLabel}
+                                </span>
+                              </div>
+
+                              <div className="w-full">
+                                <p
+                                  className={`text-xs font-bold truncate ${textColor} mb-1.5`}
+                                >
+                                  {apt.service}
+                                </p>
+                                <div className="flex items-center text-[11px] font-medium text-on-surface-variant/80 w-full">
+                                  <span className="flex items-center gap-1 opacity-70">
+                                    <MaterialIcon
+                                      name="schedule"
+                                      className="text-[14px]"
+                                    />
+                                    {apt.startTime} - {apt.endTime}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
 
       {/* Mobile: cards */}
@@ -75,102 +383,6 @@ export function AppointmentsView() {
           ))
         )}
       </div>
-
-      {/* Desktop: table */}
-      <GlassCard className="hidden overflow-hidden p-0 md:block">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-225 text-left">
-            <thead>
-              <tr className="border-b border-glass-border bg-white/30">
-                {[
-                  "Khách hàng",
-                  "Dịch vụ",
-                  "KTV",
-                  "Giờ",
-                  "Giá",
-                  "Trạng thái",
-                  "",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="font-cta px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-glass-border/20">
-              {filtered.map((apt) => (
-                <tr
-                  key={apt.id}
-                  className="transition-colors hover:bg-white/25"
-                >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={apt.clientAvatar}
-                        alt=""
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
-                      <div>
-                        <p className="text-sm font-semibold text-dark-slate">
-                          {apt.clientName}
-                        </p>
-                        <span
-                          className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-[9px] font-bold ${tierBadgeClass(apt.clientTier)}`}
-                        >
-                          {apt.clientTier}
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm">{apt.service}</td>
-                  <td className="px-6 py-4 text-sm">{apt.therapist}</td>
-                  <td className="px-6 py-4 text-sm">
-                    {apt.startTime} – {apt.endTime}
-                  </td>
-                  <td className="px-6 py-4 text-sm font-medium">
-                    {formatVnd(apt.price)}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase ${statusBadgeClass(apt.status)}`}
-                    >
-                      {apt.statusLabel}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-1">
-                      {apt.status === "confirmed" && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            updateAppointmentStatus(apt.id, "in_progress")
-                          }
-                          className="rounded-lg bg-primary px-2 py-1 text-[10px] text-white"
-                        >
-                          Check-in
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => deleteAppointment(apt.id)}
-                        className="rounded-lg p-1 hover:bg-red-500/10"
-                      >
-                        <MaterialIcon
-                          name="delete"
-                          className="text-[18px] text-on-surface-variant"
-                        />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </GlassCard>
     </div>
   );
 }
