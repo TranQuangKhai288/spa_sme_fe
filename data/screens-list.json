@@ -1,0 +1,188 @@
+﻿{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "content": [
+      {
+        "text": "{\"screens\":[{\"name\":\"projects/8800744916035449088/screens/84157e5cb30a4974a23d6347b0a873aa\",\"title\":\"ZenFlow Spa Management \u0026 Client Portal\",\"screenshot\":{\"name\":\"projects/8800744916035449088/files/4a2c586614c64ae4b8b5bc0b92db0231\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/ADBb0uj82z7xa9HcAu93NYfn8U5FcaRuXOnM910WpLP_bZcVMHjDag0k5ha8BWiKBdvRCkSSZ2RO5sZdo6cQ8NdzvDU5VQkvU9nSNEtkrDSJ5Y3J4D9kAKj-o2ootVfilckM62-vPC0dZ-u8MFk4HDbbKi8SxEQXBMpSRHcjKnducRDp9gxMBgzBBVfy-RRv__gQkHhrZALzBPerB9-qQQPNekMAvwMvy8V_w68My9P60gwNMEWBqT6U2tMkNw\"},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/16313801321056714200\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjY0MTY0YWEwNTRjYzM5YTIzMWQ3OGFmEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"780\",\"height\":\"2918\",\"deviceType\":\"MOBILE\"},{\"name\":\"projects/8800744916035449088/screens/c0b079721d2f47fb825cb296e4fbf8e8\",\"title\":\"ZenFlow Spa - Online Booking Flow\",\"screenshot\":{\"name\":\"projects/8800744916035449088/files/2189b57cd1c349f99b3da529c6c30882\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/ADBb0ugMpOfgj5CULShxc5neN4b65rfuatBNi-ShsRD1oKR30uGp7T_POO8wQSwIRbAFHs1Kj1GQb9jd5lbz5sLkr5DJuA9GVIl-a6WIprqDh7CEzBvxJ8c8ST6CX-fN90Xe5qUXYbUQghelhDUK7hmXdfH6HZT9AkISvba-MmAKshwolo7ODK0ScHHYlRq4TQjsA5iGN5jMSTzvLHKntg57yvnOiXN3j7eJAtJGmG6MbOfPEEXvPes9U_MfOiw\"},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/6603032815318922789\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjVmZWRiNDgwMjJkNGRlMTcyMTI1YzJlEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"3074\",\"deviceType\":\"DESKTOP\"},{\"name\":\"projects/8800744916035449088/screens/f308df995ce242c59cccffaf6e067c46\",\"title\":\"ZenFlow - Appointments Management (Updated Font)\",\"screenshot\":{\"name\":\"projects/8800744916035449088/files/2e91b44cca344b74919a365c168a84f6\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/ADBb0ujcFXvF8UeukGVpT1YATHa4hgykX9MF7dJwWoLXGssHIm8cYEItfKbp-iDS33MEnOfJ8JKAraLb4OS0grE7zUwwTQwRFWMww9c5obBaBIy6Db7VIbY0drfJr5RlhT-eUag7zLgBk9_xLRAnE2UYAbAbQvpMh_OYtTkC3BTlmIgVT1XAB3vrum2sNUGDDOkMU6_hHrtzwSRJoju1VMcmYEtqJGURZkQVH0cbNsplruNqRVHaf_URo95pjA\"},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/536ecbcb2a8e41cba372bbe7b1771bf6\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzMzODYxYWZmZDdkMzQ5YmM5OTg1MzBlOTlkNTJmNjBhEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2048\",\"deviceType\":\"DESKTOP\"},{\"name\":\"projects/8800744916035449088/screens/11843131932304460868\",\"title\":\"DESIGN.md\",\"screenshot\":{},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/11843131932304460667\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBKNARIhYXBwX2NvbXBhbmlvbl91c2VyX3VwbG9hZGVkX2ZpbGVzGmgKM3VzZXJfdXBsb2FkZWRfaHRtbF8wMDA2NTFiY2U2MGNlZDljMDdjNGQ1YmNiMTFjOGVlNxILEgcQppnf4uIRGAGSASMKCnByb2plY3RfaWQSFUITODgwMDc0NDkxNjAzNTQ0OTA4OA\u0026filename=\u0026opi=96797242\",\"mimeType\":\"text/markdown\"},\"width\":\"780\",\"height\":\"1768\"},{\"name\":\"projects/8800744916035449088/screens/53286eccb474472684e1333b0df29e0e\",\"title\":\"ZenFlow Dashboard - Customers Management (Updated Font)\",\"screenshot\":{\"name\":\"projects/8800744916035449088/files/01e3dc4f7eb74aa3935b76c450e24db4\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/ADBb0ujJ94fWRS_uUhc1GYKQfQ6QH6piyicuSGKBeiqmJd6-2dtWqoNyjJp-6rXhnV5u3Zku2gyxtyf2z_2oQJoJFYDkPJTllPdvJpZ3wzxA_SJu1Zr9A4stHPfNjcWzTB8hty9yWm2SUpR6ZIBD7xXb3i0Gb-rSUtLzg59CLj64UWH21xu9I2lWAuGfBoIo9I1WbOhFHmBmKFGRNFRyc3xpyWmC8b8FJ-xcjlc3v6XTIfYnRC4SMdL8AssLpA\"},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/6d9a333b700d4ecda5d5d17920824805\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzBjNTRlNThkODlkNjQyNmFiMWJkOTNiYTkwMjg0ZDBjEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2048\",\"deviceType\":\"DESKTOP\"},{\"name\":\"projects/8800744916035449088/screens/14448073c89641e3a6cc1957fb828936\",\"title\":\"ZenFlow Mobile - Empty State\",\"screenshot\":{\"name\":\"projects/8800744916035449088/files/14395094785388306775\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/ADBb0uiB7OL5I4NruizLq201Ozrqc92eRr1BV-ZfT5SsE7ecLXA3lhRQkmDjFA6i6Qqot-MlUjKnp1lcbN0OulQ4oVSAF5teIUvv4hFC4izXgTDNHHsOjCcUJJRRmye4u4daLu87LL3EXcsM5a1On2PgsOHGuqqyD49yENNB4eqeB42vspSxlsG3ZtvHg7EG3cORayNSrivUTjgviG5veUlHKP7ewtG1MAlKfgrTkq4W-mX86NCGoznq1hVUxKo\"},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/16079195903437788313\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjYyNDc1OTAwOTEwNGNhZTc2MzZiMTBkEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"972\",\"height\":\"1768\",\"deviceType\":\"MOBILE\"},{\"name\":\"projects/8800744916035449088/screens/c9fb3461812948d9b5c482fd6d288774\",\"title\":\"ZenFlow - Modal Tạo lịch hẹn mới\",\"screenshot\":{\"name\":\"projects/8800744916035449088/files/14562423591000459863\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/ADBb0ugWuNpGpuZFG_o460Mzrv0I4xi-hEjGjQx1wj6FmZCAq5tsfQSbseS7qldOripKJJF9yEBKrCf5BJYC5ocnNDeMN6EZObxzw62k3P4-Z2LS5hI6pkLmSyDL65duIT3b35O319SxKS7cc5cNWW-2xcaJNTCX2lymnEoysLZtBUYPUtViyuOXK69tLzbgNXSsc0ScA9ju9pb9bCux4-YGbxUnG0Whho2KNSnaQNdRK2H3DI-NjWj1mRK6fA\"},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/2340142943457725579\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjY3NGYzMmYwMWE2MzEzN2Y0MDUyYjZlEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2048\",\"deviceType\":\"DESKTOP\"},{\"name\":\"projects/8800744916035449088/screens/39f284ddf0d54711ba137368cc7629bf\",\"title\":\"ZenFlow Mobile - Treatment Tracking\",\"screenshot\":{\"name\":\"projects/8800744916035449088/files/4a2c586614c64ae4b8b5bc0b92db0231\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/ADBb0uj82z7xa9HcAu93NYfn8U5FcaRuXOnM910WpLP_bZcVMHjDag0k5ha8BWiKBdvRCkSSZ2RO5sZdo6cQ8NdzvDU5VQkvU9nSNEtkrDSJ5Y3J4D9kAKj-o2ootVfilckM62-vPC0dZ-u8MFk4HDbbKi8SxEQXBMpSRHcjKnducRDp9gxMBgzBBVfy-RRv__gQkHhrZALzBPerB9-qQQPNekMAvwMvy8V_w68My9P60gwNMEWBqT6U2tMkNw\"},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/131453076793845702\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjY1YzI4OTIwMDMwM2U2NjcyMmJkZjdiEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"780\",\"height\":\"2918\",\"deviceType\":\"MOBILE\"},{\"name\":\"projects/8800744916035449088/screens/1c0eaa80427645e8b4defb6c201834c8\",\"title\":\"ZenFlow Spa - Landing Page Extended\",\"screenshot\":{\"name\":\"projects/8800744916035449088/files/6433805140481655086\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/ADBb0ujrkY57Ae8w8yIXZ1sPkmq2pfjrJFOyS9fN0PsQGYodtL4OB4IftWR9WgNJUy-XYgV0x4_Kkees7STee2T1GSEimhxXPir1thrT1ngIQnsU8s8ZGdbFD_JgfePQUNOgyTvElZHVbjCxGKeFLSMAD8AffZpKoCYLBrNhhAfKg5Y482kitcFR6JD0AnXArwKCJIl95XnhZ_MnGZJg8TRQb4ZvA9FoCPLo9SBgcKp0743YVmqJ_WgqduuoXhQ\"},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/13058924281880586457\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjYxODNkNTkwMjJkNGRlMTcyMTI1YzJlEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"6340\",\"deviceType\":\"DESKTOP\"},{\"name\":\"projects/8800744916035449088/screens/54c585f9c9644ee08dea3931a2c442f1\",\"title\":\"ZenFlow Mobile - Home Greeting\",\"screenshot\":{\"name\":\"projects/8800744916035449088/files/114be9f7b7074880a548708f03f9f54a\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/ADBb0ugfuAhK-FHOyAE2PM7NKXHLYnDyrk4htQRgyb5x69CBo8MoqyKkT2fuJxEdxvbH3BSb_1YpnXyqolRw95SltaQNVLPbSuioinY7mCN5pBMpFlhKQZWMMlb_-UUGAtiVC6Y-6vlz_VKSKEq1jR4BM9glff_nBUaTtETKKBBlXVqlhj7B9pDcWNk8fxgd9n8Tl_Fb_mfryKrhVMbz7mtaF6jCyDMHRpjqFBpBil06tIk4EkLn8Hq9BE3NQbU\"},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/10236207269470671971\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjYwOWI2MTcwMDMwM2U1M2QxMTY0YTAxEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"780\",\"height\":\"2194\",\"deviceType\":\"MOBILE\"},{\"name\":\"projects/8800744916035449088/screens/e9c744fec7d44b778bbbe78f6dfe08ba\",\"title\":\"ZenFlow Dashboard - Customers Management\",\"screenshot\":{\"name\":\"projects/8800744916035449088/files/5eb6a7d5ed084a9e95fa849865ca19a3\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/ADBb0ughxbrqDsNcsT4qtXNsFgEFN4YtZVXtU2QikfoHk8ehoz6ubkAQuAJesExH_tnxwQGy_Pd4x7l8VZA-Pij6Fy-MZUspJ1TK8aVTwS-I-2mVXHaEZ9kzIUfW2QtC8S6EMJbhM-ntGQVEtG-d0wTGWss6YoF-GMeBmRZjDbGH0MrKLTPgR1-V_1u2TUtrZGVPrNZL92LgnrNtkCPYvjgRD2O-0YgVWm6mguZHhH_RWiZaVqzRpOGXOCGV_w\"},\"htmlCode\":{\"name\":\"projects/8800744916035449088/files/17923976095907067018\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjVjYTBmMzIwMjJkNGFlNjQ5MWM5NjE3EgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2048\",\"deviceType\":\"DESKTOP\"}]}",
+        "type": "text"
+      }
+    ],
+    "structuredContent": {
+      "screens": [
+        {
+          "deviceType": "MOBILE",
+          "height": "2918",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjY0MTY0YWEwNTRjYzM5YTIzMWQ3OGFmEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086",
+            "mimeType": "text/html",
+            "name": "projects/8800744916035449088/files/16313801321056714200"
+          },
+          "name": "projects/8800744916035449088/screens/84157e5cb30a4974a23d6347b0a873aa",
+          "screenshot": {
+            "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0uj82z7xa9HcAu93NYfn8U5FcaRuXOnM910WpLP_bZcVMHjDag0k5ha8BWiKBdvRCkSSZ2RO5sZdo6cQ8NdzvDU5VQkvU9nSNEtkrDSJ5Y3J4D9kAKj-o2ootVfilckM62-vPC0dZ-u8MFk4HDbbKi8SxEQXBMpSRHcjKnducRDp9gxMBgzBBVfy-RRv__gQkHhrZALzBPerB9-qQQPNekMAvwMvy8V_w68My9P60gwNMEWBqT6U2tMkNw",
+            "name": "projects/8800744916035449088/files/4a2c586614c64ae4b8b5bc0b92db0231"
+          },
+          "title": "ZenFlow Spa Management \u0026 Client Portal",
+          "width": "780"
+        },
+        {
+          "deviceType": "DESKTOP",
+          "height": "3074",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjVmZWRiNDgwMjJkNGRlMTcyMTI1YzJlEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086",
+            "mimeType": "text/html",
+            "name": "projects/8800744916035449088/files/6603032815318922789"
+          },
+          "name": "projects/8800744916035449088/screens/c0b079721d2f47fb825cb296e4fbf8e8",
+          "screenshot": {
+            "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0ugMpOfgj5CULShxc5neN4b65rfuatBNi-ShsRD1oKR30uGp7T_POO8wQSwIRbAFHs1Kj1GQb9jd5lbz5sLkr5DJuA9GVIl-a6WIprqDh7CEzBvxJ8c8ST6CX-fN90Xe5qUXYbUQghelhDUK7hmXdfH6HZT9AkISvba-MmAKshwolo7ODK0ScHHYlRq4TQjsA5iGN5jMSTzvLHKntg57yvnOiXN3j7eJAtJGmG6MbOfPEEXvPes9U_MfOiw",
+            "name": "projects/8800744916035449088/files/2189b57cd1c349f99b3da529c6c30882"
+          },
+          "title": "ZenFlow Spa - Online Booking Flow",
+          "width": "2560"
+        },
+        {
+          "deviceType": "DESKTOP",
+          "height": "2048",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzMzODYxYWZmZDdkMzQ5YmM5OTg1MzBlOTlkNTJmNjBhEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086",
+            "mimeType": "text/html",
+            "name": "projects/8800744916035449088/files/536ecbcb2a8e41cba372bbe7b1771bf6"
+          },
+          "name": "projects/8800744916035449088/screens/f308df995ce242c59cccffaf6e067c46",
+          "screenshot": {
+            "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0ujcFXvF8UeukGVpT1YATHa4hgykX9MF7dJwWoLXGssHIm8cYEItfKbp-iDS33MEnOfJ8JKAraLb4OS0grE7zUwwTQwRFWMww9c5obBaBIy6Db7VIbY0drfJr5RlhT-eUag7zLgBk9_xLRAnE2UYAbAbQvpMh_OYtTkC3BTlmIgVT1XAB3vrum2sNUGDDOkMU6_hHrtzwSRJoju1VMcmYEtqJGURZkQVH0cbNsplruNqRVHaf_URo95pjA",
+            "name": "projects/8800744916035449088/files/2e91b44cca344b74919a365c168a84f6"
+          },
+          "title": "ZenFlow - Appointments Management (Updated Font)",
+          "width": "2560"
+        },
+        {
+          "height": "1768",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBKNARIhYXBwX2NvbXBhbmlvbl91c2VyX3VwbG9hZGVkX2ZpbGVzGmgKM3VzZXJfdXBsb2FkZWRfaHRtbF8wMDA2NTFiY2U2MGNlZDljMDdjNGQ1YmNiMTFjOGVlNxILEgcQppnf4uIRGAGSASMKCnByb2plY3RfaWQSFUITODgwMDc0NDkxNjAzNTQ0OTA4OA\u0026filename=\u0026opi=96797242",
+            "mimeType": "text/markdown",
+            "name": "projects/8800744916035449088/files/11843131932304460667"
+          },
+          "name": "projects/8800744916035449088/screens/11843131932304460868",
+          "screenshot": {},
+          "title": "DESIGN.md",
+          "width": "780"
+        },
+        {
+          "deviceType": "DESKTOP",
+          "height": "2048",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzBjNTRlNThkODlkNjQyNmFiMWJkOTNiYTkwMjg0ZDBjEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086",
+            "mimeType": "text/html",
+            "name": "projects/8800744916035449088/files/6d9a333b700d4ecda5d5d17920824805"
+          },
+          "name": "projects/8800744916035449088/screens/53286eccb474472684e1333b0df29e0e",
+          "screenshot": {
+            "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0ujJ94fWRS_uUhc1GYKQfQ6QH6piyicuSGKBeiqmJd6-2dtWqoNyjJp-6rXhnV5u3Zku2gyxtyf2z_2oQJoJFYDkPJTllPdvJpZ3wzxA_SJu1Zr9A4stHPfNjcWzTB8hty9yWm2SUpR6ZIBD7xXb3i0Gb-rSUtLzg59CLj64UWH21xu9I2lWAuGfBoIo9I1WbOhFHmBmKFGRNFRyc3xpyWmC8b8FJ-xcjlc3v6XTIfYnRC4SMdL8AssLpA",
+            "name": "projects/8800744916035449088/files/01e3dc4f7eb74aa3935b76c450e24db4"
+          },
+          "title": "ZenFlow Dashboard - Customers Management (Updated Font)",
+          "width": "2560"
+        },
+        {
+          "deviceType": "MOBILE",
+          "height": "1768",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjYyNDc1OTAwOTEwNGNhZTc2MzZiMTBkEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086",
+            "mimeType": "text/html",
+            "name": "projects/8800744916035449088/files/16079195903437788313"
+          },
+          "name": "projects/8800744916035449088/screens/14448073c89641e3a6cc1957fb828936",
+          "screenshot": {
+            "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0uiB7OL5I4NruizLq201Ozrqc92eRr1BV-ZfT5SsE7ecLXA3lhRQkmDjFA6i6Qqot-MlUjKnp1lcbN0OulQ4oVSAF5teIUvv4hFC4izXgTDNHHsOjCcUJJRRmye4u4daLu87LL3EXcsM5a1On2PgsOHGuqqyD49yENNB4eqeB42vspSxlsG3ZtvHg7EG3cORayNSrivUTjgviG5veUlHKP7ewtG1MAlKfgrTkq4W-mX86NCGoznq1hVUxKo",
+            "name": "projects/8800744916035449088/files/14395094785388306775"
+          },
+          "title": "ZenFlow Mobile - Empty State",
+          "width": "972"
+        },
+        {
+          "deviceType": "DESKTOP",
+          "height": "2048",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjY3NGYzMmYwMWE2MzEzN2Y0MDUyYjZlEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086",
+            "mimeType": "text/html",
+            "name": "projects/8800744916035449088/files/2340142943457725579"
+          },
+          "name": "projects/8800744916035449088/screens/c9fb3461812948d9b5c482fd6d288774",
+          "screenshot": {
+            "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0ugWuNpGpuZFG_o460Mzrv0I4xi-hEjGjQx1wj6FmZCAq5tsfQSbseS7qldOripKJJF9yEBKrCf5BJYC5ocnNDeMN6EZObxzw62k3P4-Z2LS5hI6pkLmSyDL65duIT3b35O319SxKS7cc5cNWW-2xcaJNTCX2lymnEoysLZtBUYPUtViyuOXK69tLzbgNXSsc0ScA9ju9pb9bCux4-YGbxUnG0Whho2KNSnaQNdRK2H3DI-NjWj1mRK6fA",
+            "name": "projects/8800744916035449088/files/14562423591000459863"
+          },
+          "title": "ZenFlow - Modal Tạo lịch hẹn mới",
+          "width": "2560"
+        },
+        {
+          "deviceType": "MOBILE",
+          "height": "2918",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjY1YzI4OTIwMDMwM2U2NjcyMmJkZjdiEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086",
+            "mimeType": "text/html",
+            "name": "projects/8800744916035449088/files/131453076793845702"
+          },
+          "name": "projects/8800744916035449088/screens/39f284ddf0d54711ba137368cc7629bf",
+          "screenshot": {
+            "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0uj82z7xa9HcAu93NYfn8U5FcaRuXOnM910WpLP_bZcVMHjDag0k5ha8BWiKBdvRCkSSZ2RO5sZdo6cQ8NdzvDU5VQkvU9nSNEtkrDSJ5Y3J4D9kAKj-o2ootVfilckM62-vPC0dZ-u8MFk4HDbbKi8SxEQXBMpSRHcjKnducRDp9gxMBgzBBVfy-RRv__gQkHhrZALzBPerB9-qQQPNekMAvwMvy8V_w68My9P60gwNMEWBqT6U2tMkNw",
+            "name": "projects/8800744916035449088/files/4a2c586614c64ae4b8b5bc0b92db0231"
+          },
+          "title": "ZenFlow Mobile - Treatment Tracking",
+          "width": "780"
+        },
+        {
+          "deviceType": "DESKTOP",
+          "height": "6340",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjYxODNkNTkwMjJkNGRlMTcyMTI1YzJlEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086",
+            "mimeType": "text/html",
+            "name": "projects/8800744916035449088/files/13058924281880586457"
+          },
+          "name": "projects/8800744916035449088/screens/1c0eaa80427645e8b4defb6c201834c8",
+          "screenshot": {
+            "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0ujrkY57Ae8w8yIXZ1sPkmq2pfjrJFOyS9fN0PsQGYodtL4OB4IftWR9WgNJUy-XYgV0x4_Kkees7STee2T1GSEimhxXPir1thrT1ngIQnsU8s8ZGdbFD_JgfePQUNOgyTvElZHVbjCxGKeFLSMAD8AffZpKoCYLBrNhhAfKg5Y482kitcFR6JD0AnXArwKCJIl95XnhZ_MnGZJg8TRQb4ZvA9FoCPLo9SBgcKp0743YVmqJ_WgqduuoXhQ",
+            "name": "projects/8800744916035449088/files/6433805140481655086"
+          },
+          "title": "ZenFlow Spa - Landing Page Extended",
+          "width": "2560"
+        },
+        {
+          "deviceType": "MOBILE",
+          "height": "2194",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjYwOWI2MTcwMDMwM2U1M2QxMTY0YTAxEgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086",
+            "mimeType": "text/html",
+            "name": "projects/8800744916035449088/files/10236207269470671971"
+          },
+          "name": "projects/8800744916035449088/screens/54c585f9c9644ee08dea3931a2c442f1",
+          "screenshot": {
+            "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0ugfuAhK-FHOyAE2PM7NKXHLYnDyrk4htQRgyb5x69CBo8MoqyKkT2fuJxEdxvbH3BSb_1YpnXyqolRw95SltaQNVLPbSuioinY7mCN5pBMpFlhKQZWMMlb_-UUGAtiVC6Y-6vlz_VKSKEq1jR4BM9glff_nBUaTtETKKBBlXVqlhj7B9pDcWNk8fxgd9n8Tl_Fb_mfryKrhVMbz7mtaF6jCyDMHRpjqFBpBil06tIk4EkLn8Hq9BE3NQbU",
+            "name": "projects/8800744916035449088/files/114be9f7b7074880a548708f03f9f54a"
+          },
+          "title": "ZenFlow Mobile - Home Greeting",
+          "width": "780"
+        },
+        {
+          "deviceType": "DESKTOP",
+          "height": "2048",
+          "htmlCode": {
+            "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1MjRjMjVjYTBmMzIwMjJkNGFlNjQ5MWM5NjE3EgsSBxCmmd_i4hEYAZIBIwoKcHJvamVjdF9pZBIVQhM4ODAwNzQ0OTE2MDM1NDQ5MDg4\u0026filename=\u0026opi=89354086",
+            "mimeType": "text/html",
+            "name": "projects/8800744916035449088/files/17923976095907067018"
+          },
+          "name": "projects/8800744916035449088/screens/e9c744fec7d44b778bbbe78f6dfe08ba",
+          "screenshot": {
+            "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0ughxbrqDsNcsT4qtXNsFgEFN4YtZVXtU2QikfoHk8ehoz6ubkAQuAJesExH_tnxwQGy_Pd4x7l8VZA-Pij6Fy-MZUspJ1TK8aVTwS-I-2mVXHaEZ9kzIUfW2QtC8S6EMJbhM-ntGQVEtG-d0wTGWss6YoF-GMeBmRZjDbGH0MrKLTPgR1-V_1u2TUtrZGVPrNZL92LgnrNtkCPYvjgRD2O-0YgVWm6mguZHhH_RWiZaVqzRpOGXOCGV_w",
+            "name": "projects/8800744916035449088/files/5eb6a7d5ed084a9e95fa849865ca19a3"
+          },
+          "title": "ZenFlow Dashboard - Customers Management",
+          "width": "2560"
+        }
+      ]
+    }
+  }
+}
