@@ -10,6 +10,7 @@ import {
 } from "@/lib/utils";
 import { useSpaData } from "@/hooks/useSpaData";
 import { localizedStatus } from "@/hooks/useLocalizedStatus";
+import { showToast } from "@/components/ui/Toast";
 
 export default function DashboardView() {
   const weekdays = [
@@ -301,9 +302,10 @@ export default function DashboardView() {
                     <div className="flex items-center gap-2">
                       {apt.status === "confirmed" && (
                         <button
-                          onClick={() =>
-                            updateAppointmentStatus(apt.id, "in_progress")
-                          }
+                          onClick={() => {
+                            updateAppointmentStatus(apt.id, "in_progress");
+                            showToast(`Check-in thành công: ${apt.clientName}`, "success");
+                          }}
                           className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all shadow-md shadow-primary/5 hover:shadow-primary/10"
                         >
                           {`Điểm danh`}
@@ -311,9 +313,10 @@ export default function DashboardView() {
                       )}
                       {apt.status === "in_progress" && (
                         <button
-                          onClick={() =>
-                            updateAppointmentStatus(apt.id, "completed")
-                          }
+                          onClick={() => {
+                            updateAppointmentStatus(apt.id, "completed");
+                            showToast(`Hoàn tất liệu trình: ${apt.clientName}`, "success");
+                          }}
                           className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all"
                         >
                           {`Hoàn tất`}
@@ -322,16 +325,20 @@ export default function DashboardView() {
                       {apt.status !== "completed" &&
                         apt.status !== "cancelled" && (
                           <button
-                            onClick={() =>
-                              updateAppointmentStatus(apt.id, "cancelled")
-                            }
+                            onClick={() => {
+                              updateAppointmentStatus(apt.id, "cancelled");
+                              showToast(`Đã hủy lịch: ${apt.clientName}`, "warning");
+                            }}
                             className="border border-red-500/20 text-red-500 hover:bg-red-500/10 text-xs px-3 py-1.5 rounded-lg transition-all"
                           >
                             {`Hủy`}
                           </button>
                         )}
                       <button
-                        onClick={() => deleteAppointment(apt.id)}
+                        onClick={() => {
+                          deleteAppointment(apt.id);
+                          showToast("Đã xóa lịch hẹn", "info");
+                        }}
                         className="material-symbols-outlined text-on-surface-variant/50 hover:text-red-500 p-1.5 rounded-lg transition-colors text-[18px]"
                       >
                         delete

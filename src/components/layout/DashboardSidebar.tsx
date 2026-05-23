@@ -12,6 +12,8 @@ function activeNavId(pathname: string): DashboardNavId {
   if (pathname.startsWith("/dashboard/appointments")) return "appointments";
   if (pathname.startsWith("/dashboard/customers")) return "customers";
   if (pathname.startsWith("/dashboard/workflows")) return "workflows";
+  if (pathname.startsWith("/dashboard/services")) return "services";
+  if (pathname.startsWith("/dashboard/reports")) return "reports";
   if (pathname === "/dashboard") return "dashboard";
   return "dashboard";
 }

@@ -3,6 +3,8 @@ import { Sora, DM_Sans, Plus_Jakarta_Sans } from "next/font/google";
 import { SpaDataProvider } from "@/providers/SpaDataProvider";
 import { LocaleProvider } from "@/providers/LocaleProvider";
 import { MobileChrome } from "@/components/layout/MobileChrome";
+import { ToastProvider } from "@/components/ui/Toast";
+import { SearchProvider } from "@/providers/SearchProvider";
 import "./globals.css";
 
 const sora = Sora({
@@ -48,7 +50,10 @@ export default function RootLayout({
       <body className="font-body">
         <LocaleProvider>
           <SpaDataProvider>
-            <MobileChrome>{children}</MobileChrome>
+            <SearchProvider>
+              <MobileChrome>{children}</MobileChrome>
+              <ToastProvider />
+            </SearchProvider>
           </SpaDataProvider>
         </LocaleProvider>
       </body>

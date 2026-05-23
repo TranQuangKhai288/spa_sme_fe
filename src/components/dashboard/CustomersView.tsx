@@ -1,45 +1,183 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
 import { formatVnd, tierBadgeClass } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { showToast } from "@/components/ui/Toast";
+import type { Client } from "@/types/spa";
+import { useSearch } from "@/providers/SearchProvider";
+import { CreateClientModal } from "./CreateClientModal";
+
+function ClientActionMenu({
+  client,
+  onClose,
+}: {
+  client: Client;
+  onClose: () => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [onClose]);
+
+  return (
+    <div
+      ref={ref}
+      className="absolute right-8 top-4 z-50 w-44 rounded-xl border border-glass-border bg-white/95 shadow-2xl backdrop-blur-xl overflow-hidden"
+    >
+      {[
+        {
+          icon: "calendar_add_on",
+          label: "Tạo lịch hẹn",
+          action: () => {
+            showToast(`Mở form đặt lịch cho ${client.name}`, "info");
+            onClose();
+          },
+        },
+        {
+          icon: "person",
+          label: "Xem hồ sơ",
+          action: () => {
+            showToast("Tính năng đang phát triển", "info");
+            onClose();
+          },
+        },
+        {
+          icon: "edit",
+          label: "Chỉnh sửa",
+          action: () => {
+            showToast("Tính năng đang phát triển", "info");
+            onClose();
+          },
+        },
+        {
+          icon: "sms",
+          label: "Gửi SMS",
+          action: () => {
+            showToast(`Đã gửi SMS cho ${client.name}`, "success");
+            onClose();
+          },
+        },
+        {
+          icon: "star",
+          label: "Nâng hạng VIP",
+          action: () => {
+            showToast(`Đã đánh dấu ${client.name} nâng hạng`, "success");
+            onClose();
+          },
+        },
+      ].map((item) => (
+        <button
+          key={item.label}
+          onClick={item.action}
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-dark-slate hover:bg-primary/5 hover:text-primary transition-colors text-left"
+        >
+          <MaterialIcon
+            name={item.icon}
+            className="text-[18px] text-on-surface-variant"
+          />
+          {item.label}
+        </button>
+      ))}
+      <div className="border-t border-glass-border">
+        <button
+          onClick={() => {
+            showToast(`Đã xóa khách hàng (mock)`, "warning");
+            onClose();
+          }}
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors text-left"
+        >
+          <MaterialIcon name="delete" className="text-[18px]" />
+          Xóa khách hàng
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const TIER_FILTERS = ["Tất cả", "Kim Cương", "Bạch Kim", "Vàng", "Bạc"];
 
 export function CustomersView() {
   const { clients } = useSpaData();
-  const [query, setQuery] = useState("");
+  const { query } = useSearch();
+  const [tierFilter, setTierFilter] = useState("Tất cả");
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<"name" | "visits" | "spent">("visits");
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const filtered = clients.filter(
-    (c) =>
-      c.name.toLowerCase().includes(query.toLowerCase()) ||
-      c.email.toLowerCase().includes(query.toLowerCase()) ||
-      c.phone.includes(query),
-  );
+  const filtered = clients
+    .filter((c) => {
+      const matchQuery =
+        !query.trim() ||
+        c.name.toLowerCase().includes(query.toLowerCase()) ||
+        c.email.toLowerCase().includes(query.toLowerCase()) ||
+        c.phone.includes(query);
+      const matchTier = tierFilter === "Tất cả" || c.tier === tierFilter;
+      return matchQuery && matchTier;
+    })
+    .sort((a, b) => {
+      if (sortBy === "visits") return b.totalVisits - a.totalVisits;
+      if (sortBy === "spent") return b.totalSpent - a.totalSpent;
+      return a.name.localeCompare(b.name, "vi");
+    });
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="font-headline text-2xl font-bold text-dark-slate sm:text-3xl">
-            {`Quản lý khách hàng`}
+            Quản lý khách hàng
           </h1>
           <p className="text-sm text-on-surface-variant/80">
-            {`${clients.length} khách hàng trong hệ thống`}
+            {filtered.length}/{clients.length} khách hàng
           </p>
         </div>
-        <div className="relative w-full sm:w-72">
-          <MaterialIcon
-            name="search"
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50"
-          />
-          <input
-            type="search"
-            placeholder={`Tìm theo tên, email, SĐT...`}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-full border border-glass-border bg-white/40 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-primary/40"
-          />
+        <div className="flex items-center gap-3">
+          {/* Add client button — search is in the header */}
+          <button
+            onClick={() => setModalOpen(true)}
+            className="flex items-center gap-1.5 bg-primary text-white px-4 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
+          >
+            <MaterialIcon name="person_add" className="text-[18px]" />
+            <span className="hidden sm:inline">Thêm khách</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Tier filter pills */}
+      <div className="flex gap-2 flex-wrap">
+        {TIER_FILTERS.map((tier) => (
+          <button
+            key={tier}
+            onClick={() => setTierFilter(tier)}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+              tierFilter === tier
+                ? "bg-primary text-white shadow-md"
+                : "bg-white/50 border border-glass-border text-on-surface-variant hover:bg-white/70"
+            }`}
+          >
+            {tier}
+          </button>
+        ))}
+        <div className="ml-auto flex items-center gap-2">
+          <span className="text-xs text-on-surface-variant/60">Sắp xếp:</span>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            className="text-xs border border-glass-border rounded-lg px-2 py-1 bg-white/50 outline-none"
+          >
+            <option value="visits">Lượt visit</option>
+            <option value="spent">Tổng chi</option>
+            <option value="name">Tên</option>
+          </select>
         </div>
       </div>
 
@@ -51,7 +189,7 @@ export function CustomersView() {
               <img
                 src={client.avatar}
                 alt=""
-                className="h-12 w-12 rounded-full object-cover"
+                className="h-12 w-12 rounded-full object-cover ring-2 ring-soft-gold/20"
               />
               <div className="min-w-0 flex-1">
                 <p className="font-semibold text-dark-slate">{client.name}</p>
@@ -64,45 +202,59 @@ export function CustomersView() {
                   {client.tier}
                 </span>
               </div>
+              <button
+                onClick={() =>
+                  showToast(`SMS gửi đến ${client.name}`, "success")
+                }
+                className="rounded-full p-2 hover:bg-primary/10 text-on-surface-variant hover:text-primary transition-colors"
+              >
+                <MaterialIcon name="sms" className="text-[20px]" />
+              </button>
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2 border-t border-glass-border pt-3 text-center text-xs">
               <div>
-                <p className="font-bold text-jade-green">
+                <p className="font-bold text-jade-green text-base">
                   {client.totalVisits}
                 </p>
-                <p className="text-on-surface-variant">{`Lượt visit`}</p>
+                <p className="text-on-surface-variant">Lượt visit</p>
               </div>
               <div>
                 <p className="font-medium">{client.lastVisit}</p>
-                <p className="text-on-surface-variant">{`Lần cuối`}</p>
+                <p className="text-on-surface-variant">Lần cuối</p>
               </div>
               <div>
                 <p className="font-medium">{formatVnd(client.totalSpent)}</p>
-                <p className="text-on-surface-variant">{`Tổng chi`}</p>
+                <p className="text-on-surface-variant">Tổng chi</p>
               </div>
             </div>
+            {client.notes && (
+              <p className="mt-2 text-[11px] italic text-on-surface-variant/70 border-t border-glass-border pt-2">
+                {client.notes}
+              </p>
+            )}
           </GlassCard>
         ))}
       </div>
 
       {/* Desktop table */}
-      <GlassCard className="hidden overflow-hidden rounded-4xl p-0 md:block">
+      <GlassCard className="hidden overflow-hidden rounded-3xl p-0 md:block">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-250 text-left">
+          <table className="w-full text-left">
             <thead>
               <tr className="border-b border-glass-border bg-white/30">
                 {[
-                  `Khách hàng`,
-                  `Điện thoại`,
-                  `Hạng VIP`,
-                  `Lượt visit`,
-                  `Lần cuối`,
-                  `Tổng chi`,
+                  "Khách hàng",
+                  "Điện thoại",
+                  "Hạng VIP",
+                  "Điểm thưởng",
+                  "Lượt visit",
+                  "Lần cuối",
+                  "Tổng chi",
                   "",
                 ].map((h) => (
                   <th
                     key={h}
-                    className="font-cta px-8 py-5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant"
+                    className="font-cta px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant"
                   >
                     {h}
                   </th>
@@ -113,14 +265,14 @@ export function CustomersView() {
               {filtered.map((client) => (
                 <tr
                   key={client.id}
-                  className="cursor-pointer transition-colors hover:bg-white/30"
+                  className="relative cursor-pointer transition-colors hover:bg-white/30 group"
                 >
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-4">
+                  <td className="px-6 py-5">
+                    <div className="flex items-center gap-3">
                       <img
                         src={client.avatar}
                         alt=""
-                        className="h-12 w-12 rounded-full object-cover ring-2 ring-soft-gold/30"
+                        className="h-11 w-11 rounded-full object-cover ring-2 ring-soft-gold/20"
                       />
                       <div>
                         <p className="font-semibold text-dark-slate">
@@ -132,30 +284,53 @@ export function CustomersView() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-6 text-sm text-on-surface-variant">
+                  <td className="px-6 py-5 text-sm text-on-surface-variant">
                     {client.phone}
                   </td>
-                  <td className="px-6 py-6">
+                  <td className="px-6 py-5">
                     <span
                       className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest ${tierBadgeClass(client.tier)}`}
                     >
                       {client.tier}
                     </span>
                   </td>
-                  <td className="px-6 py-6 text-lg font-bold text-jade-green">
+                  <td className="px-6 py-5">
+                    <span className="flex items-center gap-1 text-soft-gold font-bold">
+                      <MaterialIcon
+                        name="star"
+                        className="text-[14px]"
+                        filled
+                      />
+                      {client.memberPoints.toLocaleString("vi-VN")}
+                    </span>
+                  </td>
+                  <td className="px-6 py-5 text-lg font-bold text-jade-green">
                     {client.totalVisits}
                   </td>
-                  <td className="px-6 py-6 text-sm text-on-surface-variant">
+                  <td className="px-6 py-5 text-sm text-on-surface-variant">
                     {client.lastVisit}
                   </td>
-                  <td className="px-6 py-6 text-sm font-semibold">
+                  <td className="px-6 py-5 text-sm font-semibold">
                     {formatVnd(client.totalSpent)}
                   </td>
-                  <td className="px-6 py-6 text-right">
-                    <MaterialIcon
-                      name="more_vert"
-                      className="text-on-surface-variant hover:text-jade-green"
-                    />
+                  <td className="px-6 py-5 text-right relative">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenMenuId(
+                          openMenuId === client.id ? null : client.id,
+                        );
+                      }}
+                      className="rounded-full p-1 hover:bg-white/50 text-on-surface-variant hover:text-jade-green transition-colors"
+                    >
+                      <MaterialIcon name="more_vert" className="text-[20px]" />
+                    </button>
+                    {openMenuId === client.id && (
+                      <ClientActionMenu
+                        client={client}
+                        onClose={() => setOpenMenuId(null)}
+                      />
+                    )}
                   </td>
                 </tr>
               ))}
@@ -163,6 +338,11 @@ export function CustomersView() {
           </table>
         </div>
       </GlassCard>
+
+      <CreateClientModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 }

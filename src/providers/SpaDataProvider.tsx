@@ -158,6 +158,35 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
+  const addClient = useCallback(
+    (newClient: Omit<Client, "id" | "totalVisits" | "totalSpent" | "memberPoints" | "lastVisit" | "joinDate">) => {
+      const client: Client = {
+        ...newClient,
+        id: `client-${Date.now()}`,
+        totalVisits: 0,
+        totalSpent: 0,
+        memberPoints: 0,
+        lastVisit: "Chưa có",
+        joinDate: new Date().toLocaleDateString("vi-VN"),
+      };
+      setClients((prev) => [client, ...prev]);
+      setNotifications((prev) => [
+        {
+          id: `notif-${Date.now()}`,
+          type: "info",
+          title: "Khách hàng mới đăng ký",
+          message: `${newClient.name} đã được thêm vào hệ thống quản lý.`,
+          time: "Vừa xong",
+          read: false,
+          priority: "normal",
+        },
+        ...prev,
+      ]);
+      return client;
+    },
+    []
+  );
+
   const value = useMemo<SpaDataContextValue>(
     () => ({
       spa,
@@ -178,6 +207,7 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       toggleWorkflow,
       markAllNotificationsAsRead,
       deleteNotification,
+      addClient,
     }),
     [
       spa,
@@ -198,6 +228,7 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       toggleWorkflow,
       markAllNotificationsAsRead,
       deleteNotification,
+      addClient,
     ]
   );
 

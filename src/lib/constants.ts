@@ -10,6 +10,8 @@ export const ROUTES = {
   appointments: "/dashboard/appointments",
   customers: "/dashboard/customers",
   workflows: "/dashboard/workflows",
+  services: "/dashboard/services",
+  reports: "/dashboard/reports",
 } as const;
 
 export type DashboardNavId =
@@ -46,7 +48,7 @@ export const DASHBOARD_NAV: {
     label: "Dịch vụ",
     shortLabel: "DV",
     icon: "spa",
-    href: ROUTES.dashboard,
+    href: ROUTES.services,
   },
   {
     id: "customers",
@@ -60,7 +62,7 @@ export const DASHBOARD_NAV: {
     label: "Báo cáo",
     shortLabel: "BCTC",
     icon: "analytics",
-    href: ROUTES.dashboard,
+    href: ROUTES.reports,
   },
   {
     id: "workflows",

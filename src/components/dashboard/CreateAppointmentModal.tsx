@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { Button } from "@/components/ui/Button";
+import { showToast } from "@/components/ui/Toast";
 
 export interface CreateAppointmentModalProps {
   open: boolean;
@@ -46,6 +47,7 @@ export function CreateAppointmentModal({
       date: new Date().toISOString().slice(0, 10),
       price: service.price,
     });
+    showToast(`Đã tạo lịch hẹn cho ${client.name}!`, "success");
     onClose();
   };
 

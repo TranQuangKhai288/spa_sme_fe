@@ -6,6 +6,9 @@ import { formatVnd, statusBadgeClass, tierBadgeClass } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { AppointmentCard } from "./AppointmentCard";
+import { CreateAppointmentModal } from "./CreateAppointmentModal";
+import { showToast } from "@/components/ui/Toast";
+import { useSearch } from "@/providers/SearchProvider";
 
 const FILTERS = [
   { id: "all", label: "Tất cả" },
@@ -23,6 +26,9 @@ export function AppointmentsView() {
     deleteAppointment,
   } = useSpaData();
   const [filter, setFilter] = useState<string>("all");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedApt, setSelectedApt] = useState<string | null>(null);
+  const { query: searchQuery } = useSearch();
   const [selectedTherapists, setSelectedTherapists] = useState<
     Record<string, boolean>
   >(Object.fromEntries(therapists.map((t) => [t.id, true])));
@@ -36,14 +42,23 @@ export function AppointmentsView() {
     setSelectedTherapists((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const filtered =
+  const filtered = (
     filter === "all"
       ? appointments
       : filter === "upcoming"
         ? appointments.filter(
             (a) => a.status === "confirmed" || a.status === "in_progress",
           )
-        : appointments.filter((a) => a.status === filter);
+        : appointments.filter((a) => a.status === filter)
+  ).filter((a) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      (a.clientName && a.clientName.toLowerCase().includes(q)) ||
+      (a.service && a.service.toLowerCase().includes(q)) ||
+      (a.therapist && a.therapist.toLowerCase().includes(q))
+    );
+  });
 
   const visibleTherapists = therapists.filter((t) => selectedTherapists[t.id]);
 
@@ -66,25 +81,8 @@ export function AppointmentsView() {
             {filtered.length} lịch hẹn
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="relative group hidden md:block">
-            <MaterialIcon
-              name="search"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant/50"
-            />
-            <input
-              className="pl-9 pr-4 py-2 bg-white/50 border border-glass-border rounded-full focus:ring-2 focus:ring-primary/20 outline-none w-64 text-sm transition-all focus:bg-white"
-              placeholder="Tìm kiếm khách hàng..."
-              type="text"
-            />
-          </div>
-          <div className="flex items-center gap-2 bg-white/50 border border-glass-border rounded-lg px-3 py-2 cursor-pointer hover:bg-white transition-colors">
-            <MaterialIcon
-              name="calendar_today"
-              className="text-primary text-[18px]"
-            />
-            <span className="text-sm font-medium">Hôm nay</span>
-          </div>
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Status filter + Create button only — search is in the header */}
           <div className="relative hidden md:block">
             <select
               value={filter}
@@ -102,9 +100,6 @@ export function AppointmentsView() {
               className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant"
             />
           </div>
-          <button className="bg-jade-green hover:bg-primary text-white px-6 py-2.5 rounded-full font-medium text-sm shadow-lg shadow-jade-green/20 hover:scale-[1.02] active:scale-95 transition-all hidden md:block">
-            + Tạo lịch hẹn
-          </button>
         </div>
       </div>
 

@@ -158,4 +158,10 @@ export interface SpaDataContextValue {
   toggleWorkflow: (id: string) => void;
   markAllNotificationsAsRead: () => void;
   deleteNotification: (id: string) => void;
+  addClient: (
+    client: Omit<
+      Client,
+      "id" | "totalVisits" | "totalSpent" | "memberPoints" | "lastVisit" | "joinDate"
+    >
+  ) => Client;
 }
