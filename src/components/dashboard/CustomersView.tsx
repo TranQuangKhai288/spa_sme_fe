@@ -4,11 +4,20 @@ import { useState, useRef, useEffect } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
 import { formatVnd, tierBadgeClass } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { showToast } from "@/components/ui/Toast";
 import type { Client } from "@/types/spa";
 import { useSearch } from "@/providers/SearchProvider";
 import { CreateClientModal } from "./CreateClientModal";
+import {
+  CalendarPlus,
+  User,
+  Pencil,
+  MessageSquare,
+  Star,
+  Trash2,
+  UserPlus,
+  MoreVertical,
+} from "lucide-react";
 
 function ClientActionMenu({
   client,
@@ -34,7 +43,7 @@ function ClientActionMenu({
     >
       {[
         {
-          icon: "calendar_add_on",
+          icon: CalendarPlus,
           label: "Tạo lịch hẹn",
           action: () => {
             showToast(`Mở form đặt lịch cho ${client.name}`, "info");
@@ -42,7 +51,7 @@ function ClientActionMenu({
           },
         },
         {
-          icon: "person",
+          icon: User,
           label: "Xem hồ sơ",
           action: () => {
             showToast("Tính năng đang phát triển", "info");
@@ -50,7 +59,7 @@ function ClientActionMenu({
           },
         },
         {
-          icon: "edit",
+          icon: Pencil,
           label: "Chỉnh sửa",
           action: () => {
             showToast("Tính năng đang phát triển", "info");
@@ -58,7 +67,7 @@ function ClientActionMenu({
           },
         },
         {
-          icon: "sms",
+          icon: MessageSquare,
           label: "Gửi SMS",
           action: () => {
             showToast(`Đã gửi SMS cho ${client.name}`, "success");
@@ -66,26 +75,26 @@ function ClientActionMenu({
           },
         },
         {
-          icon: "star",
+          icon: Star,
           label: "Nâng hạng VIP",
           action: () => {
             showToast(`Đã đánh dấu ${client.name} nâng hạng`, "success");
             onClose();
           },
         },
-      ].map((item) => (
-        <button
-          key={item.label}
-          onClick={item.action}
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-dark-slate hover:bg-primary/5 hover:text-primary transition-colors text-left"
-        >
-          <MaterialIcon
-            name={item.icon}
-            className="text-[18px] text-on-surface-variant"
-          />
-          {item.label}
-        </button>
-      ))}
+      ].map((item) => {
+        const IconComponent = item.icon;
+        return (
+          <button
+            key={item.label}
+            onClick={item.action}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-dark-slate hover:bg-primary/5 hover:text-primary transition-colors text-left"
+          >
+            <IconComponent size={18} className="text-on-surface-variant" />
+            {item.label}
+          </button>
+        );
+      })}
       <div className="border-t border-glass-border">
         <button
           onClick={() => {
@@ -94,7 +103,7 @@ function ClientActionMenu({
           }}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors text-left"
         >
-          <MaterialIcon name="delete" className="text-[18px]" />
+          <Trash2 size={18} />
           Xóa khách hàng
         </button>
       </div>
@@ -146,7 +155,7 @@ export function CustomersView() {
             onClick={() => setModalOpen(true)}
             className="flex items-center gap-1.5 bg-primary text-white px-4 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
           >
-            <MaterialIcon name="person_add" className="text-[18px]" />
+            <UserPlus size={18} />
             <span className="hidden sm:inline">Thêm khách</span>
           </button>
         </div>
@@ -208,7 +217,7 @@ export function CustomersView() {
                 }
                 className="rounded-full p-2 hover:bg-primary/10 text-on-surface-variant hover:text-primary transition-colors"
               >
-                <MaterialIcon name="sms" className="text-[20px]" />
+                <MessageSquare size={20} />
               </button>
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2 border-t border-glass-border pt-3 text-center text-xs">
@@ -296,11 +305,7 @@ export function CustomersView() {
                   </td>
                   <td className="px-6 py-5">
                     <span className="flex items-center gap-1 text-soft-gold font-bold">
-                      <MaterialIcon
-                        name="star"
-                        className="text-[14px]"
-                        filled
-                      />
+                      <Star size={14} fill="currentColor" />
                       {client.memberPoints.toLocaleString("vi-VN")}
                     </span>
                   </td>
@@ -323,7 +328,7 @@ export function CustomersView() {
                       }}
                       className="rounded-full p-1 hover:bg-white/50 text-on-surface-variant hover:text-jade-green transition-colors"
                     >
-                      <MaterialIcon name="more_vert" className="text-[20px]" />
+                      <MoreVertical size={20} />
                     </button>
                     {openMenuId === client.id && (
                       <ClientActionMenu

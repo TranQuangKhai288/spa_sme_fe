@@ -4,11 +4,13 @@ import { useState } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
 import { formatVnd, statusBadgeClass, tierBadgeClass } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { AppointmentCard } from "./AppointmentCard";
 import { CreateAppointmentModal } from "./CreateAppointmentModal";
 import { showToast } from "@/components/ui/Toast";
 import { useSearch } from "@/providers/SearchProvider";
+import { ChevronDown, ChevronLeft, ChevronRight, Clock } from "lucide-react";
+import { Select } from "@/components/ui/Select";
+import { MiniCalendar } from "@/components/ui/MiniCalendar";
 
 const FILTERS = [
   { id: "all", label: "Tất cả" },
@@ -33,14 +35,32 @@ export function AppointmentsView() {
     Record<string, boolean>
   >(Object.fromEntries(therapists.map((t) => [t.id, true])));
 
-  const todayIndex = calendarDays.findIndex((d) => d.isToday) || 0;
+  const todayDate = new Date();
+  const realTodayStr = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`;
+  const todayIndex = calendarDays.findIndex((dayObj) => {
+    const dayDateStr = dayObj.isCurrentMonth
+      ? `2026-05-${dayObj.day.toString().padStart(2, "0")}`
+      : dayObj.day >= 15
+        ? `2026-04-${dayObj.day.toString().padStart(2, "0")}`
+        : `2026-06-${dayObj.day.toString().padStart(2, "0")}`;
+    return dayDateStr === realTodayStr;
+  });
   const [selectedDay, setSelectedDay] = useState<number>(
-    todayIndex >= 0 ? todayIndex : 0,
+    todayIndex >= 0 ? todayIndex : 2
   );
 
   const toggleTherapist = (id: string) => {
     setSelectedTherapists((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+
+  const dayObj = calendarDays[selectedDay];
+  const selectedDateString = dayObj
+    ? (dayObj.isCurrentMonth
+        ? `2026-05-${dayObj.day.toString().padStart(2, "0")}`
+        : dayObj.day >= 15
+          ? `2026-04-${dayObj.day.toString().padStart(2, "0")}`
+          : `2026-06-${dayObj.day.toString().padStart(2, "0")}`)
+    : "";
 
   const filtered = (
     filter === "all"
@@ -50,15 +70,17 @@ export function AppointmentsView() {
             (a) => a.status === "confirmed" || a.status === "in_progress",
           )
         : appointments.filter((a) => a.status === filter)
-  ).filter((a) => {
-    if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      (a.clientName && a.clientName.toLowerCase().includes(q)) ||
-      (a.service && a.service.toLowerCase().includes(q)) ||
-      (a.therapist && a.therapist.toLowerCase().includes(q))
-    );
-  });
+  )
+    .filter((a) => a.date === selectedDateString)
+    .filter((a) => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase();
+      return (
+        (a.clientName && a.clientName.toLowerCase().includes(q)) ||
+        (a.service && a.service.toLowerCase().includes(q)) ||
+        (a.therapist && a.therapist.toLowerCase().includes(q))
+      );
+    });
 
   const visibleTherapists = therapists.filter((t) => selectedTherapists[t.id]);
 
@@ -68,6 +90,11 @@ export function AppointmentsView() {
     const [h, m] = time.split(":").map(Number);
     return h + m / 60;
   };
+
+  const filterOptions = FILTERS.map((f) => ({
+    value: f.id,
+    label: f.label,
+  }));
 
   return (
     <div className="space-y-6">
@@ -83,21 +110,11 @@ export function AppointmentsView() {
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           {/* Status filter + Create button only — search is in the header */}
-          <div className="relative hidden md:block">
-            <select
+          <div className="relative hidden md:block min-w-36">
+            <Select
               value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="appearance-none bg-white/50 border border-glass-border rounded-lg px-4 py-2 pr-10 text-sm font-medium outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
-            >
-              {FILTERS.map((f) => (
-                <option key={f.id} value={f.id}>
-                  {f.label}
-                </option>
-              ))}
-            </select>
-            <MaterialIcon
-              name="expand_more"
-              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant"
+              onChange={setFilter}
+              options={filterOptions}
             />
           </div>
         </div>
@@ -108,54 +125,7 @@ export function AppointmentsView() {
         {/* Left Sidebar: Filters & Mini Calendar */}
         <aside className="w-full lg:w-72 flex flex-col gap-6 shrink-0 hidden md:flex">
           {/* Mini Calendar */}
-          <GlassCard className="rounded-2xl p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-headline text-base font-bold text-primary">
-                Tháng 5, 2026
-              </h3>
-              <div className="flex gap-1">
-                <button className="material-symbols-outlined text-[18px] p-1 hover:text-jade-green hover:bg-white/40 rounded-full transition-all">
-                  chevron_left
-                </button>
-                <button className="material-symbols-outlined text-[18px] p-1 hover:text-jade-green hover:bg-white/40 rounded-full transition-all">
-                  chevron_right
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-on-surface-variant mb-2">
-              <span>T2</span>
-              <span>T3</span>
-              <span>T4</span>
-              <span>T5</span>
-              <span>T6</span>
-              <span>T7</span>
-              <span>CN</span>
-            </div>
-
-            <div className="grid grid-cols-7 gap-1 text-center text-sm">
-              {calendarDays.map((dayObj, i) => {
-                const isSelected = selectedDay === i;
-                return (
-                  <div
-                    key={i}
-                    onClick={() => setSelectedDay(i)}
-                    className={`p-1.5 flex items-center justify-center rounded-lg transition-all cursor-pointer ${
-                      isSelected
-                        ? "bg-jade-green text-white font-bold hover:bg-primary shadow-md"
-                        : dayObj.isToday
-                          ? "bg-jade-green/20 text-jade-green font-bold hover:bg-jade-green/30"
-                          : dayObj.isCurrentMonth
-                            ? "hover:bg-jade-green/10 text-on-surface-variant"
-                            : "opacity-30 text-on-surface-variant"
-                    }`}
-                  >
-                    {dayObj.day}
-                  </div>
-                );
-              })}
-            </div>
-          </GlassCard>
+          <MiniCalendar selectedDayIndex={selectedDay} onSelectDay={setSelectedDay} />
 
           {/* Therapist Filter */}
           <GlassCard className="rounded-2xl p-6">
@@ -336,10 +306,7 @@ export function AppointmentsView() {
                                 </p>
                                 <div className="flex items-center text-[11px] font-medium text-on-surface-variant/80 w-full">
                                   <span className="flex items-center gap-1 opacity-70">
-                                    <MaterialIcon
-                                      name="schedule"
-                                      className="text-[14px]"
-                                    />
+                                    <Clock size={12} />
                                     {apt.startTime} - {apt.endTime}
                                   </span>
                                 </div>

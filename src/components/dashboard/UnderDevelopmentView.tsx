@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Button } from "@/components/ui/Button";
 
 interface UnderDevelopmentViewProps {
   title: string;
@@ -59,13 +58,12 @@ export function UnderDevelopmentView({
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/dashboard" passHref legacyBehavior>
-            <Button className="w-full sm:w-auto shadow-md" size="md">
-              <div className="flex items-center justify-center gap-2">
-                <MaterialIcon name="arrow_back" className="text-[16px]" />
-                <span>Bảng điều hành</span>
-              </div>
-            </Button>
+          <Link
+            href="/dashboard"
+            className="w-full sm:w-auto font-cta inline-flex items-center justify-center gap-2 font-medium transition-all active:scale-95 disabled:opacity-50 bg-primary text-white shadow-lg shadow-primary/10 hover:shadow-primary/20 text-sm px-4 py-2 rounded-xl"
+          >
+            <MaterialIcon name="arrow_back" className="text-[16px]" />
+            <span>Bảng điều hành</span>
           </Link>
         </div>
       </GlassCard>

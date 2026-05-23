@@ -3,8 +3,35 @@
 import { useState } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { showToast } from "@/components/ui/Toast";
+import {
+  PlayCircle,
+  Send,
+  MailCheck,
+  Calendar,
+  Plus,
+  Pencil,
+  Copy,
+  BarChart2,
+  MessageSquare,
+  Mail,
+  Gift,
+} from "lucide-react";
+
+const iconMap: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
+  play_circle: PlayCircle,
+  send: Send,
+  mark_email_read: MailCheck,
+  calendar_month: Calendar,
+  add: Plus,
+  edit: Pencil,
+  content_copy: Copy,
+  bar_chart: BarChart2,
+  sms: MessageSquare,
+  chat: MessageSquare,
+  mail: Mail,
+  card_giftcard: Gift,
+};
 
 const CHANNEL_COLORS: Record<string, string> = {
   SMS: "bg-soft-gold/10 text-soft-gold border-soft-gold/20",
@@ -48,24 +75,27 @@ export function WorkflowsView() {
           onClick={() => { setShowNewModal(true); showToast("Tính năng tạo workflow đang phát triển", "info"); }}
           className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
         >
-          <MaterialIcon name="add" className="text-[18px]" />
+          <Plus size={18} />
           Tạo workflow mới
         </button>
       </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {STATS.map((stat) => (
-          <GlassCard key={stat.label} className="p-5 rounded-2xl">
-            <div className="flex items-start gap-3">
-              <MaterialIcon name={stat.icon} className={`text-[28px] ${stat.color}`} filled />
-              <div>
-                <p className="font-headline text-2xl font-bold text-dark-slate">{stat.value}</p>
-                <p className="text-[11px] text-on-surface-variant mt-0.5">{stat.label}</p>
+        {STATS.map((stat) => {
+          const IconComponent = iconMap[stat.icon] || PlayCircle;
+          return (
+            <GlassCard key={stat.label} className="p-5 rounded-2xl">
+              <div className="flex items-start gap-3">
+                <IconComponent className={`text-[28px] ${stat.color}`} size={28} />
+                <div>
+                  <p className="font-headline text-2xl font-bold text-dark-slate">{stat.value}</p>
+                  <p className="text-[11px] text-on-surface-variant mt-0.5">{stat.label}</p>
+                </div>
               </div>
-            </div>
-          </GlassCard>
-        ))}
+            </GlassCard>
+          );
+        })}
       </div>
 
       {/* Workflow Cards */}
@@ -120,21 +150,21 @@ export function WorkflowsView() {
 
             {/* Action chips */}
             <div className="flex flex-wrap gap-2 mb-4">
-              {wf.actions.map((action, i) => (
-                <div
-                  key={i}
-                  className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium ${
-                    CHANNEL_COLORS[action.channel] ?? "bg-gray-100 text-gray-600 border-gray-200"
-                  }`}
-                >
-                  <MaterialIcon
-                    name={action.icon}
-                    className="text-[15px]"
-                  />
-                  <span>{action.label}</span>
-                  <span className="opacity-60">• {action.channel}</span>
-                </div>
-              ))}
+              {wf.actions.map((action, i) => {
+                const ActionIcon = iconMap[action.icon] || MessageSquare;
+                return (
+                  <div
+                    key={i}
+                    className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium ${
+                      CHANNEL_COLORS[action.channel] ?? "bg-gray-100 text-gray-600 border-gray-200"
+                    }`}
+                  >
+                    <ActionIcon size={15} />
+                    <span>{action.label}</span>
+                    <span className="opacity-60">• {action.channel}</span>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Footer actions */}
@@ -143,21 +173,21 @@ export function WorkflowsView() {
                 onClick={() => showToast(`Đang mở editor cho "${wf.name}"`, "info")}
                 className="flex-1 text-xs font-bold border border-glass-border text-dark-slate hover:bg-white/40 rounded-xl py-2 flex items-center justify-center gap-1 transition-all"
               >
-                <MaterialIcon name="edit" className="text-[15px]" />
+                <Pencil size={15} />
                 Chỉnh sửa
               </button>
               <button
                 onClick={() => showToast(`Đã nhân bản workflow "${wf.name}"`, "success")}
                 className="flex-1 text-xs font-bold border border-glass-border text-dark-slate hover:bg-white/40 rounded-xl py-2 flex items-center justify-center gap-1 transition-all"
               >
-                <MaterialIcon name="content_copy" className="text-[15px]" />
+                <Copy size={15} />
                 Nhân bản
               </button>
               <button
                 onClick={() => showToast(`Xem báo cáo workflow (mock)`, "info")}
-                className="rounded-xl border border-glass-border text-dark-slate hover:bg-white/40 px-3 py-2 transition-all"
+                className="rounded-xl border border-glass-border text-dark-slate hover:bg-white/40 px-3 py-2 transition-all flex items-center justify-center"
               >
-                <MaterialIcon name="bar_chart" className="text-[18px]" />
+                <BarChart2 size={18} />
               </button>
             </div>
           </GlassCard>
@@ -169,7 +199,7 @@ export function WorkflowsView() {
           className="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-glass-border p-10 hover:border-primary/40 hover:bg-primary/5 transition-all group"
         >
           <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-            <MaterialIcon name="add" className="text-primary text-[28px]" />
+            <Plus className="text-primary text-[28px]" size={28} />
           </div>
           <p className="font-bold text-on-surface-variant group-hover:text-primary transition-colors">
             Tạo workflow mới

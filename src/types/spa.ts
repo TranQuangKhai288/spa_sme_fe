@@ -152,16 +152,16 @@ export interface SpaDataContextValue {
   currentUser: CurrentUser;
   addAppointment: (
     apt: Omit<Appointment, "id" | "status" | "statusLabel">
-  ) => Appointment;
-  updateAppointmentStatus: (id: string, status: string) => void;
-  deleteAppointment: (id: string) => void;
-  toggleWorkflow: (id: string) => void;
-  markAllNotificationsAsRead: () => void;
-  deleteNotification: (id: string) => void;
+  ) => Promise<Appointment> | Appointment;
+  updateAppointmentStatus: (id: string, status: string) => Promise<void> | void;
+  deleteAppointment: (id: string) => Promise<void> | void;
+  toggleWorkflow: (id: string) => Promise<void> | void;
+  markAllNotificationsAsRead: () => Promise<void> | void;
+  deleteNotification: (id: string) => Promise<void> | void;
   addClient: (
     client: Omit<
       Client,
       "id" | "totalVisits" | "totalSpent" | "memberPoints" | "lastVisit" | "joinDate"
     >
-  ) => Client;
+  ) => Promise<Client> | Client;
 }

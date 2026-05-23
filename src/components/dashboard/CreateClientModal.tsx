@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { Button } from "@/components/ui/Button";
 import { showToast } from "@/components/ui/Toast";
+import { UserPlus, X } from "lucide-react";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { Textarea } from "@/components/ui/Textarea";
 
 export interface CreateClientModalProps {
   open: boolean;
@@ -12,6 +15,7 @@ export interface CreateClientModalProps {
 }
 
 const TIERS = ["Bạc", "Vàng", "Bạch Kim", "Kim Cương"];
+const tierOptions = TIERS.map((t) => ({ value: t, label: t }));
 
 export function CreateClientModal({ open, onClose }: CreateClientModalProps) {
   const { addClient } = useSpaData();
@@ -77,113 +81,70 @@ export function CreateClientModal({ open, onClose }: CreateClientModalProps) {
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <h3 className="font-headline text-xl font-bold text-dark-slate flex items-center gap-2">
-            <MaterialIcon name="person_add" className="text-jade-green" />
+            <UserPlus className="text-jade-green" size={20} />
             Thêm khách hàng mới
           </h3>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 hover:bg-white/50 text-on-surface-variant transition-colors"
+            className="rounded-full p-2 hover:bg-white/50 text-on-surface-variant transition-colors flex items-center justify-center"
             aria-label="Đóng"
           >
-            <MaterialIcon name="close" />
+            <X size={20} />
           </button>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <label className="block text-sm">
-            <span className="font-cta mb-1 block text-on-surface-variant font-medium">
-              Họ và tên <span className="text-red-500">*</span>
-            </span>
-            <input
-              type="text"
-              placeholder="VD: Nguyễn Văn A"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
-              }}
-              className={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all ${
-                errors.name ? "border-red-500 focus:border-red-500" : "border-glass-border focus:border-primary/40"
-              }`}
-            />
-            {errors.name && (
-              <span className="text-red-500 text-xs mt-1 block font-medium">{errors.name}</span>
-            )}
-          </label>
+          <Input
+            label="Họ và tên *"
+            placeholder="VD: Nguyễn Văn A"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+            }}
+            error={errors.name}
+          />
 
-          <label className="block text-sm">
-            <span className="font-cta mb-1 block text-on-surface-variant font-medium">
-              Số điện thoại <span className="text-red-500">*</span>
-            </span>
-            <input
-              type="tel"
-              placeholder="VD: 0912345678"
-              value={phone}
-              onChange={(e) => {
-                setPhone(e.target.value);
-                if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
-              }}
-              className={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all ${
-                errors.phone ? "border-red-500 focus:border-red-500" : "border-glass-border focus:border-primary/40"
-              }`}
-            />
-            {errors.phone && (
-              <span className="text-red-500 text-xs mt-1 block font-medium">{errors.phone}</span>
-            )}
-          </label>
+          <Input
+            label="Số điện thoại *"
+            placeholder="VD: 0912345678"
+            type="tel"
+            value={phone}
+            onChange={(e) => {
+              setPhone(e.target.value);
+              if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+            }}
+            error={errors.phone}
+          />
 
-          <label className="block text-sm">
-            <span className="font-cta mb-1 block text-on-surface-variant font-medium">
-              Email
-            </span>
-            <input
-              type="email"
-              placeholder="VD: customer@gmail.com"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
-              }}
-              className={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all ${
-                errors.email ? "border-red-500 focus:border-red-500" : "border-glass-border focus:border-primary/40"
-              }`}
-            />
-            {errors.email && (
-              <span className="text-red-500 text-xs mt-1 block font-medium">{errors.email}</span>
-            )}
-          </label>
+          <Input
+            label="Email"
+            placeholder="VD: customer@gmail.com"
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
+            }}
+            error={errors.email}
+          />
 
-          <label className="block text-sm">
-            <span className="font-cta mb-1 block text-on-surface-variant font-medium">
-              Hạng thành viên
-            </span>
-            <select
-              value={tier}
-              onChange={(e) => setTier(e.target.value)}
-              className="w-full rounded-xl border border-glass-border bg-white/50 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all cursor-pointer"
-            >
-              {TIERS.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Select
+            label="Hạng thành viên"
+            value={tier}
+            onChange={setTier}
+            options={tierOptions}
+          />
 
-          <label className="block text-sm">
-            <span className="font-cta mb-1 block text-on-surface-variant font-medium">
-              Ghi chú thêm
-            </span>
-            <textarea
-              placeholder="Ghi chú sở thích, lưu ý y tế hoặc tình trạng da..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              className="w-full rounded-xl border border-glass-border bg-white/50 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all resize-none"
-            />
-          </label>
+          <Textarea
+            label="Ghi chú thêm"
+            placeholder="Ghi chú sở thích, lưu ý y tế hoặc tình trạng da..."
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={3}
+          />
 
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="ghost" onClick={onClose}>

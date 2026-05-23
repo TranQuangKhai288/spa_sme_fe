@@ -3,7 +3,7 @@
 import type { Appointment } from "@/types/spa";
 import { formatVnd, statusBadgeClass, tierBadgeClass } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { User, Clock, Trash2 } from "lucide-react";
 
 export interface AppointmentCardProps {
   apt: Appointment;
@@ -38,11 +38,11 @@ export function AppointmentCard({
           <p className="mt-1 text-sm font-medium text-primary">{apt.service}</p>
           <div className="flex items-center gap-3 text-xs text-on-surface-variant/80 mt-0.5">
             <span className="flex items-center gap-1">
-              <MaterialIcon name="person" className="text-[13px]" />
+              <User size={13} />
               {apt.therapist}
             </span>
             <span className="flex items-center gap-1">
-              <MaterialIcon name="schedule" className="text-[13px]" />
+              <Clock size={13} />
               {apt.startTime}–{apt.endTime}
             </span>
           </div>
@@ -79,9 +79,9 @@ export function AppointmentCard({
           <button
             type="button"
             onClick={onDelete}
-            className="rounded-xl border border-glass-border px-3 py-2 text-on-surface-variant/50 hover:text-red-500 hover:border-red-500/20 transition-all"
+            className="rounded-xl border border-glass-border px-3 py-2 text-on-surface-variant/50 hover:text-red-500 hover:border-red-500/20 transition-all flex items-center justify-center"
           >
-            <MaterialIcon name="delete" className="text-[18px]" />
+            <Trash2 size={18} />
           </button>
         </div>
       )}

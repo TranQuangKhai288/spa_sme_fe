@@ -11,16 +11,41 @@ import {
 import { useSpaData } from "@/hooks/useSpaData";
 import { localizedStatus } from "@/hooks/useLocalizedStatus";
 import { showToast } from "@/components/ui/Toast";
+import { MiniCalendar } from "@/components/ui/MiniCalendar";
+import { 
+  TrendingUp, 
+  Star, 
+  AlertTriangle, 
+  ChevronLeft, 
+  ChevronRight, 
+  Calendar, 
+  Trash2, 
+  Clock, 
+  Sparkles,
+  Smartphone,
+  Eye,
+  Check,
+  CheckCircle2,
+  AlertCircle,
+  Activity,
+  Smile,
+  Mail,
+  Zap,
+  MessageSquare,
+  Volume2,
+  User,
+  ArrowRight
+} from "lucide-react";
 
 export default function DashboardView() {
   const weekdays = [
-    "Chủ Nhật",
-    "Thứ Hai",
-    "Thứ Ba",
-    "Thứ Tư",
-    "Thứ Năm",
-    "Thứ Sáu",
-    "Thứ Bảy",
+    "CN",
+    "T2",
+    "T3",
+    "T4",
+    "T5",
+    "T6",
+    "T7",
   ];
   const {
     stats,
@@ -31,8 +56,31 @@ export default function DashboardView() {
     deleteAppointment,
   } = useSpaData();
 
-  const [selectedDate, setSelectedDate] = useState<number | null>(
-    new Date().getDate(),
+  const todayDate = new Date();
+  const realTodayStr = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`;
+  const todayIndex = calendarDays.findIndex((dayObj) => {
+    const dayDateStr = dayObj.isCurrentMonth
+      ? `2026-05-${dayObj.day.toString().padStart(2, "0")}`
+      : dayObj.day >= 15
+        ? `2026-04-${dayObj.day.toString().padStart(2, "0")}`
+        : `2026-06-${dayObj.day.toString().padStart(2, "0")}`;
+    return dayDateStr === realTodayStr;
+  });
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(
+    todayIndex >= 0 ? todayIndex : 2
+  );
+
+  const dayObj = calendarDays[selectedDayIndex];
+  const selectedDateString = dayObj
+    ? (dayObj.isCurrentMonth
+        ? `2026-05-${dayObj.day.toString().padStart(2, "0")}`
+        : dayObj.day >= 15
+          ? `2026-04-${dayObj.day.toString().padStart(2, "0")}`
+          : `2026-06-${dayObj.day.toString().padStart(2, "0")}`)
+    : "";
+
+  const dailyAppointments = appointments.filter(
+    (apt) => apt.date === selectedDateString
   );
 
   const todayLabel = formatLocaleDate(new Date(), "vi", {
@@ -68,7 +116,7 @@ export default function DashboardView() {
       {/* Grid Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Stat 1 */}
-        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-linear-to-brrom-primary/5 to-transparent border border-white/40 hover:scale-[1.02] transition-all duration-300">
+        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-primary/5 to-transparent border border-white/45 hover:scale-[1.02] transition-all duration-300">
           <div>
             <span className="text-[10px] font-bold text-jade-green/80 uppercase tracking-widest block mb-2 font-cta">
               {`Tổng Booking Hôm Nay`}
@@ -77,16 +125,14 @@ export default function DashboardView() {
               {stats.totalBookingsToday}
             </span>
           </div>
-          <div className="mt-4 flex items-center gap-1 text-jade-green text-xs font-semibold">
-            <span className="material-symbols-outlined text-[16px]">
-              trending_up
-            </span>
+          <div className="mt-4 flex items-center gap-1.5 text-jade-green text-xs font-semibold">
+            <TrendingUp size={16} />
             <span>{`${stats.revenueTrend} so với hôm qua`}</span>
           </div>
         </div>
 
         {/* Stat 2 */}
-        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-linear-to-br from-soft-gold/10 to-transparent border border-white/40 hover:scale-[1.02] transition-all duration-300">
+        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-soft-gold/10 to-transparent border border-white/45 hover:scale-[1.02] transition-all duration-300">
           <div>
             <span className="text-[10px] font-bold text-soft-gold uppercase tracking-widest block mb-2 font-cta">
               {`Khách VIP Hôm Nay`}
@@ -95,14 +141,14 @@ export default function DashboardView() {
               {String(stats.vipClients).padStart(2, "0")}
             </span>
           </div>
-          <div className="mt-4 flex items-center gap-1 text-soft-gold text-xs font-semibold">
-            <span className="material-symbols-outlined text-[16px]">star</span>
+          <div className="mt-4 flex items-center gap-1.5 text-soft-gold text-xs font-semibold">
+            <Star size={16} fill="currentColor" />
             <span>{`Ưu tiên chăm sóc VIP`}</span>
           </div>
         </div>
 
         {/* Stat 3 */}
-        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-linear-to-br from-primary/5 to-transparent border border-white/40 hover:scale-[1.02] transition-all duration-300">
+        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-primary/5 to-transparent border border-white/45 hover:scale-[1.02] transition-all duration-300">
           <div>
             <span className="text-[10px] font-bold text-jade-green/80 uppercase tracking-widest block mb-2 font-cta">
               {`Doanh Thu Ước Tính`}
@@ -111,13 +157,14 @@ export default function DashboardView() {
               {stats.revenueToday}
             </span>
           </div>
-          <div className="mt-4 flex items-center gap-1 text-jade-green/80 text-xs">
+          <div className="mt-4 flex items-center gap-1 text-jade-green/80 text-xs font-medium">
+            <Sparkles size={14} />
             <span>{`VND • Đạt ${stats.revenueTarget}% mục tiêu ngày`}</span>
           </div>
         </div>
 
         {/* Stat 4 */}
-        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-linear-to-br from-red-500/5 to-transparent border border-red-500/10 hover:scale-[1.02] transition-all duration-300">
+        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-red-500/5 to-transparent border border-red-500/10 hover:scale-[1.02] transition-all duration-300">
           <div>
             <span className="text-[10px] font-bold text-red-500/80 uppercase tracking-widest block mb-2 font-cta">
               {`Nhắc nhở chưa xử lý`}
@@ -126,10 +173,8 @@ export default function DashboardView() {
               {stats.pendingReminders}
             </span>
           </div>
-          <div className="mt-4 flex items-center gap-1 text-red-500 text-xs font-semibold">
-            <span className="material-symbols-outlined text-[16px]">
-              priority_high
-            </span>
+          <div className="mt-4 flex items-center gap-1.5 text-red-500 text-xs font-semibold">
+            <AlertCircle size={16} />
             <span>{`Cần xử lý tự động ngay`}</span>
           </div>
         </div>
@@ -139,63 +184,7 @@ export default function DashboardView() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left: Mini Calendar */}
         <div className="lg:col-span-4 xl:col-span-3">
-          <div className="glass-card p-5 rounded-2xl h-full border border-white/40 flex flex-col justify-between">
-            <div>
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="font-headline font-bold text-dark-slate text-base">
-                  {`Tháng 5, 2026`}
-                </h3>
-                <div className="flex gap-1">
-                  <button className="material-symbols-outlined text-[18px] p-1.5 hover:bg-white/40 rounded-full transition-all">
-                    chevron_left
-                  </button>
-                  <button className="material-symbols-outlined text-[18px] p-1.5 hover:bg-white/40 rounded-full transition-all">
-                    chevron_right
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-7 gap-2 text-center mb-2">
-                {weekdays.map((day) => (
-                  <span
-                    key={day}
-                    className="text-[10px] font-bold text-on-surface-variant/60 uppercase"
-                  >
-                    {day}
-                  </span>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-7 gap-2 text-center">
-                {calendarDays.map((dayObj, i) => {
-                  const isSelected =
-                    selectedDate === dayObj.day && dayObj.isCurrentMonth;
-                  return (
-                    <div
-                      key={i}
-                      onClick={() =>
-                        dayObj.isCurrentMonth && setSelectedDate(dayObj.day)
-                      }
-                      className={`relative p-1.5 text-xs rounded-xl flex items-center justify-center transition-all ${
-                        isSelected
-                          ? "bg-primary text-white font-bold shadow-md shadow-primary/20 cursor-pointer"
-                          : dayObj.isToday
-                            ? "border border-primary text-primary font-bold cursor-pointer"
-                            : dayObj.isCurrentMonth
-                              ? "hover:bg-primary/10 cursor-pointer text-dark-slate"
-                              : "text-on-surface-variant/30"
-                      }`}
-                    >
-                      {dayObj.day}
-                      {dayObj.hasAppointment && !isSelected && (
-                        <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
+          <MiniCalendar selectedDayIndex={selectedDayIndex} onSelectDay={setSelectedDayIndex}>
             <div className="mt-8 pt-4 border-t border-glass-border">
               <h4 className="text-[10px] font-bold text-on-surface-variant/80 uppercase mb-2 tracking-widest">
                 {`Ghi chú hoạt động`}
@@ -204,48 +193,43 @@ export default function DashboardView() {
                 {`Hôm nay có sự kiện đặc biệt tri ân khách hàng VIP tại chi nhánh 1. Chú ý nhắc nhở các liệu trình trị liệu da chuyên sâu đúng hẹn.`}
               </p>
             </div>
-          </div>
+          </MiniCalendar>
         </div>
 
         {/* Right: Timeline Appointments */}
         <div className="lg:col-span-8 xl:col-span-9 space-y-6">
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
             <h3 className="font-headline font-bold text-lg flex items-center gap-2">
-              {selectedDate === new Date().getDate()
+              {dayObj?.isToday
                 ? `Lịch hẹn hôm nay`
-                : `Lịch hẹn ngày ${selectedDate}`}
+                : `Lịch hẹn ngày ${dayObj ? `${dayObj.day}/${dayObj.isCurrentMonth ? '5' : dayObj.day >= 15 ? '4' : '6'}` : ''}`}
               <span className="bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">
-                {selectedDate === new Date().getDate()
+                {dayObj?.isToday
                   ? `${stats.availableSlots} chỗ trống`
-                  : "Đã lên lịch"}
+                  : `${dailyAppointments.length} lịch hẹn`}
               </span>
             </h3>
             <div className="flex gap-2">
               <Link
                 href={ROUTES.appointments}
-                className="bg-primary text-white font-cta font-medium text-xs px-4 py-2 rounded-xl shadow-lg shadow-primary/10 hover:shadow-primary/20 active:scale-95 transition-all flex items-center gap-1"
+                className="bg-primary text-white font-cta font-medium text-xs px-4 py-2 rounded-xl shadow-lg shadow-primary/10 hover:shadow-primary/20 active:scale-95 transition-all flex items-center gap-1.5"
               >
-                <span className="material-symbols-outlined text-[16px]">
-                  calendar_month
-                </span>
+                <Calendar size={14} />
                 {`Xem tất cả`}
               </Link>
             </div>
           </div>
 
           <div className="space-y-4 max-h-125 overflow-y-auto scrollbar-hide pr-1">
-            {appointments.length === 0 ||
-            (selectedDate !== new Date().getDate() && selectedDate !== 24) ? (
+            {dailyAppointments.length === 0 ? (
               <div className="glass-card p-12 rounded-2xl text-center border border-white/40">
-                <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">
-                  calendar_today
-                </span>
+                <Calendar className="mx-auto text-4xl text-on-surface-variant/40 mb-3 block" size={40} />
                 <p className="text-on-surface-variant/80 text-sm">
-                  {`Chưa có lịch hẹn nào được ghi nhận cho ngày ${selectedDate}.`}
+                  {`Chưa có lịch hẹn nào được ghi nhận cho ngày ${selectedDateString}.`}
                 </p>
               </div>
             ) : (
-              appointments.map((apt) => (
+              dailyAppointments.map((apt) => (
                 <div
                   key={apt.id}
                   className={`glass-card p-5 rounded-2xl flex flex-col md:flex-row gap-4 items-center justify-between border border-white/40 transition-all duration-300 hover:bg-white/45 group ${
@@ -271,21 +255,15 @@ export default function DashboardView() {
                       </div>
                       <div className="flex flex-wrap items-center gap-3 text-xs text-on-surface-variant/80">
                         <span className="flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[14px] text-primary">
-                            spa
-                          </span>
+                          <Sparkles size={14} className="text-primary" />
                           {apt.service}
                         </span>
                         <span className="flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[14px]">
-                            person
-                          </span>
+                          <User size={14} />
                           {`KTV`}: {apt.therapist}
                         </span>
                         <span className="flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[14px]">
-                            schedule
-                          </span>
+                          <Clock size={14} />
                           {apt.startTime} - {apt.endTime}
                         </span>
                       </div>
@@ -306,7 +284,7 @@ export default function DashboardView() {
                             updateAppointmentStatus(apt.id, "in_progress");
                             showToast(`Check-in thành công: ${apt.clientName}`, "success");
                           }}
-                          className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all shadow-md shadow-primary/5 hover:shadow-primary/10"
+                          className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all shadow-md shadow-primary/5 hover:shadow-primary/10 cursor-pointer"
                         >
                           {`Điểm danh`}
                         </button>
@@ -317,7 +295,7 @@ export default function DashboardView() {
                             updateAppointmentStatus(apt.id, "completed");
                             showToast(`Hoàn tất liệu trình: ${apt.clientName}`, "success");
                           }}
-                          className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all"
+                          className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all cursor-pointer"
                         >
                           {`Hoàn tất`}
                         </button>
@@ -329,7 +307,7 @@ export default function DashboardView() {
                               updateAppointmentStatus(apt.id, "cancelled");
                               showToast(`Đã hủy lịch: ${apt.clientName}`, "warning");
                             }}
-                            className="border border-red-500/20 text-red-500 hover:bg-red-500/10 text-xs px-3 py-1.5 rounded-lg transition-all"
+                            className="border border-red-500/20 text-red-500 hover:bg-red-500/10 text-xs px-3 py-1.5 rounded-lg transition-all cursor-pointer"
                           >
                             {`Hủy`}
                           </button>
@@ -339,9 +317,9 @@ export default function DashboardView() {
                           deleteAppointment(apt.id);
                           showToast("Đã xóa lịch hẹn", "info");
                         }}
-                        className="material-symbols-outlined text-on-surface-variant/50 hover:text-red-500 p-1.5 rounded-lg transition-colors text-[18px]"
+                        className="text-on-surface-variant/50 hover:text-red-500 p-1.5 rounded-lg transition-colors flex items-center justify-center cursor-pointer"
                       >
-                        delete
+                        <Trash2 size={16} />
                       </button>
                     </div>
                   </div>
@@ -417,9 +395,7 @@ export default function DashboardView() {
                   <div
                     className={`mt-3 px-2 py-1 rounded-lg inline-flex items-center gap-1.5 text-[9px] font-bold ${textBgColorClass}`}
                   >
-                    <span className="material-symbols-outlined text-[12px]">
-                      calendar_today
-                    </span>
+                    <Calendar size={12} />
                     <span>{`Hẹn tiếp: ${tp.nextDate} lúc ${tp.nextTime}`}</span>
                   </div>
                 </div>
@@ -440,9 +416,7 @@ export default function DashboardView() {
             className="text-primary text-xs font-bold flex items-center gap-1 hover:underline"
           >
             {`Tất cả workflows`}
-            <span className="material-symbols-outlined text-[16px]">
-              arrow_forward
-            </span>
+            <ArrowRight size={16} />
           </Link>
         </div>
 
@@ -457,9 +431,7 @@ export default function DashboardView() {
                 {`1 ngày trước lịch hẹn`}
               </h5>
               <div className="flex items-center gap-2 text-xs text-on-surface-variant/80">
-                <span className="material-symbols-outlined text-jade-green text-[18px]">
-                  calendar_today
-                </span>
+                <Calendar size={18} className="text-jade-green" />
                 <span>{`Tất cả lịch đã xác nhận`}</span>
               </div>
             </div>
@@ -483,9 +455,7 @@ export default function DashboardView() {
                 {`Nhắc lịch tự động`}
               </h5>
               <div className="flex items-center gap-2 text-xs text-on-surface-variant/80">
-                <span className="material-symbols-outlined text-soft-gold text-[18px]">
-                  sms
-                </span>
+                <MessageSquare size={18} className="text-soft-gold" />
                 <span>{`Mẫu SMS Tiêu Chuẩn`}</span>
               </div>
             </div>
@@ -500,9 +470,7 @@ export default function DashboardView() {
                 {`Gửi ưu đãi đi kèm`}
               </h5>
               <div className="flex items-center gap-2 text-xs text-on-surface-variant/80">
-                <span className="material-symbols-outlined text-primary text-[18px]">
-                  chat
-                </span>
+                <MessageSquare size={18} className="text-primary" />
                 <span>{`Mã giảm giá dịch vụ phụ`}</span>
               </div>
             </div>

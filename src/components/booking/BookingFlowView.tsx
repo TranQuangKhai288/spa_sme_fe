@@ -7,9 +7,19 @@ import { ROUTES } from "@/lib/constants";
 import { formatVnd } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { showToast } from "@/components/ui/Toast";
+import { Input } from "@/components/ui/Input";
+import { DatePicker } from "@/components/ui/DatePicker";
+import { Textarea } from "@/components/ui/Textarea";
+import {
+  CheckCircle2,
+  ArrowLeft,
+  Sparkles,
+  Star,
+  AlertTriangle,
+  ArrowRight
+} from "lucide-react";
 
 const STEP_LABELS = ["Chọn dịch vụ", "Chọn KTV", "Chọn thời gian", "Xác nhận"];
 
@@ -48,7 +58,7 @@ export function BookingFlowView() {
       const newErrors: Record<string, string> = {};
       if (!guestName.trim()) newErrors.name = "Vui lòng nhập họ tên";
       if (!guestPhone.trim()) newErrors.phone = "Vui lòng nhập số điện thoại";
-      if (guestPhone && !/^0[0-9]{9}$/.test(guestPhone.trim())) {
+      if (guestPhone && !/^(0[3|5|7|8|9])+([0-9]{8})$/.test(guestPhone.trim())) {
         newErrors.phone = "Số điện thoại không hợp lệ";
       }
       setErrors(newErrors);
@@ -91,11 +101,7 @@ export function BookingFlowView() {
       <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-center px-4 pt-16 text-center sm:px-6">
         <GlassCard className="w-full p-10 rounded-3xl">
           <div className="w-20 h-20 rounded-full bg-jade-green/10 flex items-center justify-center mx-auto mb-6">
-            <MaterialIcon
-              name="check_circle"
-              className="text-6xl text-jade-green"
-              filled
-            />
+            <CheckCircle2 size={64} className="text-jade-green" />
           </div>
           <h1 className="font-headline text-2xl font-bold text-dark-slate">
             Đặt lịch thành công! 🎉
@@ -110,7 +116,7 @@ export function BookingFlowView() {
             </div>
             <div className="flex justify-between">
               <span className="text-on-surface-variant">Ngày:</span>
-              <span className="font-semibold">{date}</span>
+              <span className="font-semibold">{date.split("-").reverse().join("/")}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-on-surface-variant">Giờ:</span>
@@ -145,9 +151,9 @@ export function BookingFlowView() {
       <div className="mx-auto max-w-2xl px-4 py-8 pt-24 sm:px-6 sm:py-12 sm:pt-28">
         <Link
           href={ROUTES.home}
-          className="font-cta mb-6 inline-flex items-center gap-1 text-sm text-primary sm:mb-8"
+          className="font-cta mb-6 inline-flex items-center gap-1.5 text-sm text-primary sm:mb-8 hover:underline"
         >
-          <MaterialIcon name="arrow_back" className="text-[18px]" />
+          <ArrowLeft size={18} />
           ZenFlow Spa
         </Link>
 
@@ -187,7 +193,7 @@ export function BookingFlowView() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${serviceId === s.id ? "bg-primary/15" : "bg-white/50"}`}>
-                        <MaterialIcon name="spa" className={`text-[20px] ${serviceId === s.id ? "text-primary" : "text-on-surface-variant"}`} />
+                        <Sparkles size={20} className={serviceId === s.id ? "text-primary" : "text-on-surface-variant"} />
                       </div>
                       <div>
                         <p className="font-bold text-dark-slate">{s.name}</p>
@@ -201,7 +207,7 @@ export function BookingFlowView() {
                   </div>
                   {s.popular && (
                     <div className="mt-2 inline-flex items-center gap-1 bg-soft-gold/10 text-soft-gold rounded-full px-2 py-0.5 text-[10px] font-bold">
-                      <MaterialIcon name="star" className="text-[12px]" filled />
+                      <Star size={12} fill="currentColor" />
                       Phổ biến nhất
                     </div>
                   )}
@@ -236,7 +242,7 @@ export function BookingFlowView() {
                         <p className="font-bold text-dark-slate">{t.name}</p>
                         <p className="text-xs text-on-surface-variant">{t.specialty}</p>
                         <div className="flex items-center gap-1 mt-1">
-                          <MaterialIcon name="star" className="text-soft-gold text-[13px]" filled />
+                          <Star size={13} fill="currentColor" className="text-soft-gold" />
                           <span className="text-xs font-bold text-soft-gold">{t.rating}</span>
                           <span className="text-xs text-on-surface-variant/60">({t.totalReviews})</span>
                         </div>
@@ -260,24 +266,18 @@ export function BookingFlowView() {
             <div className="space-y-6">
               <h2 className="font-headline text-lg font-bold text-dark-slate">Chọn ngày & giờ</h2>
 
-              {/* Date picker */}
-              <label className="block">
-                <span className="font-cta mb-1.5 block text-sm font-medium text-on-surface-variant">Ngày hẹn</span>
-                <input
-                  type="date"
-                  value={date}
-                  min={new Date().toISOString().slice(0, 10)}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full rounded-xl border border-glass-border bg-white/50 px-4 py-3 text-sm focus:border-primary/40 focus:ring-2 focus:ring-primary/10 outline-none"
-                />
-              </label>
+              <DatePicker
+                label="Ngày hẹn"
+                value={date}
+                onChange={setDate}
+              />
 
               {/* Time slot grid */}
               <div>
                 <span className="font-cta mb-3 block text-sm font-medium text-on-surface-variant">Chọn giờ bắt đầu</span>
                 {errors.time && (
                   <p className="text-xs text-red-500 mb-2 flex items-center gap-1">
-                    <MaterialIcon name="error" className="text-[14px]" />
+                    <AlertTriangle size={14} />
                     {errors.time}
                   </p>
                 )}
@@ -293,7 +293,7 @@ export function BookingFlowView() {
                         onClick={() => { setTime(slot); setErrors({}); }}
                         className={`rounded-xl py-2.5 text-sm font-medium transition-all ${
                           isTaken
-                            ? "bg-gray-100 text-gray-300 cursor-not-allowed line-through"
+                            ? "bg-gray-100 text-gray-300 cursor-not-allowed line-through animate-none"
                             : isSelected
                               ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105"
                               : "bg-white/60 border border-glass-border text-dark-slate hover:border-primary/30 hover:bg-primary/5"
@@ -336,7 +336,7 @@ export function BookingFlowView() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-on-surface-variant">Ngày & Giờ</span>
-                  <span className="text-sm font-semibold">{date} lúc {time}</span>
+                  <span className="text-sm font-semibold">{date.split("-").reverse().join("/")} lúc {time}</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-primary/10 pt-2.5">
                   <span className="text-xs font-bold text-on-surface-variant">Tổng phí</span>
@@ -346,37 +346,30 @@ export function BookingFlowView() {
 
               {/* Guest info */}
               <div className="space-y-3">
-                <label className="block">
-                  <span className="font-cta mb-1 block text-sm text-on-surface-variant">Họ tên *</span>
-                  <input
-                    placeholder="Nguyễn Văn A"
-                    value={guestName}
-                    onChange={(e) => { setGuestName(e.target.value); setErrors((prev) => ({ ...prev, name: "" })); }}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm bg-white/50 outline-none transition-all ${errors.name ? "border-red-400 focus:ring-red-400/20" : "border-glass-border focus:border-primary/40"}`}
-                  />
-                  {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
-                </label>
-                <label className="block">
-                  <span className="font-cta mb-1 block text-sm text-on-surface-variant">Số điện thoại *</span>
-                  <input
-                    placeholder="0901234567"
-                    value={guestPhone}
-                    onChange={(e) => { setGuestPhone(e.target.value); setErrors((prev) => ({ ...prev, phone: "" })); }}
-                    type="tel"
-                    className={`w-full rounded-xl border px-4 py-3 text-sm bg-white/50 outline-none transition-all ${errors.phone ? "border-red-400" : "border-glass-border focus:border-primary/40"}`}
-                  />
-                  {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
-                </label>
-                <label className="block">
-                  <span className="font-cta mb-1 block text-sm text-on-surface-variant">Ghi chú thêm (tuỳ chọn)</span>
-                  <textarea
-                    placeholder="Dị ứng, yêu cầu đặc biệt..."
-                    value={guestNote}
-                    onChange={(e) => setGuestNote(e.target.value)}
-                    rows={2}
-                    className="w-full rounded-xl border border-glass-border bg-white/50 px-4 py-3 text-sm outline-none focus:border-primary/40 resize-none"
-                  />
-                </label>
+                <Input
+                  label="Họ tên *"
+                  placeholder="Nguyễn Văn A"
+                  value={guestName}
+                  onChange={(e) => { setGuestName(e.target.value); setErrors((prev) => ({ ...prev, name: "" })); }}
+                  error={errors.name}
+                />
+
+                <Input
+                  label="Số điện thoại *"
+                  placeholder="0901234567"
+                  type="tel"
+                  value={guestPhone}
+                  onChange={(e) => { setGuestPhone(e.target.value); setErrors((prev) => ({ ...prev, phone: "" })); }}
+                  error={errors.phone}
+                />
+
+                <Textarea
+                  label="Ghi chú thêm (tuỳ chọn)"
+                  placeholder="Dị ứng, yêu cầu đặc biệt..."
+                  value={guestNote}
+                  onChange={(e) => setGuestNote(e.target.value)}
+                  rows={2}
+                />
               </div>
             </div>
           )}
@@ -394,7 +387,7 @@ export function BookingFlowView() {
             {step < STEP_LABELS.length - 1 ? (
               <Button type="button" onClick={handleNext}>
                 Tiếp tục
-                <MaterialIcon name="arrow_forward" className="text-[18px] ml-1" />
+                <ArrowRight size={18} className="ml-1" />
               </Button>
             ) : (
               <Button type="button" onClick={handleConfirm}>

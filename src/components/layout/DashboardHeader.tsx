@@ -3,12 +3,12 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { Button } from "@/components/ui/Button";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { NotificationsDropdown } from "@/components/ui/NotificationsDropdown";
 import { useSpaData } from "@/hooks/useSpaData";
 import { useSearch } from "@/providers/SearchProvider";
+import { Menu, ChevronRight, Search, X, Plus } from "lucide-react";
 
 export interface DashboardHeaderProps {
   breadcrumbs: { label: string; href?: string }[];
@@ -49,10 +49,10 @@ export function DashboardHeader({
         <button
           type="button"
           onClick={onMenuOpen}
-          className="shrink-0 rounded-xl p-2 hover:bg-white/40 lg:hidden"
+          className="shrink-0 rounded-xl p-2 hover:bg-white/40 lg:hidden flex items-center justify-center text-dark-slate"
           aria-label="Mở menu"
         >
-          <MaterialIcon name="menu" className="text-dark-slate" />
+          <Menu size={20} />
         </button>
 
         {/* Breadcrumbs — hidden when search is active on mobile */}
@@ -61,7 +61,7 @@ export function DashboardHeader({
             {breadcrumbs.map((crumb, i) => (
               <span key={crumb.label} className="flex items-center gap-2">
                 {i > 0 && (
-                  <MaterialIcon name="chevron_right" className="text-[10px]" />
+                  <ChevronRight size={10} className="text-on-surface-variant/60" />
                 )}
                 {crumb.href ? (
                   <Link href={crumb.href} className="hover:text-primary">
@@ -84,9 +84,9 @@ export function DashboardHeader({
 
         {/* ─── GLOBAL SEARCH ─── */}
         <div className="relative">
-          <MaterialIcon
-            name="search"
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60 text-[18px] pointer-events-none"
+          <Search
+            size={18}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60 pointer-events-none"
           />
           <input
             ref={inputRef}
@@ -99,9 +99,9 @@ export function DashboardHeader({
           {query ? (
             <button
               onClick={() => setQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-on-surface-variant transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-on-surface-variant transition-colors flex items-center justify-center"
             >
-              <MaterialIcon name="close" className="text-[16px]" />
+              <X size={16} />
             </button>
           ) : (
             <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden xl:flex items-center gap-0.5 text-[9px] text-on-surface-variant/40 font-mono border border-glass-border rounded px-1 py-0.5 pointer-events-none">
@@ -123,7 +123,7 @@ export function DashboardHeader({
             <Button
               size="sm"
               onClick={onCreateAppointment}
-              icon={<MaterialIcon name="add" className="text-[16px]" />}
+              icon={<Plus size={16} />}
             >
               <span className="hidden md:inline">Tạo lịch hẹn</span>
               <span className="md:hidden">Tạo</span>
@@ -134,10 +134,10 @@ export function DashboardHeader({
           <button
             type="button"
             onClick={onCreateAppointment}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white shadow-md sm:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white shadow-md sm:hidden active:scale-95 transition-all"
             aria-label="Tạo lịch hẹn"
           >
-            <MaterialIcon name="add" className="text-[20px]" />
+            <Plus size={20} />
           </button>
         )}
       </div>

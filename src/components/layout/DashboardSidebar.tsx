@@ -5,8 +5,30 @@ import { usePathname } from "next/navigation";
 import { type DashboardNavId } from "@/lib/constants";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
 import { cn } from "@/lib/utils";
-import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import {
+  LayoutDashboard,
+  Calendar,
+  Sparkles,
+  Users,
+  BarChart3,
+  Zap,
+  Settings,
+  HelpCircle,
+  X
+} from "lucide-react";
+
+const iconMap: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
+  dashboard: LayoutDashboard,
+  calendar_month: Calendar,
+  spa: Sparkles,
+  person_search: Users,
+  analytics: BarChart3,
+  bolt: Zap,
+  settings: Settings,
+  contact_support: HelpCircle,
+  close: X
+};
 
 function activeNavId(pathname: string): DashboardNavId {
   if (pathname.startsWith("/dashboard/appointments")) return "appointments";
@@ -58,16 +80,17 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 hover:bg-white/50 lg:hidden"
+            className="rounded-full p-2 hover:bg-white/50 lg:hidden flex items-center justify-center text-on-surface-variant"
             aria-label={`Đóng menu`}
           >
-            <MaterialIcon name="close" />
+            <X size={20} />
           </button>
         </div>
 
         <div className="flex-1 space-y-1 overflow-y-auto">
           {nav.map((item) => {
             const isActive = active === item.id;
+            const IconComponent = iconMap[item.icon] || LayoutDashboard;
             return (
               <Link
                 key={item.id}
@@ -80,7 +103,7 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
                     : "text-on-surface-variant hover:text-primary",
                 )}
               >
-                <MaterialIcon name={item.icon} className="text-[20px]" />
+                <IconComponent size={20} />
                 <span>{item.label}</span>
               </Link>
             );
@@ -103,14 +126,14 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
             href="#settings"
             className="font-cta mx-2 mt-2 flex items-center gap-3 px-4 py-3 text-sm text-on-surface-variant transition-colors hover:text-primary"
           >
-            <MaterialIcon name="settings" />
+            <Settings size={18} />
             <span>{`Cài đặt`}</span>
           </a>
           <a
             href="#support"
             className="font-cta mx-2 flex items-center gap-3 px-4 py-3 text-sm text-on-surface-variant transition-colors hover:text-primary"
           >
-            <MaterialIcon name="contact_support" />
+            <HelpCircle size={18} />
             <span>{`Hỗ trợ`}</span>
           </a>
         </div>
