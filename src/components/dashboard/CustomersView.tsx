@@ -167,11 +167,10 @@ export function CustomersView() {
           <button
             key={tier}
             onClick={() => setTierFilter(tier)}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-              tierFilter === tier
-                ? "bg-primary text-white shadow-md"
-                : "bg-white/50 border border-glass-border text-on-surface-variant hover:bg-white/70"
-            }`}
+            className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition-all ${tierFilter === tier
+              ? "bg-primary text-white shadow-md"
+              : "bg-white/50 border border-glass-border text-on-surface-variant hover:bg-white/70"
+              }`}
           >
             {tier}
           </button>
@@ -263,7 +262,7 @@ export function CustomersView() {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="font-cta px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant"
+                    className="font-cta px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant whitespace-nowrap"
                   >
                     {h}
                   </th>
@@ -276,7 +275,7 @@ export function CustomersView() {
                   key={client.id}
                   className="relative cursor-pointer transition-colors hover:bg-white/30 group"
                 >
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-5 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <img
                         src={client.avatar}
@@ -293,29 +292,29 @@ export function CustomersView() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-5 text-sm text-on-surface-variant">
+                  <td className="px-6 py-5 text-sm text-on-surface-variant whitespace-nowrap">
                     {client.phone}
                   </td>
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-5 whitespace-nowrap">
                     <span
-                      className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest ${tierBadgeClass(client.tier)}`}
+                      className={`whitespace-nowrap rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest ${tierBadgeClass(client.tier)}`}
                     >
                       {client.tier}
                     </span>
                   </td>
-                  <td className="px-6 py-5">
-                    <span className="flex items-center gap-1 text-soft-gold font-bold">
+                  <td className="px-6 py-5 whitespace-nowrap">
+                    <span className="flex items-center gap-1 text-soft-gold font-bold whitespace-nowrap">
                       <Star size={14} fill="currentColor" />
                       {client.memberPoints.toLocaleString("vi-VN")}
                     </span>
                   </td>
-                  <td className="px-6 py-5 text-lg font-bold text-jade-green">
+                  <td className="px-6 py-5 text-lg font-bold text-jade-green whitespace-nowrap">
                     {client.totalVisits}
                   </td>
-                  <td className="px-6 py-5 text-sm text-on-surface-variant">
+                  <td className="px-6 py-5 text-sm text-on-surface-variant whitespace-nowrap">
                     {formatDateString(client.lastVisit)}
                   </td>
-                  <td className="px-6 py-5 text-sm font-semibold">
+                  <td className="px-6 py-5 text-sm font-semibold whitespace-nowrap">
                     {formatVnd(client.totalSpent)}
                   </td>
                   <td className="px-6 py-5 text-right relative">
