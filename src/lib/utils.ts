@@ -18,6 +18,19 @@ export function formatLocaleDate(
   return date.toLocaleDateString(locale === "en" ? "en-US" : "vi-VN", options);
 }
 
+export function formatDateString(dateStr: string | null | undefined): string {
+  if (!dateStr) return "";
+  const parts = dateStr.split("-");
+  if (parts.length === 3) {
+    const [y, m, d] = parts;
+    if (y.length === 4 && m.length === 2 && d.length === 2) {
+      return `${d}/${m}/${y}`;
+    }
+  }
+  return dateStr;
+}
+
+
 export function tierBadgeClass(tier: string): string {
   const map: Record<string, string> = {
     "Kim Cương": "bg-gradient-to-r from-blue-600 to-indigo-600 text-white",

@@ -15,7 +15,8 @@ import {
   Zap,
   Settings,
   HelpCircle,
-  X
+  X,
+  UserCheck
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
@@ -27,7 +28,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; size?: n
   bolt: Zap,
   settings: Settings,
   contact_support: HelpCircle,
-  close: X
+  close: X,
+  assignment_ind: UserCheck
 };
 
 function activeNavId(pathname: string): DashboardNavId {
@@ -36,6 +38,7 @@ function activeNavId(pathname: string): DashboardNavId {
   if (pathname.startsWith("/dashboard/workflows")) return "workflows";
   if (pathname.startsWith("/dashboard/services")) return "services";
   if (pathname.startsWith("/dashboard/reports")) return "reports";
+  if (pathname.startsWith("/dashboard/therapists")) return "therapists";
   if (pathname === "/dashboard") return "dashboard";
   return "dashboard";
 }

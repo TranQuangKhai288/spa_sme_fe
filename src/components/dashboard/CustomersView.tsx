@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
-import { formatVnd, tierBadgeClass } from "@/lib/utils";
+import { formatVnd, formatDateString, tierBadgeClass } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { showToast } from "@/components/ui/Toast";
 import type { Client } from "@/types/spa";
@@ -228,7 +228,7 @@ export function CustomersView() {
                 <p className="text-on-surface-variant">Lượt visit</p>
               </div>
               <div>
-                <p className="font-medium">{client.lastVisit}</p>
+                <p className="font-medium">{formatDateString(client.lastVisit)}</p>
                 <p className="text-on-surface-variant">Lần cuối</p>
               </div>
               <div>
@@ -313,7 +313,7 @@ export function CustomersView() {
                     {client.totalVisits}
                   </td>
                   <td className="px-6 py-5 text-sm text-on-surface-variant">
-                    {client.lastVisit}
+                    {formatDateString(client.lastVisit)}
                   </td>
                   <td className="px-6 py-5 text-sm font-semibold">
                     {formatVnd(client.totalSpent)}
@@ -344,10 +344,12 @@ export function CustomersView() {
         </div>
       </GlassCard>
 
-      <CreateClientModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      {modalOpen && (
+        <CreateClientModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

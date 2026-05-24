@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
 import { Button } from "@/components/ui/Button";
 import { showToast } from "@/components/ui/Toast";
-import { UserPlus, X } from "lucide-react";
+import { UserPlus, X, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
@@ -26,6 +26,7 @@ export function CreateClientModal({ open, onClose }: CreateClientModalProps) {
   const [notes, setNotes] = useState("");
 
   const [errors, setErrors] = useState<{ name?: string; phone?: string; email?: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!open) return null;
 
@@ -46,33 +47,39 @@ export function CreateClientModal({ open, onClose }: CreateClientModalProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     const randomImgId = Math.floor(Math.random() * 70) + 1;
     const avatar = `https://i.pravatar.cc/150?img=${randomImgId}`;
 
-    addClient({
-      name: name.trim(),
-      phone: phone.trim(),
-      email: email.trim(),
-      tier,
-      notes: notes.trim(),
-      avatar,
-    });
+    setIsLoading(true);
+    try {
+      await addClient({
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        tier,
+        notes: notes.trim(),
+        avatar,
+      });
 
-    showToast(`Đã thêm khách hàng ${name.trim()} thành công!`, "success");
-    
-    // Reset form
-    setName("");
-    setPhone("");
-    setEmail("");
-    setTier("Bạc");
-    setNotes("");
-    setErrors({});
-    
-    onClose();
+      showToast(`Đã thêm khách hàng ${name.trim()} thành công!`, "success");
+
+      // Reset form
+      setName("");
+      setPhone("");
+      setEmail("");
+      setTier("Bạc");
+      setNotes("");
+      setErrors({});
+      onClose();
+    } catch {
+      showToast("Thêm khách hàng thất bại. Vui lòng thử lại!", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -147,10 +154,19 @@ export function CreateClientModal({ open, onClose }: CreateClientModalProps) {
           />
 
           <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="ghost" onClick={onClose}>
+            <Button type="button" variant="ghost" onClick={onClose} disabled={isLoading}>
               Hủy
             </Button>
-            <Button type="submit">Xác nhận thêm</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 size={16} className="animate-spin" />
+                  Đang thêm...
+                </span>
+              ) : (
+                "Xác nhận thêm"
+              )}
+            </Button>
           </div>
         </form>
       </div>

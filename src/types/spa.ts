@@ -24,8 +24,8 @@ export interface Appointment {
   clientName: string;
   clientTier: string;
   clientAvatar: string;
-  service: string;
-  serviceIcon: string;
+  service?: string;
+  serviceIcon?: string;
   therapist: string;
   therapistId: string;
   startTime: string;
@@ -34,6 +34,7 @@ export interface Appointment {
   status: "confirmed" | "in_progress" | "completed" | "cancelled" | string;
   statusLabel: string;
   price: number;
+  notes?: string;
 }
 
 export interface TreatmentProgress {
@@ -153,6 +154,10 @@ export interface SpaDataContextValue {
   addAppointment: (
     apt: Omit<Appointment, "id" | "status" | "statusLabel">
   ) => Promise<Appointment> | Appointment;
+  updateAppointment: (
+    id: string,
+    apt: Partial<Appointment>
+  ) => Promise<Appointment> | Appointment;
   updateAppointmentStatus: (id: string, status: string) => Promise<void> | void;
   deleteAppointment: (id: string) => Promise<void> | void;
   toggleWorkflow: (id: string) => Promise<void> | void;
@@ -164,4 +169,12 @@ export interface SpaDataContextValue {
       "id" | "totalVisits" | "totalSpent" | "memberPoints" | "lastVisit" | "joinDate"
     >
   ) => Promise<Client> | Client;
+  addTherapist: (
+    therapist: Omit<Therapist, "id" | "rating" | "totalReviews" | "availability">
+  ) => Promise<Therapist> | Therapist;
+  updateTherapist: (
+    id: string,
+    therapist: Partial<Therapist>
+  ) => Promise<Therapist> | Therapist;
+  deleteTherapist: (id: string) => Promise<void> | void;
 }

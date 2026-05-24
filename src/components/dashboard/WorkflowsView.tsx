@@ -51,12 +51,16 @@ export function WorkflowsView() {
   const { workflows, toggleWorkflow } = useSpaData();
   const [showNewModal, setShowNewModal] = useState(false);
 
-  const handleToggle = (id: string, name: string, currentActive: boolean) => {
-    toggleWorkflow(id);
-    showToast(
-      currentActive ? `Đã tắt workflow "${name}"` : `Đã kích hoạt workflow "${name}"`,
-      currentActive ? "warning" : "success"
-    );
+  const handleToggle = async (id: string, name: string, currentActive: boolean) => {
+    try {
+      await toggleWorkflow(id);
+      showToast(
+        currentActive ? `Đã tắt workflow "${name}"` : `Đã kích hoạt workflow "${name}"`,
+        currentActive ? "warning" : "success"
+      );
+    } catch {
+      showToast(`Không thể thay đổi trạng thái workflow. Vui lòng thử lại!`, "error");
+    }
   };
 
   return (

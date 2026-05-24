@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ROUTES } from "@/lib/constants";
 import {
   formatLocaleDate,
+  formatDateString,
   statusBadgeClass,
   tierBadgeClass,
 } from "@/lib/utils";
@@ -51,44 +52,21 @@ export default function DashboardView() {
     stats,
     appointments,
     treatmentProgress,
-    calendarDays,
     updateAppointmentStatus,
     deleteAppointment,
   } = useSpaData();
 
   const todayDate = new Date();
   const realTodayStr = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`;
-  const todayIndex = calendarDays.findIndex((dayObj) => {
-    const dayDateStr = dayObj.isCurrentMonth
-      ? `2026-05-${dayObj.day.toString().padStart(2, "0")}`
-      : dayObj.day >= 15
-        ? `2026-04-${dayObj.day.toString().padStart(2, "0")}`
-        : `2026-06-${dayObj.day.toString().padStart(2, "0")}`;
-    return dayDateStr === realTodayStr;
-  });
-  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(
-    todayIndex >= 0 ? todayIndex : 2
-  );
-
-  const dayObj = calendarDays[selectedDayIndex];
-  const selectedDateString = dayObj
-    ? (dayObj.isCurrentMonth
-        ? `2026-05-${dayObj.day.toString().padStart(2, "0")}`
-        : dayObj.day >= 15
-          ? `2026-04-${dayObj.day.toString().padStart(2, "0")}`
-          : `2026-06-${dayObj.day.toString().padStart(2, "0")}`)
-    : "";
+  
+  const [selectedDate, setSelectedDate] = useState<string>(realTodayStr);
 
   const dailyAppointments = appointments.filter(
-    (apt) => apt.date === selectedDateString
+    (apt) => apt.date === selectedDate
   );
 
-  const todayLabel = formatLocaleDate(new Date(), "vi", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const todayLabel = formatDateString(realTodayStr);
+
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -184,7 +162,7 @@ export default function DashboardView() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left: Mini Calendar */}
         <div className="lg:col-span-4 xl:col-span-3">
-          <MiniCalendar selectedDayIndex={selectedDayIndex} onSelectDay={setSelectedDayIndex}>
+          <MiniCalendar selectedDate={selectedDate} onSelectDate={setSelectedDate}>
             <div className="mt-8 pt-4 border-t border-glass-border">
               <h4 className="text-[10px] font-bold text-on-surface-variant/80 uppercase mb-2 tracking-widest">
                 {`Ghi chú hoạt động`}
@@ -200,11 +178,11 @@ export default function DashboardView() {
         <div className="lg:col-span-8 xl:col-span-9 space-y-6">
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
             <h3 className="font-headline font-bold text-lg flex items-center gap-2">
-              {dayObj?.isToday
+              {selectedDate === realTodayStr
                 ? `Lịch hẹn hôm nay`
-                : `Lịch hẹn ngày ${dayObj ? `${dayObj.day}/${dayObj.isCurrentMonth ? '5' : dayObj.day >= 15 ? '4' : '6'}` : ''}`}
+                : `Lịch hẹn ngày ${formatDateString(selectedDate)}`}
               <span className="bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">
-                {dayObj?.isToday
+                {selectedDate === realTodayStr
                   ? `${stats.availableSlots} chỗ trống`
                   : `${dailyAppointments.length} lịch hẹn`}
               </span>
@@ -225,7 +203,7 @@ export default function DashboardView() {
               <div className="glass-card p-12 rounded-2xl text-center border border-white/40">
                 <Calendar className="mx-auto text-4xl text-on-surface-variant/40 mb-3 block" size={40} />
                 <p className="text-on-surface-variant/80 text-sm">
-                  {`Chưa có lịch hẹn nào được ghi nhận cho ngày ${selectedDateString}.`}
+                  {`Chưa có lịch hẹn nào được ghi nhận cho ngày ${formatDateString(selectedDate)}.`}
                 </p>
               </div>
             ) : (
@@ -256,7 +234,9 @@ export default function DashboardView() {
                       <div className="flex flex-wrap items-center gap-3 text-xs text-on-surface-variant/80">
                         <span className="flex items-center gap-1">
                           <Sparkles size={14} className="text-primary" />
-                          {apt.service}
+                          <span className={!apt.service ? "italic text-red-500/80 font-medium" : ""}>
+                            {apt.service || "Chưa chọn dịch vụ"}
+                          </span>
                         </span>
                         <span className="flex items-center gap-1">
                           <User size={14} />
@@ -280,9 +260,13 @@ export default function DashboardView() {
                     <div className="flex items-center gap-2">
                       {apt.status === "confirmed" && (
                         <button
-                          onClick={() => {
-                            updateAppointmentStatus(apt.id, "in_progress");
-                            showToast(`Check-in thành công: ${apt.clientName}`, "success");
+                          onClick={async () => {
+                            try {
+                              await updateAppointmentStatus(apt.id, "in_progress");
+                              showToast(`Check-in thành công: ${apt.clientName}`, "success");
+                            } catch {
+                              showToast("Check-in thất bại. Vui lòng thử lại!", "error");
+                            }
                           }}
                           className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all shadow-md shadow-primary/5 hover:shadow-primary/10 cursor-pointer"
                         >
@@ -291,9 +275,13 @@ export default function DashboardView() {
                       )}
                       {apt.status === "in_progress" && (
                         <button
-                          onClick={() => {
-                            updateAppointmentStatus(apt.id, "completed");
-                            showToast(`Hoàn tất liệu trình: ${apt.clientName}`, "success");
+                          onClick={async () => {
+                            try {
+                              await updateAppointmentStatus(apt.id, "completed");
+                              showToast(`Hoàn tất liệu trình: ${apt.clientName}`, "success");
+                            } catch {
+                              showToast("Không thể cập nhật trạng thái. Vui lòng thử lại!", "error");
+                            }
                           }}
                           className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all cursor-pointer"
                         >
@@ -303,9 +291,13 @@ export default function DashboardView() {
                       {apt.status !== "completed" &&
                         apt.status !== "cancelled" && (
                           <button
-                            onClick={() => {
-                              updateAppointmentStatus(apt.id, "cancelled");
-                              showToast(`Đã hủy lịch: ${apt.clientName}`, "warning");
+                            onClick={async () => {
+                              try {
+                                await updateAppointmentStatus(apt.id, "cancelled");
+                                showToast(`Đã hủy lịch: ${apt.clientName}`, "warning");
+                              } catch {
+                                showToast("Hủy lịch thất bại. Vui lòng thử lại!", "error");
+                              }
                             }}
                             className="border border-red-500/20 text-red-500 hover:bg-red-500/10 text-xs px-3 py-1.5 rounded-lg transition-all cursor-pointer"
                           >
@@ -313,9 +305,13 @@ export default function DashboardView() {
                           </button>
                         )}
                       <button
-                        onClick={() => {
-                          deleteAppointment(apt.id);
-                          showToast("Đã xóa lịch hẹn", "info");
+                        onClick={async () => {
+                          try {
+                            await deleteAppointment(apt.id);
+                            showToast("Đã xóa lịch hẹn", "info");
+                          } catch {
+                            showToast("Xóa thất bại. Vui lòng thử lại!", "error");
+                          }
                         }}
                         className="text-on-surface-variant/50 hover:text-red-500 p-1.5 rounded-lg transition-colors flex items-center justify-center cursor-pointer"
                       >

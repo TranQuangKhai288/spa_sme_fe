@@ -90,6 +90,46 @@ body {
   animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Slide drawer animations */
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInFromBottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slideInFromRight {
+  animation: slideInFromRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slideInFromBottom {
+  animation: slideInFromBottom 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fadeInBackdrop {
+  animation: fadeInBackdrop 0.25s ease-out forwards;
+}
+
+/* Drawer: slide from bottom on mobile, slide from right on desktop */
+.drawer-panel {
+  animation: slideInFromBottom 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (min-width: 768px) {
+  .drawer-panel {
+    animation: slideInFromRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+
 /* Hide WebKit native search input clear button */
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration,
@@ -97,5 +137,17 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
   -webkit-appearance: none;
   appearance: none;
+}
+
+/* Hide number input spinners (arrows) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 

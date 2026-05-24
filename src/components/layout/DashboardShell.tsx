@@ -42,10 +42,12 @@ export function DashboardShell({
       <main className="min-h-screen pt-16 sm:pt-20 lg:ml-64">
         <div className="px-4 sm:px-6 lg:px-8 lg:pb-10">{children}</div>
       </main>
-      <CreateAppointmentModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      {modalOpen && (
+        <CreateAppointmentModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

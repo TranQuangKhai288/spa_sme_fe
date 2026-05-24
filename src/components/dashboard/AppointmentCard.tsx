@@ -10,6 +10,7 @@ export interface AppointmentCardProps {
   onCheckIn?: () => void;
   onCancel?: () => void;
   onDelete: () => void;
+  onClick?: () => void;
 }
 
 export function AppointmentCard({
@@ -17,9 +18,13 @@ export function AppointmentCard({
   onCheckIn,
   onCancel,
   onDelete,
+  onClick,
 }: AppointmentCardProps) {
   return (
-    <GlassCard className={`p-4 transition-opacity ${apt.status === "cancelled" ? "opacity-60" : ""}`}>
+    <GlassCard 
+      onClick={onClick}
+      className={`p-4 transition-opacity cursor-pointer ${apt.status === "cancelled" ? "opacity-60" : ""}`}
+    >
       <div className="flex items-start gap-3">
         <img
           src={apt.clientAvatar}

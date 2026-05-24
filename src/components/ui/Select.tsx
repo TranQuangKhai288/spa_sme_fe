@@ -50,7 +50,7 @@ export function Select({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-sm flex items-center justify-between text-dark-slate font-medium text-left outline-none focus:ring-2 focus:ring-primary/20 transition-all hover:bg-white/70 ${
+        className={`w-full rounded-xl border bg-white px-4 py-2.5 text-sm flex items-center justify-between text-dark-slate font-semibold text-left outline-none focus:ring-4 focus:ring-primary/10 transition-all hover:bg-white shadow-sm ${
           error ? "border-red-500 focus:border-red-500" : "border-glass-border focus:border-primary/40 hover:border-primary/20"
         }`}
       >
@@ -63,7 +63,7 @@ export function Select({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 z-50 mt-2 w-full max-h-60 overflow-y-auto rounded-2xl border border-glass-border bg-white py-1 shadow-2xl backdrop-blur-xl animate-fadeIn">
+        <div className="absolute top-full left-0 z-50 mt-1.5 w-full max-h-60 overflow-y-auto rounded-xl border border-glass-border/60 bg-white/95 p-1 shadow-2xl backdrop-blur-xl animate-fadeIn">
           {options.map((opt) => {
             const isSelected = opt.value === value;
             return (
@@ -74,10 +74,10 @@ export function Select({
                   onChange(opt.value);
                   setIsOpen(false);
                 }}
-                className={`w-full px-4 py-2.5 text-left text-sm transition-colors ${
+                className={`w-full px-3.5 py-2.5 text-left text-sm rounded-lg transition-colors ${
                   isSelected
                     ? "bg-primary/10 text-primary font-bold"
-                    : "text-dark-slate hover:bg-primary/5 hover:text-primary"
+                    : "text-dark-slate hover:bg-primary/5 hover:text-primary font-medium"
                 }`}
               >
                 {opt.label}

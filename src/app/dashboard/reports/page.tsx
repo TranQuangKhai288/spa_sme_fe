@@ -9,7 +9,7 @@ export default function ReportsPage() {
   return (
     <UnderDevelopmentView
       title="Báo cáo & Phân tích"
-      description="Hệ thống tổng hợp báo cáo doanh thu, hiệu suất kỹ thuật viên, tỷ lệ đặt lịch và phân tích xu hướng tăng trưởng khách hàng trong tương lai."
+      description="Hệ thống tổng hợp báo cáo doanh thu, hiệu suất Nhân viên, tỷ lệ đặt lịch và phân tích xu hướng tăng trưởng khách hàng trong tương lai."
       icon="analytics"
       completionPercentage={70}
     />

@@ -64,6 +64,11 @@ export const api = {
       method: "POST",
       body: JSON.stringify(appt),
     }),
+  updateAppointment: (id: string, appt: Partial<Appointment>) =>
+    request<Appointment>(`/appointments/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(appt),
+    }),
   updateAppointmentStatus: (id: string, status: string) =>
     request<Appointment>(`/appointments/${id}/status`, {
       method: "PUT",
@@ -89,6 +94,22 @@ export const api = {
     }),
   deleteNotification: (id: string) =>
     request<{ success: boolean }>(`/notifications/${id}`, {
+      method: "DELETE",
+    }),
+
+  // Therapists (KTV)
+  createTherapist: (therapist: Omit<Therapist, "id" | "rating" | "totalReviews" | "availability">) =>
+    request<Therapist>("/therapists", {
+      method: "POST",
+      body: JSON.stringify(therapist),
+    }),
+  updateTherapist: (id: string, therapist: Partial<Therapist>) =>
+    request<Therapist>(`/therapists/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(therapist),
+    }),
+  deleteTherapist: (id: string) =>
+    request<{ success: boolean; message: string }>(`/therapists/${id}`, {
       method: "DELETE",
     }),
 };

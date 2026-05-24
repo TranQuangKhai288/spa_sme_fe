@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
-import { formatVnd, statusBadgeClass, tierBadgeClass } from "@/lib/utils";
+import { formatVnd, formatDateString, statusBadgeClass, tierBadgeClass } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AppointmentCard } from "./AppointmentCard";
 import { CreateAppointmentModal } from "./CreateAppointmentModal";
+import { EditAppointmentModal } from "./EditAppointmentModal";
 import { showToast } from "@/components/ui/Toast";
 import { useSearch } from "@/providers/SearchProvider";
-import { ChevronDown, ChevronLeft, ChevronRight, Clock } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Clock, Plus } from "lucide-react";
 import { Select } from "@/components/ui/Select";
 import { MiniCalendar } from "@/components/ui/MiniCalendar";
 
@@ -23,12 +24,13 @@ export function AppointmentsView() {
   const {
     appointments,
     therapists,
-    calendarDays,
     updateAppointmentStatus,
     deleteAppointment,
   } = useSpaData();
   const [filter, setFilter] = useState<string>("all");
   const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editAptId, setEditAptId] = useState<string | null>(null);
   const [selectedApt, setSelectedApt] = useState<string | null>(null);
   const { query: searchQuery } = useSearch();
   const [selectedTherapists, setSelectedTherapists] = useState<
@@ -37,41 +39,23 @@ export function AppointmentsView() {
 
   const todayDate = new Date();
   const realTodayStr = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`;
-  const todayIndex = calendarDays.findIndex((dayObj) => {
-    const dayDateStr = dayObj.isCurrentMonth
-      ? `2026-05-${dayObj.day.toString().padStart(2, "0")}`
-      : dayObj.day >= 15
-        ? `2026-04-${dayObj.day.toString().padStart(2, "0")}`
-        : `2026-06-${dayObj.day.toString().padStart(2, "0")}`;
-    return dayDateStr === realTodayStr;
-  });
-  const [selectedDay, setSelectedDay] = useState<number>(
-    todayIndex >= 0 ? todayIndex : 2
-  );
+  
+  const [selectedDate, setSelectedDate] = useState<string>(realTodayStr);
 
   const toggleTherapist = (id: string) => {
     setSelectedTherapists((prev) => ({ ...prev, [id]: !prev[id] }));
   };
-
-  const dayObj = calendarDays[selectedDay];
-  const selectedDateString = dayObj
-    ? (dayObj.isCurrentMonth
-        ? `2026-05-${dayObj.day.toString().padStart(2, "0")}`
-        : dayObj.day >= 15
-          ? `2026-04-${dayObj.day.toString().padStart(2, "0")}`
-          : `2026-06-${dayObj.day.toString().padStart(2, "0")}`)
-    : "";
 
   const filtered = (
     filter === "all"
       ? appointments
       : filter === "upcoming"
         ? appointments.filter(
-            (a) => a.status === "confirmed" || a.status === "in_progress",
-          )
+          (a) => a.status === "confirmed" || a.status === "in_progress",
+        )
         : appointments.filter((a) => a.status === filter)
   )
-    .filter((a) => a.date === selectedDateString)
+    .filter((a) => a.date === selectedDate)
     .filter((a) => {
       if (!searchQuery.trim()) return true;
       const q = searchQuery.toLowerCase();
@@ -109,7 +93,7 @@ export function AppointmentsView() {
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Status filter + Create button only — search is in the header */}
+          {/* Status filter + Create button */}
           <div className="relative hidden md:block min-w-36">
             <Select
               value={filter}
@@ -117,6 +101,13 @@ export function AppointmentsView() {
               options={filterOptions}
             />
           </div>
+          <button
+            onClick={() => setModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary/90 active:scale-95 transition-all duration-200 cursor-pointer"
+          >
+            <Plus size={16} />
+            Tạo lịch hẹn
+          </button>
         </div>
       </div>
 
@@ -125,7 +116,7 @@ export function AppointmentsView() {
         {/* Left Sidebar: Filters & Mini Calendar */}
         <aside className="w-full lg:w-72 flex flex-col gap-6 shrink-0 hidden md:flex">
           {/* Mini Calendar */}
-          <MiniCalendar selectedDayIndex={selectedDay} onSelectDay={setSelectedDay} />
+          <MiniCalendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
 
           {/* Therapist Filter */}
           <GlassCard className="rounded-2xl p-6">
@@ -190,7 +181,7 @@ export function AppointmentsView() {
               ))}
               {visibleTherapists.length === 0 && (
                 <div className="p-4 text-center text-on-surface-variant/60">
-                  Vui lòng chọn ít nhất 1 kỹ thuật viên bên trái.
+                  Vui lòng chọn ít nhất 1 Nhân viên bên trái.
                 </div>
               )}
             </div>
@@ -279,9 +270,14 @@ export function AppointmentsView() {
                           return (
                             <div
                               key={apt.id}
-                              className={`absolute overflow-hidden w-[calc(100%-16px)] ml-[8px] bg-white rounded-xl p-3 md:p-3 border-l-4 border-y border-r shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 hover:z-50 transition-all duration-300 cursor-pointer pointer-events-auto h-[90px] flex flex-col justify-between ${colorClass}`}
+                              onClick={() => {
+                                setEditAptId(apt.id);
+                                setEditModalOpen(true);
+                              }}
+                              className={`absolute overflow-hidden w-[calc(100%-16px)] ml-[8px] bg-white rounded-xl p-3 md:p-3 border-l-4 border-y border-r shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 hover:z-50 transition-all duration-300 cursor-pointer pointer-events-auto flex flex-col justify-between ${colorClass}`}
                               style={{
                                 top: `${top + 1}px`,
+                                height: `${(endH - startH) * 100 - 2}px`,
                                 zIndex: 10,
                               }}
                             >
@@ -300,9 +296,9 @@ export function AppointmentsView() {
 
                               <div className="w-full">
                                 <p
-                                  className={`text-xs font-bold truncate ${textColor} mb-1.5`}
+                                  className={`text-xs font-bold truncate ${textColor} mb-1.5 ${!apt.service ? "italic text-red-500/80 font-medium" : ""}`}
                                 >
-                                  {apt.service}
+                                  {apt.service || "Chưa chọn dịch vụ (Bấm để chọn)"}
                                 </p>
                                 <div className="flex items-center text-[11px] font-medium text-on-surface-variant/80 w-full">
                                   <span className="flex items-center gap-1 opacity-70">
@@ -341,10 +337,32 @@ export function AppointmentsView() {
                   : undefined
               }
               onDelete={() => deleteAppointment(apt.id)}
+              onClick={() => {
+                setEditAptId(apt.id);
+                setEditModalOpen(true);
+              }}
             />
           ))
         )}
       </div>
+
+      {modalOpen && (
+        <CreateAppointmentModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onSuccess={(date) => {
+            setSelectedDate(date);
+          }}
+        />
+      )}
+
+      {editModalOpen && (
+        <EditAppointmentModal
+          open={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          aptId={editAptId}
+        />
+      )}
     </div>
   );
 }

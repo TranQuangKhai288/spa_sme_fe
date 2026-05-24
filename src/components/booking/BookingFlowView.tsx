@@ -184,11 +184,10 @@ export function BookingFlowView() {
                   key={s.id}
                   type="button"
                   onClick={() => setServiceId(s.id)}
-                  className={`w-full rounded-2xl border p-4 text-left transition-all ${
-                    serviceId === s.id
+                  className={`w-full rounded-2xl border p-4 text-left transition-all ${serviceId === s.id
                       ? "border-primary bg-primary/5 shadow-md shadow-primary/5"
                       : "border-glass-border hover:bg-white/40"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
@@ -219,18 +218,17 @@ export function BookingFlowView() {
           {/* Step 1: Therapist Selection */}
           {step === 1 && (
             <div>
-              <h2 className="font-headline text-lg font-bold text-dark-slate mb-4">Chọn kỹ thuật viên</h2>
+              <h2 className="font-headline text-lg font-bold text-dark-slate mb-4">Chọn Nhân viên</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 {therapists.map((t) => (
                   <button
                     key={t.id}
                     type="button"
                     onClick={() => setTherapistId(t.id)}
-                    className={`rounded-2xl border p-4 text-left transition-all ${
-                      therapistId === t.id
+                    className={`rounded-2xl border p-4 text-left transition-all ${therapistId === t.id
                         ? "border-primary bg-primary/5 shadow-md"
                         : "border-glass-border hover:bg-white/30"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <img
@@ -249,9 +247,8 @@ export function BookingFlowView() {
                       </div>
                     </div>
                     <p className="text-[11px] text-on-surface-variant/80 leading-relaxed">{t.bio}</p>
-                    <div className={`mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                      t.availability === "available" ? "bg-jade-green/10 text-jade-green" : "bg-red-500/10 text-red-500"
-                    }`}>
+                    <div className={`mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${t.availability === "available" ? "bg-jade-green/10 text-jade-green" : "bg-red-500/10 text-red-500"
+                      }`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${t.availability === "available" ? "bg-jade-green" : "bg-red-400"}`} />
                       {t.availability === "available" ? "Sẵn sàng" : "Đang bận"}
                     </div>
@@ -291,13 +288,12 @@ export function BookingFlowView() {
                         type="button"
                         disabled={isTaken}
                         onClick={() => { setTime(slot); setErrors({}); }}
-                        className={`rounded-xl py-2.5 text-sm font-medium transition-all ${
-                          isTaken
+                        className={`rounded-xl py-2.5 text-sm font-medium transition-all ${isTaken
                             ? "bg-gray-100 text-gray-300 cursor-not-allowed line-through animate-none"
                             : isSelected
                               ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105"
                               : "bg-white/60 border border-glass-border text-dark-slate hover:border-primary/30 hover:bg-primary/5"
-                        }`}
+                          }`}
                       >
                         {slot}
                       </button>
@@ -328,7 +324,7 @@ export function BookingFlowView() {
                   <span className="text-sm font-bold text-dark-slate">{service?.name}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-on-surface-variant">Kỹ thuật viên</span>
+                  <span className="text-xs text-on-surface-variant">Nhân viên</span>
                   <div className="flex items-center gap-2">
                     <img src={therapist?.avatar} alt="" className="w-6 h-6 rounded-full" />
                     <span className="text-sm font-semibold">{therapist?.name}</span>

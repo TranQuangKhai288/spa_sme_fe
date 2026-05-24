@@ -13,6 +13,8 @@ function breadcrumbsFor(pathname: string) {
     return [...base, { label: `Khách hàng` }];
   if (pathname.includes("/workflows"))
     return [...base, { label: `Tự động hóa` }];
+  if (pathname.includes("/therapists"))
+    return [...base, { label: `Nhân viên` }];
   return [{ label: `Operations Center` }];
 }
 

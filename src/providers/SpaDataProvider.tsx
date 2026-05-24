@@ -9,7 +9,6 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import initialData from "@/data/mockdata.json";
 import { api } from "@/lib/api";
 import type {
   Appointment,
@@ -27,23 +26,50 @@ import type {
   Workflow,
 } from "@/types/spa";
 
+const defaultSpa: SpaInfo = {
+  name: "",
+  tagline: "",
+  phone: "",
+  email: "",
+  address: "",
+  hours: { weekday: "", weekend: "" },
+  version: "1.0.0",
+};
+
+const defaultCurrentUser: CurrentUser = {
+  id: "",
+  name: "",
+  role: "",
+  avatar: "",
+  greeting: "",
+};
+
+const defaultStats: Stats = {
+  totalBookingsToday: 0,
+  vipClients: 0,
+  revenueToday: "0M",
+  revenueTarget: 0,
+  pendingReminders: 0,
+  availableSlots: 16,
+  revenueTrend: "",
+};
+
 const SpaDataContext = createContext<SpaDataContextValue | null>(null);
 
 export function SpaDataProvider({ children }: { children: ReactNode }) {
-  const [spa, setSpa] = useState<SpaInfo>(initialData.spa);
+  const [spa, setSpa] = useState<SpaInfo>(defaultSpa);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [treatmentProgress, setTreatmentProgress] = useState<TreatmentProgress[]>([]);
   const [therapists, setTherapists] = useState<Therapist[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
-  const [calendarDays, setCalendarDays] = useState<CalendarDay[]>(initialData.calendarDays);
+  const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [revenueChart, setRevenueChart] = useState<RevenueChartItem[]>(initialData.revenueChart);
-  const [currentUser, setCurrentUser] = useState<CurrentUser>(initialData.currentUser);
-  const [stats, setStats] = useState<Stats>(initialData.stats);
+  const [revenueChart, setRevenueChart] = useState<RevenueChartItem[]>([]);
+  const [currentUser, setCurrentUser] = useState<CurrentUser>(defaultCurrentUser);
+  const [stats, setStats] = useState<Stats>(defaultStats);
   const [loading, setLoading] = useState(true);
-  const [usingFallback, setUsingFallback] = useState(false);
 
   // Load all data from API
   const loadData = useCallback(async (isSilent = false) => {
@@ -79,22 +105,8 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       setAppointments(appointmentsList);
       setWorkflows(workflowsList);
       setNotifications(notificationsList);
-      setUsingFallback(false);
     } catch (err) {
-      console.warn("Failed to load data from Backend API, falling back to local mockdata.json:", err);
-      // Fallback to initial mock data
-      setSpa(initialData.spa);
-      setCurrentUser(initialData.currentUser);
-      setRevenueChart(initialData.revenueChart as any);
-      setTreatmentProgress(initialData.treatmentProgress);
-      setCalendarDays(initialData.calendarDays);
-      setClients(initialData.clients);
-      setServices(initialData.services);
-      setTherapists(initialData.therapists);
-      setAppointments(initialData.appointments as any);
-      setWorkflows(initialData.workflows);
-      setNotifications(initialData.notifications);
-      setUsingFallback(true);
+      console.error("Failed to load data from Backend API:", err);
     } finally {
       if (!isSilent) setLoading(false);
     }
@@ -139,18 +151,6 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
 
   const addAppointment = useCallback(
     async (newApt: Omit<Appointment, "id" | "status" | "statusLabel">) => {
-      if (usingFallback) {
-        // Fallback local mode
-        const appointment: Appointment = {
-          ...newApt,
-          id: `apt-${Date.now()}`,
-          status: "confirmed",
-          statusLabel: "Đã xác nhận",
-        };
-        setAppointments((prev) => [appointment, ...prev]);
-        return appointment;
-      }
-
       try {
         const appointment = await api.createAppointment(newApt);
         // Refresh all data silently to sync client total visits/spend/points and notifications
@@ -161,31 +161,25 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
         throw err;
       }
     },
-    [usingFallback, loadData]
+    [loadData]
+  );
+
+  const updateAppointment = useCallback(
+    async (id: string, updatedApt: Partial<Appointment>) => {
+      try {
+        const appointment = await api.updateAppointment(id, updatedApt);
+        await loadData(true);
+        return appointment;
+      } catch (err) {
+        console.error("Failed to update appointment via API:", err);
+        throw err;
+      }
+    },
+    [loadData]
   );
 
   const updateAppointmentStatus = useCallback(
     async (id: string, newStatus: string) => {
-      if (usingFallback) {
-        setAppointments((prev) =>
-          prev.map((apt) => {
-            if (apt.id !== id) return apt;
-            const labels: Record<string, string> = {
-              in_progress: "Đang xử lý",
-              completed: "Hoàn tất",
-              cancelled: "Đã hủy",
-              confirmed: "Đã xác nhận",
-            };
-            return {
-              ...apt,
-              status: newStatus,
-              statusLabel: labels[newStatus] ?? "Đã xác nhận",
-            };
-          })
-        );
-        return;
-      }
-
       try {
         await api.updateAppointmentStatus(id, newStatus);
         setAppointments((prev) =>
@@ -208,31 +202,19 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
         console.error("Failed to update appointment status via API:", err);
       }
     },
-    [usingFallback]
+    []
   );
 
   const deleteAppointment = useCallback(async (id: string) => {
-    if (usingFallback) {
-      setAppointments((prev) => prev.filter((a) => a.id !== id));
-      return;
-    }
-
     try {
       await api.deleteAppointment(id);
       setAppointments((prev) => prev.filter((a) => a.id !== id));
     } catch (err) {
       console.error("Failed to delete appointment via API:", err);
     }
-  }, [usingFallback]);
+  }, []);
 
   const toggleWorkflow = useCallback(async (id: string) => {
-    if (usingFallback) {
-      setWorkflows((prev) =>
-        prev.map((wf) => (wf.id === id ? { ...wf, active: !wf.active } : wf))
-      );
-      return;
-    }
-
     try {
       await api.toggleWorkflow(id);
       setWorkflows((prev) =>
@@ -241,52 +223,28 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.error("Failed to toggle workflow via API:", err);
     }
-  }, [usingFallback]);
+  }, []);
 
   const markAllNotificationsAsRead = useCallback(async () => {
-    if (usingFallback) {
-      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-      return;
-    }
-
     try {
       await api.markAllNotificationsAsRead();
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     } catch (err) {
       console.error("Failed to mark notifications read via API:", err);
     }
-  }, [usingFallback]);
+  }, []);
 
   const deleteNotification = useCallback(async (id: string) => {
-    if (usingFallback) {
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
-      return;
-    }
-
     try {
       await api.deleteNotification(id);
       setNotifications((prev) => prev.filter((n) => n.id !== id));
     } catch (err) {
       console.error("Failed to delete notification via API:", err);
     }
-  }, [usingFallback]);
+  }, []);
 
   const addClient = useCallback(
     async (newClient: Omit<Client, "id" | "totalVisits" | "totalSpent" | "memberPoints" | "lastVisit" | "joinDate">) => {
-      if (usingFallback) {
-        const client: Client = {
-          ...newClient,
-          id: `client-${Date.now()}`,
-          totalVisits: 0,
-          totalSpent: 0,
-          memberPoints: 0,
-          lastVisit: "Chưa có",
-          joinDate: new Date().toLocaleDateString("vi-VN"),
-        };
-        setClients((prev) => [client, ...prev]);
-        return client;
-      }
-
       try {
         const client = await api.createClient(newClient);
         await loadData(true);
@@ -296,7 +254,48 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
         throw err;
       }
     },
-    [usingFallback, loadData]
+    [loadData]
+  );
+
+  const addTherapist = useCallback(
+    async (newTherapist: Omit<Therapist, "id" | "rating" | "totalReviews" | "availability">) => {
+      try {
+        const therapist = await api.createTherapist(newTherapist);
+        await loadData(true);
+        return therapist;
+      } catch (err) {
+        console.error("Failed to create therapist via API:", err);
+        throw err;
+      }
+    },
+    [loadData]
+  );
+
+  const updateTherapist = useCallback(
+    async (id: string, updatedTherapist: Partial<Therapist>) => {
+      try {
+        const therapist = await api.updateTherapist(id, updatedTherapist);
+        await loadData(true);
+        return therapist;
+      } catch (err) {
+        console.error("Failed to update therapist via API:", err);
+        throw err;
+      }
+    },
+    [loadData]
+  );
+
+  const deleteTherapist = useCallback(
+    async (id: string) => {
+      try {
+        await api.deleteTherapist(id);
+        await loadData(true);
+      } catch (err) {
+        console.error("Failed to delete therapist via API:", err);
+        throw err;
+      }
+    },
+    [loadData]
   );
 
   const value = useMemo<SpaDataContextValue>(
@@ -314,12 +313,16 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       revenueChart,
       currentUser,
       addAppointment,
+      updateAppointment,
       updateAppointmentStatus,
       deleteAppointment,
       toggleWorkflow,
       markAllNotificationsAsRead,
       deleteNotification,
       addClient,
+      addTherapist,
+      updateTherapist,
+      deleteTherapist,
     }),
     [
       spa,
@@ -335,18 +338,22 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       revenueChart,
       currentUser,
       addAppointment,
+      updateAppointment,
       updateAppointmentStatus,
       deleteAppointment,
       toggleWorkflow,
       markAllNotificationsAsRead,
       deleteNotification,
       addClient,
+      addTherapist,
+      updateTherapist,
+      deleteTherapist,
     ]
   );
 
   return (
     <SpaDataContext.Provider value={value}>
-      {loading && !usingFallback ? (
+      {loading ? (
         <div className="flex h-screen w-screen items-center justify-center bg-background">
           <div className="text-center">
             <span className="relative flex h-10 w-10 mx-auto mb-4">

@@ -22,7 +22,7 @@ export function Textarea({
       )}
       <textarea
         {...props}
-        className={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all text-dark-slate placeholder-on-surface-variant/40 ${
+        className={`w-full rounded-xl border bg-white px-4 py-2.5 text-sm outline-none focus:ring-4 focus:ring-primary/10 transition-all text-dark-slate placeholder-on-surface-variant/40 shadow-sm ${
           error
             ? "border-red-500 focus:border-red-500"
             : "border-glass-border focus:border-primary/40 hover:border-primary/20"
