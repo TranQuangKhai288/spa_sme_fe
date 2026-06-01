@@ -8,6 +8,8 @@ import { showToast } from "@/components/ui/Toast";
 import type { Client } from "@/types/spa";
 import { useSearch } from "@/providers/SearchProvider";
 import { CreateClientModal } from "./CreateClientModal";
+import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 import {
   CalendarPlus,
   User,
@@ -85,27 +87,31 @@ function ClientActionMenu({
       ].map((item) => {
         const IconComponent = item.icon;
         return (
-          <button
+          <Button
             key={item.label}
+            variant="ghost"
+            size="none"
             onClick={item.action}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-dark-slate hover:bg-primary/5 hover:text-primary transition-colors text-left"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-dark-slate hover:bg-primary/5 hover:text-primary transition-colors text-left justify-start rounded-none border-none shadow-none"
+            icon={<IconComponent size={18} className="text-on-surface-variant" />}
           >
-            <IconComponent size={18} className="text-on-surface-variant" />
             {item.label}
-          </button>
+          </Button>
         );
       })}
       <div className="border-t border-glass-border">
-        <button
+        <Button
+          variant="ghost"
+          size="none"
           onClick={() => {
             showToast(`Đã xóa khách hàng (mock)`, "warning");
             onClose();
           }}
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors text-left"
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors text-left justify-start rounded-none border-none shadow-none"
+          icon={<Trash2 size={18} />}
         >
-          <Trash2 size={18} />
           Xóa khách hàng
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -137,6 +143,12 @@ export function CustomersView() {
       return a.name.localeCompare(b.name, "vi");
     });
 
+  const sortOptions = [
+    { value: "visits", label: "Lượt visit" },
+    { value: "spent", label: "Tổng chi" },
+    { value: "name", label: "Tên" },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -151,41 +163,42 @@ export function CustomersView() {
         </div>
         <div className="flex items-center gap-3">
           {/* Add client button — search is in the header */}
-          <button
+          <Button
             onClick={() => setModalOpen(true)}
-            className="flex items-center gap-1.5 bg-primary text-white px-4 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
+            icon={<UserPlus size={18} />}
+            className="rounded-full font-bold shadow-lg shadow-primary/20"
           >
-            <UserPlus size={18} />
             <span className="hidden sm:inline">Thêm khách</span>
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Tier filter pills */}
       <div className="flex gap-2 flex-wrap">
         {TIER_FILTERS.map((tier) => (
-          <button
+          <Button
             key={tier}
+            variant={tierFilter === tier ? "primary" : "ghost"}
+            size="none"
             onClick={() => setTierFilter(tier)}
-            className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition-all ${tierFilter === tier
-              ? "bg-primary text-white shadow-md"
-              : "bg-white/50 border border-glass-border text-on-surface-variant hover:bg-white/70"
-              }`}
+            className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition-all shadow-none ${
+              tierFilter === tier
+                ? "bg-primary text-white"
+                : "bg-white/50 border border-glass-border text-on-surface-variant hover:bg-white/70"
+            }`}
           >
             {tier}
-          </button>
+          </Button>
         ))}
         <div className="ml-auto flex items-center gap-2">
           <span className="text-xs text-on-surface-variant/60">Sắp xếp:</span>
-          <select
+          <Select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className="text-xs border border-glass-border rounded-lg px-2 py-1 bg-white/50 outline-none"
-          >
-            <option value="visits">Lượt visit</option>
-            <option value="spent">Tổng chi</option>
-            <option value="name">Tên</option>
-          </select>
+            onChange={(val) => setSortBy(val as any)}
+            options={sortOptions}
+            variant="inline"
+            className="w-28 font-bold"
+          />
         </div>
       </div>
 

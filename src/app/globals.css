@@ -82,12 +82,28 @@ body {
   from { opacity: 0; transform: translateX(48px); }
   to { opacity: 1; transform: translateX(0); }
 }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px) scaleY(0.95); }
+  to { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px) scaleY(0.95); }
+  to { opacity: 1; transform: translateY(0) scaleY(1); }
+}
 
 .animate-fadeIn {
   animation: fadeIn 0.35s ease-out both;
 }
 .animate-slide-in-right {
   animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-slideDown {
+  animation: slideDown 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top;
+}
+.animate-slideUp {
+  animation: slideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: bottom;
 }
 
 /* Slide drawer animations */

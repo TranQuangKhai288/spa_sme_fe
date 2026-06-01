@@ -298,6 +298,22 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
     [loadData]
   );
 
+  const switchRole = useCallback(
+    async (role: string) => {
+      try {
+        setLoading(true);
+        await api.updateCurrentUserRole(role);
+        await loadData(false);
+      } catch (err) {
+        console.error("Failed to switch role via API:", err);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loadData]
+  );
+
   const value = useMemo<SpaDataContextValue>(
     () => ({
       spa,
@@ -323,6 +339,7 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       addTherapist,
       updateTherapist,
       deleteTherapist,
+      switchRole,
     }),
     [
       spa,
@@ -348,6 +365,7 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       addTherapist,
       updateTherapist,
       deleteTherapist,
+      switchRole,
     ]
   );
 
