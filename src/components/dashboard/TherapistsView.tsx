@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 export function TherapistsView() {
-  const { therapists, services, addTherapist, updateTherapist, deleteTherapist } = useSpaData();
+  const { therapists, services, addTherapist, updateTherapist, deleteTherapist, currentUser } = useSpaData();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTherapist, setEditingTherapist] = useState<string | null>(null);
 
@@ -135,13 +135,15 @@ export function TherapistsView() {
             Xem hồ sơ, quản lý trạng thái và danh sách dịch vụ của Nhân viên
           </p>
         </div>
-        <button
-          onClick={openAddModal}
-          className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
-        >
-          <Plus size={18} />
-          Thêm Nhân viên mới
-        </button>
+        {currentUser.role === "admin" && (
+          <button
+            onClick={openAddModal}
+            className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
+          >
+            <Plus size={18} />
+            Thêm Nhân viên mới
+          </button>
+        )}
       </div>
 
       {/* Technicians Grid */}
@@ -226,22 +228,24 @@ export function TherapistsView() {
             </div>
 
             {/* Actions Footer */}
-            <div className="flex gap-2 pt-3 border-t border-glass-border">
-              <button
-                onClick={() => openEditModal(t)}
-                className="flex-1 text-xs font-bold border border-glass-border text-dark-slate hover:bg-white/40 rounded-xl py-2 flex items-center justify-center gap-1 transition-all"
-              >
-                <Pencil size={14} />
-                Sửa hồ sơ
-              </button>
-              <button
-                onClick={() => handleDelete(t.id, t.name)}
-                disabled={deletingId === t.id}
-                className="text-on-surface-variant hover:text-red-500 border border-glass-border hover:border-red-500/20 px-3 py-2 rounded-xl transition-all flex items-center justify-center disabled:opacity-50"
-              >
-                {deletingId === t.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
-              </button>
-            </div>
+            {currentUser.role === "admin" && (
+              <div className="flex gap-2 pt-3 border-t border-glass-border">
+                <button
+                  onClick={() => openEditModal(t)}
+                  className="flex-1 text-xs font-bold border border-glass-border text-dark-slate hover:bg-white/40 rounded-xl py-2 flex items-center justify-center gap-1 transition-all"
+                >
+                  <Pencil size={14} />
+                  Sửa hồ sơ
+                </button>
+                <button
+                  onClick={() => handleDelete(t.id, t.name)}
+                  disabled={deletingId === t.id}
+                  className="text-on-surface-variant hover:text-red-500 border border-glass-border hover:border-red-500/20 px-3 py-2 rounded-xl transition-all flex items-center justify-center disabled:opacity-50"
+                >
+                  {deletingId === t.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                </button>
+              </div>
+            )}
           </GlassCard>
         ))}
       </div>

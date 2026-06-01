@@ -26,6 +26,7 @@ export function AppointmentsView() {
     therapists,
     updateAppointmentStatus,
     deleteAppointment,
+    currentUser,
   } = useSpaData();
   const [filter, setFilter] = useState<string>("all");
   const [modalOpen, setModalOpen] = useState(false);
@@ -101,13 +102,15 @@ export function AppointmentsView() {
               options={filterOptions}
             />
           </div>
-          <button
-            onClick={() => setModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary/90 active:scale-95 transition-all duration-200 cursor-pointer"
-          >
-            <Plus size={16} />
-            Tạo lịch hẹn
-          </button>
+          {currentUser.role !== "technician" && (
+            <button
+              onClick={() => setModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary/90 active:scale-95 transition-all duration-200 cursor-pointer"
+            >
+              <Plus size={16} />
+              Tạo lịch hẹn
+            </button>
+          )}
         </div>
       </div>
 

@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
 import { Button } from "@/components/ui/Button";
 import { showToast } from "@/components/ui/Toast";
-import { UserPlus, X, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
+import { Modal } from "@/components/ui/Modal";
 
 export interface CreateClientModalProps {
   open: boolean;
@@ -27,8 +28,6 @@ export function CreateClientModal({ open, onClose }: CreateClientModalProps) {
 
   const [errors, setErrors] = useState<{ name?: string; phone?: string; email?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
-
-  if (!open) return null;
 
   const validate = () => {
     const newErrors: typeof errors = {};
@@ -83,93 +82,74 @@ export function CreateClientModal({ open, onClose }: CreateClientModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-100 flex items-end justify-center bg-dark-slate/40 p-0 backdrop-blur-sm sm:items-center sm:p-4">
-      <div className="glass-card max-h-[92vh] w-full overflow-y-auto rounded-t-3xl border border-white/50 p-6 shadow-2xl sm:max-w-lg sm:rounded-3xl sm:p-8 animate-fadeIn">
-        {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="font-headline text-xl font-bold text-dark-slate flex items-center gap-2">
-            <UserPlus className="text-jade-green" size={20} />
-            Thêm khách hàng mới
-          </h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full p-2 hover:bg-white/50 text-on-surface-variant transition-colors flex items-center justify-center"
-            aria-label="Đóng"
-          >
-            <X size={20} />
-          </button>
+    <Modal open={open} onClose={onClose} title="Thêm khách hàng mới">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          label="Họ và tên *"
+          placeholder="VD: Nguyễn Văn A"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+          }}
+          error={errors.name}
+        />
+
+        <Input
+          label="Số điện thoại *"
+          placeholder="VD: 0912345678"
+          type="tel"
+          value={phone}
+          onChange={(e) => {
+            setPhone(e.target.value);
+            if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+          }}
+          error={errors.phone}
+        />
+
+        <Input
+          label="Email"
+          placeholder="VD: customer@gmail.com"
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
+          }}
+          error={errors.email}
+        />
+
+        <Select
+          label="Hạng thành viên"
+          value={tier}
+          onChange={setTier}
+          options={tierOptions}
+        />
+
+        <Textarea
+          label="Ghi chú thêm"
+          placeholder="Ghi chú sở thích, lưu ý y tế hoặc tình trạng da..."
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          rows={3}
+        />
+
+        <div className="flex justify-end gap-3 pt-4">
+          <Button type="button" variant="ghost" onClick={onClose} disabled={isLoading}>
+            Hủy
+          </Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 size={16} className="animate-spin" />
+                Đang thêm...
+              </span>
+            ) : (
+              "Xác nhận thêm"
+            )}
+          </Button>
         </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Họ và tên *"
-            placeholder="VD: Nguyễn Văn A"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
-            }}
-            error={errors.name}
-          />
-
-          <Input
-            label="Số điện thoại *"
-            placeholder="VD: 0912345678"
-            type="tel"
-            value={phone}
-            onChange={(e) => {
-              setPhone(e.target.value);
-              if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
-            }}
-            error={errors.phone}
-          />
-
-          <Input
-            label="Email"
-            placeholder="VD: customer@gmail.com"
-            type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
-            }}
-            error={errors.email}
-          />
-
-          <Select
-            label="Hạng thành viên"
-            value={tier}
-            onChange={setTier}
-            options={tierOptions}
-          />
-
-          <Textarea
-            label="Ghi chú thêm"
-            placeholder="Ghi chú sở thích, lưu ý y tế hoặc tình trạng da..."
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={3}
-          />
-
-          <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="ghost" onClick={onClose} disabled={isLoading}>
-              Hủy
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 size={16} className="animate-spin" />
-                  Đang thêm...
-                </span>
-              ) : (
-                "Xác nhận thêm"
-              )}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+      </form>
+    </Modal>
   );
 }

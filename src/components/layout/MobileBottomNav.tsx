@@ -23,17 +23,30 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; size?: n
   bolt: Zap,
 };
 
+import { useSpaData } from "@/hooks/useSpaData";
+
 export function MobileBottomNav() {
   const pathname = usePathname();
-  const nav = useDashboardNav(true);
+  const { currentUser } = useSpaData();
+  const rawNav = useDashboardNav(true);
 
   if (!shouldShowMobileNav(pathname)) return null;
+
+  const nav = rawNav.filter((item) => {
+    if (currentUser.role === "technician") {
+      return item.id === "dashboard" || item.id === "appointments";
+    }
+    if (currentUser.role === "cashier") {
+      return item.id !== "reports";
+    }
+    return true;
+  });
 
   const active = activeMobileNavId(pathname);
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 border-t border-glass-border bg-glass-bg shadow-[0_-4px_24px_rgba(0,0,0,0.06)] backdrop-blur-xl lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-glass-border bg-glass-bg shadow-[0_-4px_24px_rgba(0,0,0,0.06)] backdrop-blur-xl sm:hidden"
       aria-label="Main navigation"
     >
       <div className="flex items-stretch justify-between gap-0.5 overflow-x-auto px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 scrollbar-hide">

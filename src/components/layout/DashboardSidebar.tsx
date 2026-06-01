@@ -19,6 +19,8 @@ import {
   UserCheck
 } from "lucide-react";
 
+import { useSpaData } from "@/hooks/useSpaData";
+
 const iconMap: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
   dashboard: LayoutDashboard,
   calendar_month: Calendar,
@@ -51,7 +53,18 @@ export interface DashboardSidebarProps {
 export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
   const pathname = usePathname();
   const active = activeNavId(pathname);
-  const nav = useDashboardNav();
+  const { currentUser } = useSpaData();
+  const rawNav = useDashboardNav();
+
+  const nav = rawNav.filter((item) => {
+    if (currentUser.role === "technician") {
+      return item.id === "dashboard" || item.id === "appointments";
+    }
+    if (currentUser.role === "cashier") {
+      return item.id !== "reports";
+    }
+    return true;
+  });
 
   return (
     <>

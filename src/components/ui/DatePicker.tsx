@@ -9,6 +9,7 @@ interface DatePickerProps {
   label?: string;
   error?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 export function DatePicker({
@@ -17,6 +18,7 @@ export function DatePicker({
   label,
   error,
   className = "",
+  disabled = false,
 }: DatePickerProps) {
   const [showCalendar, setShowCalendar] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -119,16 +121,19 @@ export function DatePicker({
       <button
         type="button"
         onClick={() => {
+          if (disabled) return;
           const parts = value.split("-").map(Number);
           if (parts.length === 3) {
             setCurrentMonth(new Date(parts[0], parts[1] - 1, 1));
           }
           setShowCalendar(!showCalendar);
         }}
-        className={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-sm flex items-center justify-between text-dark-slate font-medium text-left outline-none focus:ring-2 focus:ring-primary/20 transition-all hover:bg-white/70 ${
+        className={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-sm flex items-center justify-between text-dark-slate font-medium text-left outline-none transition-all ${
           error
             ? "border-red-500 focus:border-red-500"
             : "border-glass-border focus:border-primary/40 hover:border-primary/20"
+        } ${
+          disabled ? "bg-surface/50 text-on-surface-variant/70 cursor-not-allowed opacity-80" : "focus:ring-2 focus:ring-primary/20 hover:bg-white/70"
         }`}
       >
         <span>{formatDisplayDate(value)}</span>

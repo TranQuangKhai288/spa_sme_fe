@@ -97,6 +97,13 @@ export const api = {
       method: "DELETE",
     }),
 
+  // Current User Role Switcher
+  updateCurrentUserRole: (role: string) =>
+    request<CurrentUser>("/current-user", {
+      method: "PUT",
+      body: JSON.stringify({ role }),
+    }),
+
   // Therapists (KTV)
   createTherapist: (therapist: Omit<Therapist, "id" | "rating" | "totalReviews" | "availability">) =>
     request<Therapist>("/therapists", {

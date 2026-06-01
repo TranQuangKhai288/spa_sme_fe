@@ -48,7 +48,7 @@ const STATS = [
 ];
 
 export function WorkflowsView() {
-  const { workflows, toggleWorkflow } = useSpaData();
+  const { workflows, toggleWorkflow, currentUser } = useSpaData();
   const [showNewModal, setShowNewModal] = useState(false);
 
   const handleToggle = async (id: string, name: string, currentActive: boolean) => {
@@ -75,13 +75,15 @@ export function WorkflowsView() {
             Quản lý workflow nhắc lịch, SMS, Zalo OA và Email
           </p>
         </div>
-        <button
-          onClick={() => { setShowNewModal(true); showToast("Tính năng tạo workflow đang phát triển", "info"); }}
-          className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
-        >
-          <Plus size={18} />
-          Tạo workflow mới
-        </button>
+        {currentUser.role === "admin" && (
+          <button
+            onClick={() => { setShowNewModal(true); showToast("Tính năng tạo workflow đang phát triển", "info"); }}
+            className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
+          >
+            <Plus size={18} />
+            Tạo workflow mới
+          </button>
+        )}
       </div>
 
       {/* Quick Stats */}
@@ -124,10 +126,16 @@ export function WorkflowsView() {
               {/* Toggle switch */}
               <button
                 type="button"
-                onClick={() => handleToggle(wf.id, wf.name, wf.active)}
+                onClick={() => {
+                  if (currentUser.role !== "admin") {
+                    showToast("Quyền truy cập bị từ chối. Chỉ Quản trị viên được bật/tắt workflow.", "error");
+                    return;
+                  }
+                  handleToggle(wf.id, wf.name, wf.active);
+                }}
                 className={`relative h-7 w-12 rounded-full transition-colors shrink-0 ${
                   wf.active ? "bg-jade-green shadow-lg shadow-jade-green/20" : "bg-gray-200"
-                }`}
+                } ${currentUser.role !== "admin" ? "cursor-not-allowed opacity-75" : ""}`}
                 aria-pressed={wf.active}
                 title={wf.active ? "Tắt workflow" : "Bật workflow"}
               >
@@ -173,45 +181,52 @@ export function WorkflowsView() {
 
             {/* Footer actions */}
             <div className="flex gap-2 pt-3 border-t border-glass-border">
-              <button
-                onClick={() => showToast(`Đang mở editor cho "${wf.name}"`, "info")}
-                className="flex-1 text-xs font-bold border border-glass-border text-dark-slate hover:bg-white/40 rounded-xl py-2 flex items-center justify-center gap-1 transition-all"
-              >
-                <Pencil size={15} />
-                Chỉnh sửa
-              </button>
-              <button
-                onClick={() => showToast(`Đã nhân bản workflow "${wf.name}"`, "success")}
-                className="flex-1 text-xs font-bold border border-glass-border text-dark-slate hover:bg-white/40 rounded-xl py-2 flex items-center justify-center gap-1 transition-all"
-              >
-                <Copy size={15} />
-                Nhân bản
-              </button>
+              {currentUser.role === "admin" && (
+                <>
+                  <button
+                    onClick={() => showToast(`Đang mở editor cho "${wf.name}"`, "info")}
+                    className="flex-1 text-xs font-bold border border-glass-border text-dark-slate hover:bg-white/40 rounded-xl py-2 flex items-center justify-center gap-1 transition-all"
+                  >
+                    <Pencil size={15} />
+                    Chỉnh sửa
+                  </button>
+                  <button
+                    onClick={() => showToast(`Đã nhân bản workflow "${wf.name}"`, "success")}
+                    className="flex-1 text-xs font-bold border border-glass-border text-dark-slate hover:bg-white/40 rounded-xl py-2 flex items-center justify-center gap-1 transition-all"
+                  >
+                    <Copy size={15} />
+                    Nhân bản
+                  </button>
+                </>
+              )}
               <button
                 onClick={() => showToast(`Xem báo cáo workflow (mock)`, "info")}
-                className="rounded-xl border border-glass-border text-dark-slate hover:bg-white/40 px-3 py-2 transition-all flex items-center justify-center"
+                className={`rounded-xl border border-glass-border text-dark-slate hover:bg-white/40 px-3 py-2 transition-all flex items-center justify-center ${currentUser.role !== "admin" ? "w-full py-2.5" : ""}`}
               >
                 <BarChart2 size={18} />
+                {currentUser.role !== "admin" && <span className="ml-2 text-xs font-bold">Xem báo cáo chi tiết</span>}
               </button>
             </div>
           </GlassCard>
         ))}
 
         {/* Add New Workflow Placeholder Card */}
-        <button
-          onClick={() => showToast("Tính năng tạo workflow đang phát triển", "info")}
-          className="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-glass-border p-10 hover:border-primary/40 hover:bg-primary/5 transition-all group"
-        >
-          <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-            <Plus className="text-primary text-[28px]" size={28} />
-          </div>
-          <p className="font-bold text-on-surface-variant group-hover:text-primary transition-colors">
-            Tạo workflow mới
-          </p>
-          <p className="text-xs text-on-surface-variant/60 text-center max-w-40">
-            Tự động hóa nhắc lịch, upsell và chăm sóc sau điều trị
-          </p>
-        </button>
+        {currentUser.role === "admin" && (
+          <button
+            onClick={() => showToast("Tính năng tạo workflow đang phát triển", "info")}
+            className="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-glass-border p-10 hover:border-primary/40 hover:bg-primary/5 transition-all group"
+          >
+            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+              <Plus className="text-primary text-[28px]" size={28} />
+            </div>
+            <p className="font-bold text-on-surface-variant group-hover:text-primary transition-colors">
+              Tạo workflow mới
+            </p>
+            <p className="text-xs text-on-surface-variant/60 text-center max-w-40">
+              Tự động hóa nhắc lịch, upsell và chăm sóc sau điều trị
+            </p>
+          </button>
+        )}
       </div>
     </div>
   );

@@ -177,4 +177,5 @@ export interface SpaDataContextValue {
     therapist: Partial<Therapist>
   ) => Promise<Therapist> | Therapist;
   deleteTherapist: (id: string) => Promise<void> | void;
+  switchRole: (role: string) => Promise<void>;
 }

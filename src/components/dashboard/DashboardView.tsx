@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ROUTES } from "@/lib/constants";
 import {
@@ -35,8 +35,10 @@ import {
   MessageSquare,
   Volume2,
   User,
-  ArrowRight
+  ArrowRight,
+  Loader2
 } from "lucide-react";
+import { StatDrawer } from "./StatDrawer";
 
 export default function DashboardView() {
   const weekdays = [
@@ -54,6 +56,7 @@ export default function DashboardView() {
     treatmentProgress,
     updateAppointmentStatus,
     deleteAppointment,
+    currentUser,
   } = useSpaData();
 
   const todayDate = new Date();
@@ -67,9 +70,89 @@ export default function DashboardView() {
 
   const todayLabel = formatDateString(realTodayStr);
 
+  // States for Date-reactive Stats & Loader & Drawer
+  const [loadingStats, setLoadingStats] = useState(false);
+  const [localStats, setLocalStats] = useState({
+    totalBookingsToday: 0,
+    vipClients: 0,
+    revenueToday: "0M",
+    revenueTarget: 0,
+    pendingReminders: 0,
+    revenueTrend: "",
+  });
+  const [activeDrawer, setActiveDrawer] = useState<"bookings" | "vips" | "revenue" | "reminders" | null>(null);
+
+  // Recalculate stats dynamically when selectedDate or appointments change (simulating API loading spinner)
+  useEffect(() => {
+    setLoadingStats(true);
+    const timer = setTimeout(() => {
+      const dayAppts = appointments.filter((apt) => apt.date === selectedDate);
+      const activeAppts = dayAppts.filter((apt) => apt.status !== "cancelled");
+      const totalBookingsToday = activeAppts.length;
+
+      // Calculate trend compared to yesterday
+      const prevDateObj = new Date(selectedDate);
+      prevDateObj.setDate(prevDateObj.getDate() - 1);
+      const prevDateStr = `${prevDateObj.getFullYear()}-${String(prevDateObj.getMonth() + 1).padStart(2, '0')}-${String(prevDateObj.getDate()).padStart(2, '0')}`;
+      const prevActiveCount = appointments.filter(
+        (apt) => apt.date === prevDateStr && apt.status !== "cancelled"
+      ).length;
+
+      let trendText = "";
+      if (prevActiveCount === 0) {
+        trendText = totalBookingsToday > 0 ? `+${totalBookingsToday} booking` : "Bằng hôm qua";
+      } else {
+        const diff = totalBookingsToday - prevActiveCount;
+        if (diff > 0) {
+          trendText = `+${diff} so với hôm qua`;
+        } else if (diff < 0) {
+          trendText = `${diff} so với hôm qua`;
+        } else {
+          trendText = "Bằng hôm qua";
+        }
+      }
+
+      // VIP Clients today
+      const vipToday = activeAppts.filter(
+        (apt) => apt.clientTier === "Kim Cương" || apt.clientTier === "Bạch Kim"
+      ).length;
+
+      // Estimated Revenue today
+      const revenueTodayVND = activeAppts
+        .filter(
+          (apt) =>
+            apt.status === "completed" ||
+            apt.status === "in_progress" ||
+            apt.status === "confirmed"
+        )
+        .reduce((sum, apt) => sum + Number(apt.price || 0), 0);
+      const revenueToday = (revenueTodayVND / 1_000_000).toFixed(1) + "M";
+
+      // Revenue Target Percentage (Target: 25,000,000 VND / 25M)
+      const dailyTarget = 25000000;
+      const revenueTarget = Math.min(100, Math.round((revenueTodayVND / dailyTarget) * 100));
+
+      // Pending reminders (status = confirmed)
+      const pendingReminders = activeAppts.filter((apt) => apt.status === "confirmed").length;
+
+      setLocalStats({
+        totalBookingsToday,
+        vipClients: vipToday,
+        revenueToday,
+        revenueTarget,
+        pendingReminders,
+        revenueTrend: trendText,
+      });
+      setLoadingStats(false);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [selectedDate, appointments]);
+
 
   return (
-    <div className="space-y-8 animate-fadeIn">
+    <div className="space-y-8">
+      <div className="space-y-8 animate-fadeIn">
       {/* Hero Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
@@ -94,30 +177,48 @@ export default function DashboardView() {
       {/* Grid Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Stat 1 */}
-        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-primary/5 to-transparent border border-white/45 hover:scale-[1.02] transition-all duration-300">
+        <div
+          onClick={() => setActiveDrawer("bookings")}
+          className="cursor-pointer glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-primary/5 to-transparent border border-white/45 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-jade-green/5"
+        >
           <div>
             <span className="text-[10px] font-bold text-jade-green/80 uppercase tracking-widest block mb-2 font-cta">
-              {`Tổng Booking Hôm Nay`}
+              {selectedDate === realTodayStr ? "Tổng Booking Hôm Nay" : "Tổng Booking"}
             </span>
-            <span className="font-headline text-4xl font-bold text-dark-slate">
-              {stats.totalBookingsToday}
-            </span>
+            {loadingStats ? (
+              <div className="h-10 flex items-center">
+                <Loader2 className="animate-spin text-jade-green h-8 w-8" />
+              </div>
+            ) : (
+              <span className="font-headline text-4xl font-bold text-dark-slate">
+                {localStats.totalBookingsToday}
+              </span>
+            )}
           </div>
           <div className="mt-4 flex items-center gap-1.5 text-jade-green text-xs font-semibold">
             <TrendingUp size={16} />
-            <span>{`${stats.revenueTrend} so với hôm qua`}</span>
+            <span>{localStats.revenueTrend}</span>
           </div>
         </div>
 
         {/* Stat 2 */}
-        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-soft-gold/10 to-transparent border border-white/45 hover:scale-[1.02] transition-all duration-300">
+        <div
+          onClick={() => setActiveDrawer("vips")}
+          className="cursor-pointer glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-soft-gold/10 to-transparent border border-white/45 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-soft-gold/5"
+        >
           <div>
             <span className="text-[10px] font-bold text-soft-gold uppercase tracking-widest block mb-2 font-cta">
-              {`Khách VIP Hôm Nay`}
+              {selectedDate === realTodayStr ? "Khách VIP Hôm Nay" : "Khách VIP"}
             </span>
-            <span className="font-headline text-4xl font-bold text-dark-slate">
-              {String(stats.vipClients).padStart(2, "0")}
-            </span>
+            {loadingStats ? (
+              <div className="h-10 flex items-center">
+                <Loader2 className="animate-spin text-soft-gold h-8 w-8" />
+              </div>
+            ) : (
+              <span className="font-headline text-4xl font-bold text-dark-slate">
+                {String(localStats.vipClients).padStart(2, "0")}
+              </span>
+            )}
           </div>
           <div className="mt-4 flex items-center gap-1.5 text-soft-gold text-xs font-semibold">
             <Star size={16} fill="currentColor" />
@@ -126,34 +227,54 @@ export default function DashboardView() {
         </div>
 
         {/* Stat 3 */}
-        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-primary/5 to-transparent border border-white/45 hover:scale-[1.02] transition-all duration-300">
-          <div>
-            <span className="text-[10px] font-bold text-jade-green/80 uppercase tracking-widest block mb-2 font-cta">
-              {`Doanh Thu Ước Tính`}
-            </span>
-            <span className="font-headline text-4xl font-bold text-dark-slate">
-              {stats.revenueToday}
-            </span>
+        {currentUser.role !== "technician" && (
+          <div
+            onClick={() => setActiveDrawer("revenue")}
+            className="cursor-pointer glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-primary/5 to-transparent border border-white/45 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-jade-green/5"
+          >
+            <div>
+              <span className="text-[10px] font-bold text-jade-green/80 uppercase tracking-widest block mb-2 font-cta">
+                {selectedDate === realTodayStr ? "Doanh Thu Ước Tính" : "Doanh Thu"}
+              </span>
+              {loadingStats ? (
+                <div className="h-10 flex items-center">
+                  <Loader2 className="animate-spin text-jade-green h-8 w-8" />
+                </div>
+              ) : (
+                <span className="font-headline text-4xl font-bold text-dark-slate">
+                  {localStats.revenueToday}
+                </span>
+              )}
+            </div>
+            <div className="mt-4 flex items-center gap-1 text-jade-green/80 text-xs font-medium">
+              <Sparkles size={14} />
+              <span>{`VND • Đạt ${localStats.revenueTarget}% mục tiêu ngày`}</span>
+            </div>
           </div>
-          <div className="mt-4 flex items-center gap-1 text-jade-green/80 text-xs font-medium">
-            <Sparkles size={14} />
-            <span>{`VND • Đạt ${stats.revenueTarget}% mục tiêu ngày`}</span>
-          </div>
-        </div>
+        )}
 
         {/* Stat 4 */}
-        <div className="glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-red-500/5 to-transparent border border-red-500/10 hover:scale-[1.02] transition-all duration-300">
+        <div
+          onClick={() => setActiveDrawer("reminders")}
+          className="cursor-pointer glass-card p-6 rounded-2xl flex flex-col justify-between bg-gradient-to-br from-red-500/5 to-transparent border border-red-500/10 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-red-500/5"
+        >
           <div>
             <span className="text-[10px] font-bold text-red-500/80 uppercase tracking-widest block mb-2 font-cta">
-              {`Nhắc nhở chưa xử lý`}
+              {selectedDate === realTodayStr ? "Nhắc nhở chưa xử lý" : "Lịch cần xử lý"}
             </span>
-            <span className="font-headline text-4xl font-bold text-red-500">
-              {stats.pendingReminders}
-            </span>
+            {loadingStats ? (
+              <div className="h-10 flex items-center">
+                <Loader2 className="animate-spin text-red-500 h-8 w-8" />
+              </div>
+            ) : (
+              <span className="font-headline text-4xl font-bold text-red-500">
+                {localStats.pendingReminders}
+              </span>
+            )}
           </div>
           <div className="mt-4 flex items-center gap-1.5 text-red-500 text-xs font-semibold">
             <AlertCircle size={16} />
-            <span>{`Cần xử lý tự động ngay`}</span>
+            <span>{`Xem và xử lý công việc`}</span>
           </div>
         </div>
       </div>
@@ -257,67 +378,69 @@ export default function DashboardView() {
                       {localizedStatus(apt.status)}
                     </span>
 
-                    <div className="flex items-center gap-2">
-                      {apt.status === "confirmed" && (
-                        <button
-                          onClick={async () => {
-                            try {
-                              await updateAppointmentStatus(apt.id, "in_progress");
-                              showToast(`Check-in thành công: ${apt.clientName}`, "success");
-                            } catch {
-                              showToast("Check-in thất bại. Vui lòng thử lại!", "error");
-                            }
-                          }}
-                          className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all shadow-md shadow-primary/5 hover:shadow-primary/10 cursor-pointer"
-                        >
-                          {`Điểm danh`}
-                        </button>
-                      )}
-                      {apt.status === "in_progress" && (
-                        <button
-                          onClick={async () => {
-                            try {
-                              await updateAppointmentStatus(apt.id, "completed");
-                              showToast(`Hoàn tất liệu trình: ${apt.clientName}`, "success");
-                            } catch {
-                              showToast("Không thể cập nhật trạng thái. Vui lòng thử lại!", "error");
-                            }
-                          }}
-                          className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all cursor-pointer"
-                        >
-                          {`Hoàn tất`}
-                        </button>
-                      )}
-                      {apt.status !== "completed" &&
-                        apt.status !== "cancelled" && (
+                    {currentUser.role !== "technician" && (
+                      <div className="flex items-center gap-2">
+                        {apt.status === "confirmed" && (
                           <button
                             onClick={async () => {
                               try {
-                                await updateAppointmentStatus(apt.id, "cancelled");
-                                showToast(`Đã hủy lịch: ${apt.clientName}`, "warning");
+                                await updateAppointmentStatus(apt.id, "in_progress");
+                                showToast(`Check-in thành công: ${apt.clientName}`, "success");
                               } catch {
-                                showToast("Hủy lịch thất bại. Vui lòng thử lại!", "error");
+                                showToast("Check-in thất bại. Vui lòng thử lại!", "error");
                               }
                             }}
-                            className="border border-red-500/20 text-red-500 hover:bg-red-500/10 text-xs px-3 py-1.5 rounded-lg transition-all cursor-pointer"
+                            className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all shadow-md shadow-primary/5 hover:shadow-primary/10 cursor-pointer"
                           >
-                            {`Hủy`}
+                            {`Điểm danh`}
                           </button>
                         )}
-                      <button
-                        onClick={async () => {
-                          try {
-                            await deleteAppointment(apt.id);
-                            showToast("Đã xóa lịch hẹn", "info");
-                          } catch {
-                            showToast("Xóa thất bại. Vui lòng thử lại!", "error");
-                          }
-                        }}
-                        className="text-on-surface-variant/50 hover:text-red-500 p-1.5 rounded-lg transition-colors flex items-center justify-center cursor-pointer"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                        {apt.status === "in_progress" && (
+                          <button
+                            onClick={async () => {
+                              try {
+                                await updateAppointmentStatus(apt.id, "completed");
+                                showToast(`Hoàn tất liệu trình: ${apt.clientName}`, "success");
+                              } catch {
+                                showToast("Không thể cập nhật trạng thái. Vui lòng thử lại!", "error");
+                              }
+                            }}
+                            className="bg-primary text-white text-xs px-3 py-1.5 rounded-lg active:scale-95 transition-all cursor-pointer"
+                          >
+                            {`Hoàn tất`}
+                          </button>
+                        )}
+                        {apt.status !== "completed" &&
+                          apt.status !== "cancelled" && (
+                            <button
+                              onClick={async () => {
+                                try {
+                                  await updateAppointmentStatus(apt.id, "cancelled");
+                                  showToast(`Đã hủy lịch: ${apt.clientName}`, "warning");
+                                } catch {
+                                  showToast("Hủy lịch thất bại. Vui lòng thử lại!", "error");
+                                }
+                              }}
+                              className="border border-red-500/20 text-red-500 hover:bg-red-500/10 text-xs px-3 py-1.5 rounded-lg transition-all cursor-pointer"
+                            >
+                              {`Hủy`}
+                            </button>
+                          )}
+                        <button
+                          onClick={async () => {
+                            try {
+                              await deleteAppointment(apt.id);
+                              showToast("Đã xóa lịch hẹn", "info");
+                            } catch {
+                              showToast("Xóa thất bại. Vui lòng thử lại!", "error");
+                            }
+                          }}
+                          className="text-on-surface-variant/50 hover:text-red-500 p-1.5 rounded-lg transition-colors flex items-center justify-center cursor-pointer"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))
@@ -474,5 +597,14 @@ export default function DashboardView() {
         </div>
       </section>
     </div>
-  );
+
+    {/* Drawer Details Component */}
+    <StatDrawer
+      open={activeDrawer !== null}
+      onClose={() => setActiveDrawer(null)}
+      type={activeDrawer}
+      dateStr={selectedDate}
+    />
+  </div>
+);
 }

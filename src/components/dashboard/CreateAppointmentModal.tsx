@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useSpaData } from "@/hooks/useSpaData";
 import { Button } from "@/components/ui/Button";
 import { showToast } from "@/components/ui/Toast";
-import { X, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Select } from "@/components/ui/Select";
 import { DatePicker } from "@/components/ui/DatePicker";
+import { Modal } from "@/components/ui/Modal";
 
 export interface CreateAppointmentModalProps {
   open: boolean;
@@ -42,8 +43,6 @@ export function CreateAppointmentModal({
     return new Intl.NumberFormat("vi-VN").format(Number(clean));
   };
 
-  if (!open) return null;
-
   const client = clients.find((c) => c.id === clientId) ?? clients[0];
   const therapist =
     therapists.find((t) => t.id === therapistId) ?? therapists[0];
@@ -72,7 +71,7 @@ export function CreateAppointmentModal({
       return;
     }
 
-    const numericPrice = Number(price.replace(/\\./g, "")) || 0;
+    const numericPrice = Number(price.replace(/\./g, "")) || 0;
     setIsLoading(true);
     try {
       await addAppointment({
@@ -111,141 +110,127 @@ export function CreateAppointmentModal({
   }));
 
   return (
-    <div className="fixed inset-0 z-100 flex items-end justify-center bg-dark-slate/40 p-0 backdrop-blur-sm sm:items-center sm:p-4">
-      <div className="glass-card max-h-[92vh] w-full overflow-y-auto rounded-t-3xl border border-white/50 p-6 shadow-2xl sm:max-w-lg sm:rounded-3xl sm:p-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="font-headline text-xl font-bold text-dark-slate">
-            Tạo lịch hẹn mới
-          </h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full p-2 hover:bg-white/50 flex items-center justify-center text-on-surface-variant/80 hover:text-on-surface"
-            aria-label="Đóng"
-          >
-            <X size={20} />
-          </button>
+    <Modal open={open} onClose={onClose} title="Tạo lịch hẹn mới">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Select
+          label="Khách hàng"
+          value={clientId}
+          onChange={setClientId}
+          options={clientOptions}
+        />
+
+        <Select
+          label="Nhân viên đảm nhận"
+          value={therapistId}
+          onChange={setTherapistId}
+          options={therapistOptions}
+        />
+
+        <div className="text-sm w-full">
+          <span className="font-cta mb-1 block text-on-surface-variant font-medium">
+            Dịch vụ yêu cầu (Nhập tự do hoặc chọn nhanh)
+          </span>
+          <input
+            type="text"
+            value={serviceName}
+            onChange={(e) => setServiceName(e.target.value)}
+            placeholder="Ví dụ: Massage cổ vai gáy, Thủy trị liệu..."
+            className="w-full rounded-xl border border-glass-border bg-white px-4 py-2.5 text-sm text-dark-slate font-semibold outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:border-primary/40 hover:border-primary/20"
+          />
+          <div className="mt-2.5 flex flex-wrap gap-2">
+            {services.map((s) => (
+              <Button
+                key={s.id}
+                type="button"
+                variant="pill"
+                size="none"
+                onClick={() => {
+                  setServiceName(s.name);
+                  setPrice(formatNumberString(String(s.price)));
+                }}
+                className="px-3 py-1.5"
+              >
+                + {s.name}
+              </Button>
+            ))}
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Select
-            label="Khách hàng"
-            value={clientId}
-            onChange={setClientId}
-            options={clientOptions}
-          />
-
-          <Select
-            label="Nhân viên đảm nhận"
-            value={therapistId}
-            onChange={setTherapistId}
-            options={therapistOptions}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <DatePicker
+            label="Ngày hẹn"
+            value={date}
+            onChange={setDate}
           />
 
           <div className="text-sm w-full">
             <span className="font-cta mb-1 block text-on-surface-variant font-medium">
-              Dịch vụ yêu cầu (Nhập tự do hoặc chọn nhanh)
+              Chi phí dự kiến (VND)
             </span>
             <input
               type="text"
-              value={serviceName}
-              onChange={(e) => setServiceName(e.target.value)}
-              placeholder="Ví dụ: Massage cổ vai gáy, Thủy trị liệu..."
+              value={price}
+              onChange={(e) => setPrice(formatNumberString(e.target.value))}
+              placeholder="0"
               className="w-full rounded-xl border border-glass-border bg-white px-4 py-2.5 text-sm text-dark-slate font-semibold outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:border-primary/40 hover:border-primary/20"
             />
-            <div className="mt-2.5 flex flex-wrap gap-2">
-              {services.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => {
-                    setServiceName(s.name);
-                    setPrice(formatNumberString(String(s.price)));
-                  }}
-                  className="text-[11px] font-bold bg-primary/5 hover:bg-primary text-primary hover:text-white border border-primary/15 hover:border-primary rounded-full px-3 py-1.5 transition-all duration-200 shadow-sm active:scale-95 cursor-pointer"
-                >
-                  + {s.name}
-                </button>
-              ))}
-            </div>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <DatePicker
-              label="Ngày hẹn"
-              value={date}
-              onChange={setDate}
-            />
-
-            <div className="text-sm w-full">
-              <span className="font-cta mb-1 block text-on-surface-variant font-medium">
-                Chi phí dự kiến (VND)
-              </span>
-              <input
-                type="text"
-                value={price}
-                onChange={(e) => setPrice(formatNumberString(e.target.value))}
-                placeholder="0"
-                className="w-full rounded-xl border border-glass-border bg-white px-4 py-2.5 text-sm text-dark-slate font-semibold outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:border-primary/40 hover:border-primary/20"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <label className="block text-sm">
-              <span className="font-cta mb-1 block text-on-surface-variant">
-                Bắt đầu
-              </span>
-              <input
-                type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className="w-full rounded-xl border border-glass-border bg-white px-4 py-2.5 text-sm text-dark-slate font-semibold outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:border-primary/40 hover:border-primary/20"
-              />
-            </label>
-            <label className="block text-sm">
-              <span className="font-cta mb-1 block text-on-surface-variant">
-                Kết thúc
-              </span>
-              <input
-                type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                className="w-full rounded-xl border border-glass-border bg-white px-4 py-2.5 text-sm text-dark-slate font-semibold outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:border-primary/40 hover:border-primary/20"
-              />
-            </label>
-          </div>
-
-          <div className="text-sm w-full">
-            <span className="font-cta mb-1 block text-on-surface-variant font-medium">
-              Ghi chú ban đầu
+        <div className="grid grid-cols-2 gap-4">
+          <label className="block text-sm">
+            <span className="font-cta mb-1 block text-on-surface-variant">
+              Bắt đầu
             </span>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Nhập ghi chú đặt lịch..."
-              rows={3}
-              className="w-full rounded-xl border border-glass-border bg-white px-4 py-2.5 text-sm text-dark-slate outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:border-primary/40 hover:border-primary/20 resize-none"
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              className="w-full rounded-xl border border-glass-border bg-white px-4 py-2.5 text-sm text-dark-slate font-semibold outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:border-primary/40 hover:border-primary/20"
             />
-          </div>
+          </label>
+          <label className="block text-sm">
+            <span className="font-cta mb-1 block text-on-surface-variant">
+              Kết thúc
+            </span>
+            <input
+              type="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              className="w-full rounded-xl border border-glass-border bg-white px-4 py-2.5 text-sm text-dark-slate font-semibold outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:border-primary/40 hover:border-primary/20"
+            />
+          </label>
+        </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="ghost" onClick={onClose} disabled={isLoading}>
-              Hủy
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 size={16} className="animate-spin" />
-                  Đang tạo...
-                </span>
-              ) : (
-                "Xác nhận lịch hẹn"
-              )}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="text-sm w-full">
+          <span className="font-cta mb-1 block text-on-surface-variant font-medium">
+            Ghi chú ban đầu
+          </span>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Nhập ghi chú đặt lịch..."
+            rows={3}
+            className="w-full rounded-xl border border-glass-border bg-white px-4 py-2.5 text-sm text-dark-slate outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:border-primary/40 hover:border-primary/20 resize-none"
+          />
+        </div>
+
+        <div className="flex justify-end gap-3 pt-4">
+          <Button type="button" variant="ghost" onClick={onClose} disabled={isLoading}>
+            Hủy
+          </Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 size={16} className="animate-spin" />
+                Đang tạo...
+              </span>
+            ) : (
+              "Xác nhận lịch hẹn"
+            )}
+          </Button>
+        </div>
+      </form>
+    </Modal>
   );
 }
