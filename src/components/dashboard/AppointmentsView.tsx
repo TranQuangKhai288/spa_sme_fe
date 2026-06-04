@@ -33,6 +33,7 @@ export function AppointmentsView() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editAptId, setEditAptId] = useState<string | null>(null);
   const [selectedApt, setSelectedApt] = useState<string | null>(null);
+  const [showMobileCalendar, setShowMobileCalendar] = useState(false);
   const { query: searchQuery } = useSearch();
   const [selectedTherapists, setSelectedTherapists] = useState<
     Record<string, boolean>
@@ -321,6 +322,34 @@ export function AppointmentsView() {
             </div>
           </div>
         </section>
+      </div>
+
+      {/* Mobile: calendar & date selector */}
+      <div className="md:hidden space-y-4 mb-4">
+        <GlassCard className="p-4 rounded-2xl border border-white/20">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-bold text-primary flex items-center gap-2">
+              <Clock size={16} /> Ngày xem: {formatDateString(selectedDate)}
+            </span>
+            <button
+              onClick={() => setShowMobileCalendar(!showMobileCalendar)}
+              className="text-xs text-jade-green font-bold flex items-center gap-1 hover:underline cursor-pointer"
+            >
+              {showMobileCalendar ? "Thu gọn" : "Đổi ngày"}
+            </button>
+          </div>
+          {showMobileCalendar && (
+            <div className="mt-3 pt-3 border-t border-glass-border">
+              <MiniCalendar
+                selectedDate={selectedDate}
+                onSelectDate={(date) => {
+                  setSelectedDate(date);
+                  setShowMobileCalendar(false);
+                }}
+              />
+            </div>
+          )}
+        </GlassCard>
       </div>
 
       {/* Mobile: cards */}

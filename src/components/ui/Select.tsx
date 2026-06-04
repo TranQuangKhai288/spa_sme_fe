@@ -18,6 +18,7 @@ interface SelectProps {
   error?: string;
   disabled?: boolean;
   variant?: "default" | "native" | "inline";
+  truncate?: boolean;
 }
 
 export function Select({
@@ -29,9 +30,11 @@ export function Select({
   error,
   disabled = false,
   variant = "default",
+  truncate = true,
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [mounted, setMounted] = useState(false);
   const [coords, setCoords] = useState({
     top: 0,
@@ -64,8 +67,8 @@ export function Select({
     if (!isOpen) return;
 
     const handleScrollAndResize = () => {
-      if (selectRef.current) {
-        const rect = selectRef.current.getBoundingClientRect();
+      if (buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
         const spaceBelow = window.innerHeight - rect.bottom;
         const openUpward = spaceBelow < 250 && rect.top > 250;
         
@@ -163,7 +166,7 @@ export function Select({
               isSelected
                 ? "bg-primary/10 text-primary font-bold"
                 : "text-dark-slate hover:bg-primary/5 hover:text-primary font-medium"
-            }`}
+            } ${truncate ? "truncate" : ""}`}
           >
             {opt.label}
           </button>
@@ -173,13 +176,14 @@ export function Select({
   );
 
   return (
-    <div className={`relative ${isInline ? "text-xs" : "text-sm w-full"} ${className}`} ref={selectRef}>
+    <div className={`relative h-fit ${isInline ? "text-xs" : "text-sm w-full"} ${className}`} ref={selectRef}>
       {label && (
         <span className="font-cta mb-1 block text-on-surface-variant font-medium">
           {label}
         </span>
       )}
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
         className={`w-full border flex items-center justify-between text-dark-slate font-bold text-left outline-none transition-all shadow-sm ${
@@ -192,7 +196,7 @@ export function Select({
           disabled ? "bg-surface/50 text-on-surface-variant/70 cursor-not-allowed opacity-80" : "cursor-pointer"
         }`}
       >
-        <span>{selectedOption?.label ?? ""}</span>
+        <span className={truncate ? "truncate min-w-0 mr-2" : ""}>{selectedOption?.label ?? ""}</span>
         <ChevronDown
           size={isInline ? 14 : 18}
           className="text-on-surface-variant/80 transition-transform duration-200 ml-1.5 shrink-0"

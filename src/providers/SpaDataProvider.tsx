@@ -257,6 +257,33 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
     [loadData]
   );
 
+  const updateClient = useCallback(
+    async (id: string, updatedClient: Partial<Client>) => {
+      try {
+        const client = await api.updateClient(id, updatedClient);
+        await loadData(true);
+        return client;
+      } catch (err) {
+        console.error("Failed to update client via API:", err);
+        throw err;
+      }
+    },
+    [loadData]
+  );
+
+  const deleteClient = useCallback(
+    async (id: string) => {
+      try {
+        await api.deleteClient(id);
+        await loadData(true);
+      } catch (err) {
+        console.error("Failed to delete client via API:", err);
+        throw err;
+      }
+    },
+    [loadData]
+  );
+
   const addTherapist = useCallback(
     async (newTherapist: Omit<Therapist, "id" | "rating" | "totalReviews" | "availability">) => {
       try {
@@ -336,6 +363,8 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       markAllNotificationsAsRead,
       deleteNotification,
       addClient,
+      updateClient,
+      deleteClient,
       addTherapist,
       updateTherapist,
       deleteTherapist,
@@ -362,6 +391,8 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       markAllNotificationsAsRead,
       deleteNotification,
       addClient,
+      updateClient,
+      deleteClient,
       addTherapist,
       updateTherapist,
       deleteTherapist,

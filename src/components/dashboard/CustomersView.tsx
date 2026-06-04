@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useSpaData } from "@/hooks/useSpaData";
 import { formatVnd, formatDateString, tierBadgeClass } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -8,6 +9,8 @@ import { showToast } from "@/components/ui/Toast";
 import type { Client } from "@/types/spa";
 import { useSearch } from "@/providers/SearchProvider";
 import { CreateClientModal } from "./CreateClientModal";
+import { CreateAppointmentModal } from "./CreateAppointmentModal";
+import { EditClientModal } from "./EditClientModal";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import {
@@ -21,13 +24,17 @@ import {
   MoreVertical,
 } from "lucide-react";
 
+interface ClientActionMenuProps {
+  client: Client;
+  onClose: () => void;
+  onSelectAction: (actionType: "book" | "view" | "edit" | "sms" | "vip" | "delete") => void;
+}
+
 function ClientActionMenu({
   client,
   onClose,
-}: {
-  client: Client;
-  onClose: () => void;
-}) {
+  onSelectAction,
+}: ClientActionMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,7 +55,7 @@ function ClientActionMenu({
           icon: CalendarPlus,
           label: "Tạo lịch hẹn",
           action: () => {
-            showToast(`Mở form đặt lịch cho ${client.name}`, "info");
+            onSelectAction("book");
             onClose();
           },
         },
@@ -56,7 +63,7 @@ function ClientActionMenu({
           icon: User,
           label: "Xem hồ sơ",
           action: () => {
-            showToast("Tính năng đang phát triển", "info");
+            onSelectAction("view");
             onClose();
           },
         },
@@ -64,7 +71,7 @@ function ClientActionMenu({
           icon: Pencil,
           label: "Chỉnh sửa",
           action: () => {
-            showToast("Tính năng đang phát triển", "info");
+            onSelectAction("edit");
             onClose();
           },
         },
@@ -72,7 +79,7 @@ function ClientActionMenu({
           icon: MessageSquare,
           label: "Gửi SMS",
           action: () => {
-            showToast(`Đã gửi SMS cho ${client.name}`, "success");
+            onSelectAction("sms");
             onClose();
           },
         },
@@ -80,7 +87,7 @@ function ClientActionMenu({
           icon: Star,
           label: "Nâng hạng VIP",
           action: () => {
-            showToast(`Đã đánh dấu ${client.name} nâng hạng`, "success");
+            onSelectAction("vip");
             onClose();
           },
         },
@@ -91,7 +98,10 @@ function ClientActionMenu({
             key={item.label}
             variant="ghost"
             size="none"
-            onClick={item.action}
+            onClick={(e) => {
+              e.stopPropagation();
+              item.action();
+            }}
             className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-dark-slate hover:bg-primary/5 hover:text-primary transition-colors text-left justify-start rounded-none border-none shadow-none"
             icon={<IconComponent size={18} className="text-on-surface-variant" />}
           >
@@ -104,7 +114,7 @@ function ClientActionMenu({
           variant="ghost"
           size="none"
           onClick={() => {
-            showToast(`Đã xóa khách hàng (mock)`, "warning");
+            onSelectAction("delete");
             onClose();
           }}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors text-left justify-start rounded-none border-none shadow-none"
@@ -120,12 +130,56 @@ function ClientActionMenu({
 const TIER_FILTERS = ["Tất cả", "Kim Cương", "Bạch Kim", "Vàng", "Bạc"];
 
 export function CustomersView() {
-  const { clients } = useSpaData();
+  const { clients, updateClient, deleteClient } = useSpaData();
   const { query } = useSearch();
+  const router = useRouter();
   const [tierFilter, setTierFilter] = useState("Tất cả");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"name" | "visits" | "spent">("visits");
   const [modalOpen, setModalOpen] = useState(false);
+  const [bookingClient, setBookingClient] = useState<Client | null>(null);
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
+
+  const handleSelectAction = (client: Client, actionType: "book" | "view" | "edit" | "sms" | "vip" | "delete") => {
+    if (actionType === "book") {
+      setBookingClient(client);
+    } else if (actionType === "view") {
+      router.push(`/dashboard/customers/detail?id=${client.id}`);
+    } else if (actionType === "edit") {
+      setEditingClient(client);
+    } else if (actionType === "sms") {
+      showToast(`Đã gửi tin nhắn SMS thương hiệu cho khách hàng ${client.name}!`, "success");
+    } else if (actionType === "vip") {
+      const nextTierMap: Record<string, string> = {
+        "Bạc": "Vàng",
+        "Vàng": "Bạch Kim",
+        "Bạch Kim": "Kim Cương",
+        "Kim Cương": "Bạc"
+      };
+      const nextTier = nextTierMap[client.tier] || "Kim Cương";
+      if (updateClient) {
+        Promise.resolve(updateClient(client.id, { tier: nextTier }))
+          .then(() => {
+            showToast(`Đã nâng hạng VIP cho ${client.name} thành ${nextTier}!`, "success");
+          })
+          .catch(() => {
+            showToast("Nâng hạng VIP thất bại.", "error");
+          });
+      }
+    } else if (actionType === "delete") {
+      if (confirm(`Bạn có chắc chắn muốn xóa khách hàng ${client.name}?`)) {
+        if (deleteClient) {
+          Promise.resolve(deleteClient(client.id))
+            .then(() => {
+              showToast(`Đã xóa khách hàng ${client.name}`, "info");
+            })
+            .catch(() => {
+              showToast("Xóa khách hàng thất bại. Vui lòng thử lại!", "error");
+            });
+        }
+      }
+    }
+  };
 
   const filtered = clients
     .filter((c) => {
@@ -207,21 +261,26 @@ export function CustomersView() {
         {filtered.map((client) => (
           <GlassCard key={client.id} className="p-4">
             <div className="flex items-center gap-3">
-              <img
-                src={client.avatar}
-                alt=""
-                className="h-12 w-12 rounded-full object-cover ring-2 ring-soft-gold/20"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold text-dark-slate">{client.name}</p>
-                <p className="truncate text-xs text-on-surface-variant">
-                  {client.email}
-                </p>
-                <span
-                  className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${tierBadgeClass(client.tier)}`}
-                >
-                  {client.tier}
-                </span>
+              <div
+                className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer group/name"
+                onClick={() => router.push(`/dashboard/customers/detail?id=${client.id}`)}
+              >
+                <img
+                  src={client.avatar}
+                  alt=""
+                  className="h-12 w-12 rounded-full object-cover ring-2 ring-soft-gold/20 group-hover/name:ring-primary transition-all shrink-0"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-dark-slate group-hover/name:text-primary transition-colors">{client.name}</p>
+                  <p className="truncate text-xs text-on-surface-variant">
+                    {client.email}
+                  </p>
+                  <span
+                    className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${tierBadgeClass(client.tier)}`}
+                  >
+                    {client.tier}
+                  </span>
+                </div>
               </div>
               <button
                 onClick={() =>
@@ -286,6 +345,7 @@ export function CustomersView() {
               {filtered.map((client) => (
                 <tr
                   key={client.id}
+                  onClick={() => router.push(`/dashboard/customers/detail?id=${client.id}`)}
                   className="relative cursor-pointer transition-colors hover:bg-white/30 group"
                 >
                   <td className="px-6 py-5 whitespace-nowrap">
@@ -346,6 +406,7 @@ export function CustomersView() {
                       <ClientActionMenu
                         client={client}
                         onClose={() => setOpenMenuId(null)}
+                        onSelectAction={(action) => handleSelectAction(client, action)}
                       />
                     )}
                   </td>
@@ -360,6 +421,22 @@ export function CustomersView() {
         <CreateClientModal
           open={modalOpen}
           onClose={() => setModalOpen(false)}
+        />
+      )}
+
+      {bookingClient && (
+        <CreateAppointmentModal
+          open={!!bookingClient}
+          onClose={() => setBookingClient(null)}
+          defaultClientId={bookingClient.id}
+        />
+      )}
+
+      {editingClient && (
+        <EditClientModal
+          open={!!editingClient}
+          onClose={() => setEditingClient(null)}
+          client={editingClient}
         />
       )}
     </div>

@@ -13,15 +13,17 @@ export interface CreateAppointmentModalProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: (date: string) => void;
+  defaultClientId?: string;
 }
 
 export function CreateAppointmentModal({
   open,
   onClose,
   onSuccess,
+  defaultClientId,
 }: CreateAppointmentModalProps) {
   const { clients, services, therapists, addAppointment, appointments } = useSpaData();
-  const [clientId, setClientId] = useState(clients[0]?.id ?? "");
+  const [clientId, setClientId] = useState(defaultClientId || (clients[0]?.id ?? ""));
   const [therapistId, setTherapistId] = useState(therapists[0]?.id ?? "");
   const [serviceName, setServiceName] = useState("");
   const [price, setPrice] = useState("0");

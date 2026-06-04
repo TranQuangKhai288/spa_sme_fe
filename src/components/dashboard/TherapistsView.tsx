@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useSpaData } from "@/hooks/useSpaData";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
@@ -152,15 +153,15 @@ export function TherapistsView() {
           <GlassCard key={t.id} className="p-6 rounded-2xl flex flex-col justify-between" hover>
             <div>
               {/* Profile Header */}
-              <div className="flex items-start gap-4 mb-4">
+              <Link href={`/dashboard/therapists/detail?id=${t.id}`} className="flex items-start gap-4 mb-4 group/profile cursor-pointer block">
                 <img
                   src={t.avatar}
                   alt={t.name}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-glass-border shadow-sm shrink-0"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-glass-border shadow-sm shrink-0 group-hover/profile:border-primary transition-all"
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <h3 className="font-headline text-base font-bold text-dark-slate truncate">
+                    <h3 className="font-headline text-base font-bold text-dark-slate truncate group-hover/profile:text-primary transition-colors">
                       {t.name}
                     </h3>
                     <span
@@ -193,7 +194,7 @@ export function TherapistsView() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Bio description */}
               {t.bio && (

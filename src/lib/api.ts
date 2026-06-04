@@ -52,6 +52,15 @@ export const api = {
       method: "POST",
       body: JSON.stringify(client),
     }),
+  updateClient: (id: string, client: Partial<Client>) =>
+    request<Client>(`/clients/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(client),
+    }),
+  deleteClient: (id: string) =>
+    request<{ success: boolean; message: string }>(`/clients/${id}`, {
+      method: "DELETE",
+    }),
 
   // Services & Therapists
   getServices: () => request<Service[]>("/services"),

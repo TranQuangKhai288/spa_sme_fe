@@ -169,6 +169,11 @@ export interface SpaDataContextValue {
       "id" | "totalVisits" | "totalSpent" | "memberPoints" | "lastVisit" | "joinDate"
     >
   ) => Promise<Client> | Client;
+  updateClient: (
+    id: string,
+    client: Partial<Client>
+  ) => Promise<Client> | Client;
+  deleteClient: (id: string) => Promise<void> | void;
   addTherapist: (
     therapist: Omit<Therapist, "id" | "rating" | "totalReviews" | "availability">
   ) => Promise<Therapist> | Therapist;
