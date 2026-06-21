@@ -32,7 +32,9 @@ export function EditAppointmentModal({
   const [endTime, setEndTime] = useState("15:30");
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("");
+  const [reminderTime, setReminderTime] = useState("1440"); // Default 24h
   const [isLoading, setIsLoading] = useState(false);
+
 
   const formatNumberString = (value: string) => {
     const clean = value.replace(/\D/g, "");
@@ -51,8 +53,12 @@ export function EditAppointmentModal({
       setEndTime(apt.endTime);
       setDate(apt.date);
       setStatus(apt.status);
+      if (apt.reminderTime !== undefined) {
+        setReminderTime(String(apt.reminderTime));
+      }
     }
   }, [apt, services, open]);
+
 
   if (!open || !apt) return null;
 
@@ -73,6 +79,7 @@ export function EditAppointmentModal({
         price: numericPrice,
         notes: notes.trim() || null as any,
         status,
+        reminderTime: Number(reminderTime),
       });
       showToast("Cập nhật lịch hẹn thành công!", "success");
       onClose();
@@ -251,7 +258,23 @@ export function EditAppointmentModal({
           </label>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Select
+            label="Nhắc lịch tự động"
+            value={reminderTime}
+            onChange={setReminderTime}
+            options={[
+              { value: "0", label: "Không nhắc" },
+              { value: "60", label: "Trước 1 giờ" },
+              { value: "120", label: "Trước 2 giờ" },
+              { value: "1440", label: "Trước 1 ngày (24h)" },
+            ]}
+            disabled={currentUser.role === "technician"}
+          />
+        </div>
+
         <div className="text-sm w-full">
+
           <span className="font-cta mb-1 block text-on-surface-variant font-medium">
             Ghi chú chi tiết
           </span>

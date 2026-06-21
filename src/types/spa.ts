@@ -35,7 +35,10 @@ export interface Appointment {
   statusLabel: string;
   price: number;
   notes?: string;
+  reminderSent?: boolean;
+  reminderTime?: number;
 }
+
 
 export interface TreatmentProgress {
   id: string;

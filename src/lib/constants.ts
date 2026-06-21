@@ -92,8 +92,7 @@ export function shouldShowMobileNav(pathname: string): boolean {
   return (
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/portal") ||
-    pathname === "/booking" ||
-    pathname === "/"
+    pathname === "/booking"
   );
 }
 
