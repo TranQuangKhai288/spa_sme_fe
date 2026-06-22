@@ -12,6 +12,7 @@ import {
   Users,
   BarChart3,
   Zap,
+  Globe,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
@@ -21,6 +22,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; size?: n
   person_search: Users,
   analytics: BarChart3,
   bolt: Zap,
+  language: Globe,
 };
 
 import { useSpaData } from "@/hooks/useSpaData";

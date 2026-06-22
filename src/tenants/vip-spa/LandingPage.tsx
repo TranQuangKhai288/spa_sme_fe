@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ROUTES } from "@/lib/constants";
 import { MaterialIcon } from "@/components/ui/MaterialIcon";
+import { BookingModal } from "@/components/landing/BookingModal";
+import { DraggableAssistiveButton } from "@/components/ui/DraggableAssistiveButton";
 
 const NAV_LINKS = [
   { label: "Sanctuary", href: "#", isActive: true },
@@ -65,6 +67,8 @@ const FOOTER_CONTACTS = [
 ];
 
 export default function VIPLandingPage() {
+  const [showBookingModal, setShowBookingModal] = useState(false);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -99,6 +103,7 @@ export default function VIPLandingPage() {
 
   return (
     <div className="bg-warm-ivory text-on-surface antialiased overflow-x-hidden min-h-screen">
+      <BookingModal open={showBookingModal} onClose={() => setShowBookingModal(false)} />
       {/* Navigation */}
       <nav
         className="fixed top-0 w-full z-50 transition-all duration-500 ease-in-out bg-white/70 backdrop-blur-xl border-b border-glass-border"
@@ -126,9 +131,9 @@ export default function VIPLandingPage() {
             <Link href={ROUTES.dashboard} className="font-label-md text-label-md text-charcoal-black border border-outline px-6 py-3 rounded-full hover:bg-surface-container-high transition-colors duration-300">
               Cổng vận hành
             </Link>
-            <Link href={ROUTES.booking} className="bg-champagne-gold text-charcoal-black font-label-md text-label-md px-6 py-3 rounded-full hover:bg-primary-fixed transition-colors duration-300">
+            <button onClick={() => setShowBookingModal(true)} className="bg-champagne-gold text-charcoal-black font-label-md text-label-md px-6 py-3 rounded-full hover:bg-primary-fixed transition-colors duration-300">
               Đặt lịch ngay
-            </Link>
+            </button>
           </div>
           <button className="md:hidden text-on-surface">
             <span className="material-symbols-outlined text-3xl">menu</span>
@@ -164,9 +169,9 @@ export default function VIPLandingPage() {
                 Khám phá không gian trị liệu đẳng cấp, nơi nghệ thuật chăm sóc cơ thể hòa quyện cùng sự tĩnh lặng tuyệt đối.
               </p>
               <div className="flex flex-wrap gap-4 mt-8 fade-in-right" style={{ transitionDelay: "0.2s" }}>
-                <Link href={ROUTES.booking} className="inline-flex items-center justify-center bg-champagne-gold text-charcoal-black font-label-md text-label-md px-10 py-4 rounded-full hover:bg-primary-fixed transition-all duration-300 shadow-lg uppercase tracking-widest min-w-[200px]">
+                <button onClick={() => setShowBookingModal(true)} className="inline-flex items-center justify-center bg-champagne-gold text-charcoal-black font-label-md text-label-md px-10 py-4 rounded-full hover:bg-primary-fixed transition-all duration-300 shadow-lg uppercase tracking-widest min-w-[200px]">
                   Đặt lịch ngay
-                </Link>
+                </button>
                 <Link href="#treatments" className="inline-flex items-center justify-center border border-charcoal-black text-charcoal-black font-label-md text-label-md px-10 py-4 rounded-full hover:bg-charcoal-black hover:text-warm-ivory transition-all duration-300 uppercase tracking-widest min-w-[200px]">
                   Khám phá
                 </Link>
@@ -299,7 +304,7 @@ export default function VIPLandingPage() {
                   <p className="text-white font-body-sm text-body-sm text-inverse-on-surface mb-8 opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out transform translate-y-4 group-hover:translate-y-0">
                     {service.desc}
                   </p>
-                  <button className="font-label-md text-label-md text-champagne-gold border border-champagne-gold px-6 py-2 rounded-full hover:bg-champagne-gold hover:text-charcoal-black transition-colors duration-300">
+                  <button onClick={() => setShowBookingModal(true)} className="font-label-md text-label-md text-champagne-gold border border-champagne-gold px-6 py-2 rounded-full hover:bg-champagne-gold hover:text-charcoal-black transition-colors duration-300">
                     Xem thêm
                   </button>
                 </div>
@@ -326,9 +331,9 @@ export default function VIPLandingPage() {
           <p className="font-body-lg text-body-lg text-inverse-on-surface mb-8">
             Hãy để chúng tôi chăm sóc bạn, ngay hôm nay.
           </p>
-          <Link href={ROUTES.booking} className="inline-block bg-champagne-gold text-charcoal-black font-label-md text-label-md px-10 py-4 rounded-full hover:bg-primary-fixed transition-colors duration-300 shadow-lg">
+          <button onClick={() => setShowBookingModal(true)} className="inline-block bg-champagne-gold text-charcoal-black font-label-md text-label-md px-10 py-4 rounded-full hover:bg-primary-fixed transition-colors duration-300 shadow-lg">
             Đặt lịch online ngay
-          </Link>
+          </button>
         </div>
       </section>
 
@@ -406,6 +411,7 @@ export default function VIPLandingPage() {
           </p>
         </div>
       </footer>
+      <DraggableAssistiveButton onClick={() => setShowBookingModal(true)} />
     </div>
   );
 }

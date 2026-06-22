@@ -9,7 +9,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import Pusher from "pusher-js";
 import { api } from "@/lib/api";
+import { showToast } from "@/components/ui/Toast";
 import type {
   Appointment,
   CalendarDay,
@@ -69,6 +71,7 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
   const [revenueChart, setRevenueChart] = useState<RevenueChartItem[]>([]);
   const [currentUser, setCurrentUser] = useState<CurrentUser>(defaultCurrentUser);
   const [stats, setStats] = useState<Stats>(defaultStats);
+  const [pendingOnlineBookingsCount, setPendingOnlineBookingsCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   // Load all data from API
@@ -83,6 +86,7 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
         appointmentsList,
         workflowsList,
         notificationsList,
+        pendingBookingsList,
       ] = await Promise.all([
         api.getDashboardSummary(),
         api.getClients(),
@@ -91,6 +95,7 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
         api.getAppointments(),
         api.getWorkflows(),
         api.getNotifications(),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787/api"}/bookings?status=pending`).then(res => res.json()).catch(() => []),
       ]);
 
       setSpa(dashboardSummary.spa);
@@ -105,6 +110,7 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       setAppointments(appointmentsList);
       setWorkflows(workflowsList);
       setNotifications(notificationsList);
+      setPendingOnlineBookingsCount(Array.isArray(pendingBookingsList) ? pendingBookingsList.length : 0);
     } catch (err) {
       console.error("Failed to load data from Backend API:", err);
     } finally {
@@ -115,6 +121,26 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     loadData(false);
   }, [loadData]);
+
+  // Listen for new bookings globally
+  useEffect(() => {
+    const pusherKey = process.env.NEXT_PUBLIC_PUSHER_KEY;
+    const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
+    if (!pusherKey || !pusherCluster) return;
+
+    const pusher = new Pusher(pusherKey, { cluster: pusherCluster });
+    const channel = pusher.subscribe("spa-channel");
+    channel.bind("new-booking", (data: any) => {
+      setPendingOnlineBookingsCount((prev) => prev + 1);
+      showToast(`Có đơn đặt chỗ mới từ ${data?.guestName || 'khách hàng'}!`, "success");
+    });
+
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+      pusher.disconnect();
+    };
+  }, []);
 
   // Recalculate stats based on appointments (keeps frontend responsive & matches server calculations)
   useEffect(() => {
@@ -341,6 +367,10 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
     [loadData]
   );
 
+  const decrementPendingOnlineBookingsCount = useCallback(() => {
+    setPendingOnlineBookingsCount((prev) => Math.max(0, prev - 1));
+  }, []);
+
   const value = useMemo<SpaDataContextValue>(
     () => ({
       spa,
@@ -369,6 +399,8 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       updateTherapist,
       deleteTherapist,
       switchRole,
+      pendingOnlineBookingsCount,
+      decrementPendingOnlineBookingsCount,
     }),
     [
       spa,
@@ -397,6 +429,8 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       updateTherapist,
       deleteTherapist,
       switchRole,
+      pendingOnlineBookingsCount,
+      decrementPendingOnlineBookingsCount,
     ]
   );
 

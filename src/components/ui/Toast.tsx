@@ -52,7 +52,7 @@ export function ToastProvider() {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-6 right-4 z-[200] flex flex-col gap-2 sm:right-6">
+    <div className="fixed top-6 right-4 z-[200] flex flex-col gap-2 sm:right-6">
       {toasts.map((t) => (
         <div
           key={t.id}

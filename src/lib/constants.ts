@@ -7,6 +7,7 @@ export const ROUTES = {
   portalNotifications: "/portal/notifications",
   portalProfile: "/portal/profile",
   dashboard: "/dashboard",
+  bookings: "/dashboard/bookings",
   appointments: "/dashboard/appointments",
   customers: "/dashboard/customers",
   workflows: "/dashboard/workflows",
@@ -17,6 +18,7 @@ export const ROUTES = {
 
 export type DashboardNavId =
   | "dashboard"
+  | "bookings"
   | "appointments"
   | "services"
   | "customers"
@@ -37,6 +39,13 @@ export const DASHBOARD_NAV: {
       shortLabel: "Tổng quan",
       icon: "dashboard",
       href: ROUTES.dashboard,
+    },
+    {
+      id: "bookings",
+      label: "Đặt chỗ trực tuyến",
+      shortLabel: "Đặt chỗ",
+      icon: "language",
+      href: ROUTES.bookings,
     },
     {
       id: "appointments",

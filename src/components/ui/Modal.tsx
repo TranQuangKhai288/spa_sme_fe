@@ -52,11 +52,11 @@ export function Modal({
   if (variant === "drawer") {
     return (
       <div 
-        className="fixed inset-0 z-100 flex justify-end items-end md:items-stretch bg-dark-slate/40 p-0 backdrop-blur-sm"
+        className="fixed inset-0 z-100 flex justify-end items-end md:items-stretch bg-dark-slate/40 p-0 backdrop-blur-sm animate-fadeInBackdrop"
         onClick={onClose}
       >
         <div
-          className="glass-card flex flex-col w-full md:w-1/2 md:max-w-2xl h-[85dvh] md:h-full rounded-t-3xl md:rounded-t-none md:rounded-l-3xl border-t md:border-t-0 md:border-l border-white/50 shadow-2xl overflow-hidden bg-white/30 backdrop-blur-3xl"
+          className="drawer-panel glass-card flex flex-col w-full md:w-1/2 md:max-w-2xl h-[85dvh] md:h-full rounded-t-3xl md:rounded-t-none md:rounded-l-3xl border-t md:border-t-0 md:border-l border-white/50 shadow-2xl overflow-hidden bg-white/30 backdrop-blur-3xl"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -96,11 +96,11 @@ export function Modal({
 
   return (
     <div 
-      className="fixed inset-0 z-100 flex items-end justify-center bg-dark-slate/40 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      className="fixed inset-0 z-100 flex items-end justify-center bg-dark-slate/40 p-0 backdrop-blur-sm sm:items-center sm:p-4 animate-fadeInBackdrop"
       onClick={onClose}
     >
       <div
-        className={`glass-card max-h-[92vh] w-full overflow-y-auto rounded-t-3xl border border-white/50 p-6 shadow-2xl transition-all sm:rounded-3xl sm:p-8 ${maxWidthClassName}`}
+        className={`animate-slideUp glass-card max-h-[92vh] w-full overflow-y-auto rounded-t-3xl border border-white/50 p-6 shadow-2xl transition-all sm:rounded-3xl sm:p-8 ${maxWidthClassName}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-6 flex items-center justify-between">

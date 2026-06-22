@@ -186,4 +186,6 @@ export interface SpaDataContextValue {
   ) => Promise<Therapist> | Therapist;
   deleteTherapist: (id: string) => Promise<void> | void;
   switchRole: (role: string) => Promise<void>;
+  pendingOnlineBookingsCount: number;
+  decrementPendingOnlineBookingsCount: () => void;
 }

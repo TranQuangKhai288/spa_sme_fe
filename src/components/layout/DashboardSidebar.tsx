@@ -16,7 +16,8 @@ import {
   Settings,
   HelpCircle,
   X,
-  UserCheck
+  UserCheck,
+  Globe
 } from "lucide-react";
 
 import { useSpaData } from "@/hooks/useSpaData";
@@ -31,10 +32,12 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; size?: n
   settings: Settings,
   contact_support: HelpCircle,
   close: X,
-  assignment_ind: UserCheck
+  assignment_ind: UserCheck,
+  language: Globe
 };
 
 function activeNavId(pathname: string): DashboardNavId {
+  if (pathname.startsWith("/dashboard/bookings")) return "bookings";
   if (pathname.startsWith("/dashboard/appointments")) return "appointments";
   if (pathname.startsWith("/dashboard/customers")) return "customers";
   if (pathname.startsWith("/dashboard/workflows")) return "workflows";
@@ -53,7 +56,7 @@ export interface DashboardSidebarProps {
 export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
   const pathname = usePathname();
   const active = activeNavId(pathname);
-  const { currentUser } = useSpaData();
+  const { currentUser, pendingOnlineBookingsCount } = useSpaData();
   const rawNav = useDashboardNav();
 
   const nav = rawNav.filter((item) => {
@@ -113,14 +116,19 @@ export function DashboardSidebar({ open, onClose }: DashboardSidebarProps) {
                 href={item.href}
                 onClick={onClose}
                 className={cn(
-                  "font-cta mx-2 flex items-center gap-3 rounded-lg px-4 py-3 text-sm transition-all duration-200",
+                  "relative font-cta mx-2 flex items-center gap-3 rounded-lg px-4 py-3 text-sm transition-all duration-200",
                   isActive
                     ? "bg-primary text-white shadow-[0_4px_12px_rgba(0,107,94,0.2)] lg:translate-x-1"
                     : "text-on-surface-variant hover:text-primary",
                 )}
               >
                 <IconComponent size={20} />
-                <span>{item.label}</span>
+                <span className="flex-1 text-left">{item.label}</span>
+                {item.id === "bookings" && pendingOnlineBookingsCount > 0 && (
+                  <span className="absolute top-1.5 right-2 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white shadow-sm">
+                    {pendingOnlineBookingsCount}
+                  </span>
+                )}
               </Link>
             );
           })}

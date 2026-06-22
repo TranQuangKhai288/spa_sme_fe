@@ -4,6 +4,7 @@ import { MaterialIcon } from "@/components/ui/MaterialIcon";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { DraggableAssistiveButton } from "@/components/ui/DraggableAssistiveButton";
 
 export function DefaultLanding() {
   return (
@@ -100,6 +101,7 @@ export function DefaultLanding() {
       <footer className="border-t border-glass-border px-4 py-8 text-center text-xs text-on-surface-variant sm:px-6 md:px-12">
         {`ZenFlow Spa v2.4 • Hỗ trợ • Chính sách • Liên hệ IT`}
       </footer>
+      <DraggableAssistiveButton />
     </div>
   );
 }

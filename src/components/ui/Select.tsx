@@ -71,9 +71,9 @@ export function Select({
         const rect = buttonRef.current.getBoundingClientRect();
         const spaceBelow = window.innerHeight - rect.bottom;
         const openUpward = spaceBelow < 250 && rect.top > 250;
-        
+
         // Đo chiều rộng dropdown để chống tràn viền phải màn hình
-        const dropdownWidth = isInline ? 192 : rect.width;
+        const dropdownWidth = rect.width;
         const alignRight = rect.left + dropdownWidth > window.innerWidth;
 
         setCoords({
@@ -105,9 +105,8 @@ export function Select({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className={`border border-glass-border rounded-xl px-2.5 py-1.5 bg-white/40 text-dark-slate hover:bg-white/60 focus:bg-white focus:ring-2 focus:ring-primary/20 outline-none transition-all cursor-pointer font-semibold text-sm ${
-          disabled ? "opacity-50 cursor-not-allowed" : ""
-        } ${label ? "" : className}`}
+        className={`w-full h-10.5 border border-glass-border rounded-xl px-2.5 py-1.5 bg-white/40 text-dark-slate hover:bg-white/60 focus:bg-white focus:ring-2 focus:ring-primary/20 outline-none transition-all cursor-pointer font-semibold text-sm ${disabled ? "opacity-50 cursor-not-allowed" : ""
+          } ${label ? "" : className}`}
       >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value} className="bg-white text-dark-slate">
@@ -138,16 +137,15 @@ export function Select({
 
   const dropdownMenu = isOpen && mounted && (
     <div
-      className={`select-portal-dropdown fixed z-[200] max-h-60 overflow-y-auto rounded-xl border border-glass-border/60 bg-white/95 p-1 shadow-2xl backdrop-blur-xl ${
-        coords.openUpward
-          ? "bottom-auto mb-1.5 animate-slideUp origin-bottom"
-          : "top-auto mt-1.5 animate-slideDown origin-top"
-      }`}
+      className={`w-full select-portal-dropdown fixed z-[200] max-h-60 overflow-y-auto rounded-xl border border-glass-border/60 bg-white/95 p-1 shadow-2xl backdrop-blur-xl ${coords.openUpward
+        ? "bottom-auto mb-1.5 animate-slideUp origin-bottom"
+        : "top-auto mt-1.5 animate-slideDown origin-top"
+        }`}
       style={{
         top: coords.openUpward ? "auto" : `${coords.top}px`,
         bottom: coords.openUpward ? `${window.innerHeight - coords.top}px` : "auto",
         left: `${coords.left}px`,
-        width: isInline ? "12rem" : `${coords.width}px`,
+        width: `${coords.width}px`,
       }}
     >
       {options.map((opt) => {
@@ -160,13 +158,11 @@ export function Select({
               onChange(opt.value);
               setIsOpen(false);
             }}
-            className={`w-full text-left rounded-lg transition-colors cursor-pointer ${
-              isInline ? "px-3 py-1.5 text-xs" : "px-3.5 py-2.5 text-sm"
-            } ${
-              isSelected
+            className={`w-full text-left rounded-lg transition-colors cursor-pointer ${isInline ? "px-3 py-1.5 text-xs" : "px-3.5 py-2.5 text-sm"
+              } ${isSelected
                 ? "bg-primary/10 text-primary font-bold"
                 : "text-dark-slate hover:bg-primary/5 hover:text-primary font-medium"
-            } ${truncate ? "truncate" : ""}`}
+              } ${truncate ? "truncate" : ""}`}
           >
             {opt.label}
           </button>
@@ -176,7 +172,7 @@ export function Select({
   );
 
   return (
-    <div className={`relative h-fit ${isInline ? "text-xs" : "text-sm w-full"} ${className}`} ref={selectRef}>
+    <div className={`relative w-full ${isInline ? "text-xs" : "text-sm"} ${className}`} ref={selectRef}>
       {label && (
         <span className="font-cta mb-1 block text-on-surface-variant font-medium">
           {label}
@@ -186,15 +182,12 @@ export function Select({
         ref={buttonRef}
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
-        className={`w-full border flex items-center justify-between text-dark-slate font-bold text-left outline-none transition-all shadow-sm ${
-          isInline
-            ? "px-3 py-1.5 text-xs rounded-xl bg-white/40 hover:bg-white/60 focus:bg-white focus:ring-2 focus:ring-primary/20"
-            : "px-4 py-2.5 text-sm rounded-xl bg-white focus:ring-4 focus:ring-primary/10 hover:bg-white"
-        } ${
-          error ? "border-red-500 focus:border-red-500" : "border-glass-border focus:border-primary/40 hover:border-primary/20"
-        } ${
-          disabled ? "bg-surface/50 text-on-surface-variant/70 cursor-not-allowed opacity-80" : "cursor-pointer"
-        }`}
+        className={`w-full border flex items-center justify-between text-dark-slate font-bold text-left outline-none transition-all shadow-sm ${isInline
+          ? "px-3 py-1.5 text-xs rounded-xl bg-white/40 hover:bg-white/60 focus:bg-white focus:ring-2 focus:ring-primary/20"
+          : "h-[42px] px-4 py-2.5 text-sm rounded-xl bg-white focus:ring-4 focus:ring-primary/10 hover:bg-white"
+          } ${error ? "border-red-500 focus:border-red-500" : "border-glass-border focus:border-primary/40 hover:border-primary/20"
+          } ${disabled ? "bg-surface/50 text-on-surface-variant/70 cursor-not-allowed opacity-80" : "cursor-pointer"
+          }`}
       >
         <span className={truncate ? "truncate min-w-0 mr-2" : ""}>{selectedOption?.label ?? ""}</span>
         <ChevronDown
