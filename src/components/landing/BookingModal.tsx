@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { showToast } from "@/components/ui/Toast";
 import { Select } from "../ui/Select";
+import { DatePicker } from "@/components/ui/DatePicker";
+import { TimeSlotPicker } from "@/components/ui/TimeSlotPicker";
+
+interface Slot {
+  time: string;
+  available: boolean;
+  busyCount: number;
+  totalTherapists: number;
+}
 
 interface BookingModalProps {
   open: boolean;
@@ -14,6 +23,11 @@ interface BookingModalProps {
 
 export function BookingModal({ open, onClose }: BookingModalProps) {
   const [loading, setLoading] = useState(false);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [slots, setSlots] = useState<Slot[]>([]);
+  const [dateError, setDateError] = useState("");
+  const [timeError, setTimeError] = useState("");
+
   const [formData, setFormData] = useState({
     guestName: "",
     guestPhone: "",
@@ -23,12 +37,65 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
     notes: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  // Lấy trạng thái slot khi user chọn ngày
+  const fetchSlots = useCallback(async (date: string) => {
+    if (!date) { setSlots([]); return; }
+    setSlotsLoading(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiUrl}/bookings/availability?date=${date}`);
+      if (res.ok) {
+        const data = await res.json();
+        setSlots(data.slots ?? []);
+      }
+    } catch {
+      setSlots([]);
+    } finally {
+      setSlotsLoading(false);
+    }
+  }, []);
+
+  // Tự động fetch khi modal mở và đã có ngày
+  useEffect(() => {
+    if (open && formData.preferredDate) {
+      fetchSlots(formData.preferredDate);
+    }
+  }, [open, formData.preferredDate, fetchSlots]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleDateChange = (date: string) => {
+    setFormData((prev) => ({ ...prev, preferredDate: date, preferredTime: "" }));
+    if (date) setDateError("");
+    fetchSlots(date);
+  };
+
+  const handleTimeChange = (time: string) => {
+    setFormData((prev) => ({ ...prev, preferredTime: time }));
+    if (time) setTimeError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    let hasError = false;
+    if (!formData.preferredDate) {
+      setDateError("Vui lòng chọn ngày");
+      hasError = true;
+    } else {
+      setDateError("");
+    }
+
+    if (!formData.preferredTime) {
+      setTimeError("Vui lòng chọn giờ");
+      hasError = true;
+    } else {
+      setTimeError("");
+    }
+
+    if (hasError) return;
     setLoading(true);
 
     try {
@@ -41,32 +108,50 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
 
       const data = await res.json();
 
-      if (!res.ok) {
+      if (res.status === 409) {
+        // Hết lịch – cập nhật lại slot grid và hiện thông báo
+        showToast(data.error || "Đã hết lịch vào giờ này.", "error");
+        if (data.availableSlotsMessage) {
+          setTimeout(() => showToast(data.availableSlotsMessage, "info" as any), 1200);
+        }
+        // Refresh slots để phản ánh trạng thái mới nhất
+        fetchSlots(formData.preferredDate);
+      } else if (!res.ok) {
         showToast(data.error || "Có lỗi xảy ra", "error");
       } else {
-        showToast("Đặt chỗ thành công! Chúng tôi sẽ liên hệ lại sớm nhất.", "success");
+        if (data.warning) {
+          showToast(data.warning, "warning" as any);
+        } else {
+          showToast("Đặt chỗ thành công! Chúng tôi sẽ liên hệ lại sớm nhất.", "success");
+        }
         onClose();
-        // Reset form
-        setFormData({
-          guestName: "",
-          guestPhone: "",
-          serviceRequested: "",
-          preferredDate: "",
-          preferredTime: "",
-          notes: "",
-        });
+        resetForm();
       }
-    } catch (err) {
+    } catch {
       showToast("Lỗi mạng, vui lòng thử lại.", "error");
     } finally {
       setLoading(false);
     }
   };
 
+  const resetForm = () => {
+    setFormData({
+      guestName: "",
+      guestPhone: "",
+      serviceRequested: "",
+      preferredDate: "",
+      preferredTime: "",
+      notes: "",
+    });
+    setSlots([]);
+    setDateError("");
+    setTimeError("");
+  };
+
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={() => { onClose(); resetForm(); }}
       title="Đặt chỗ trực tuyến"
       variant="modal"
       maxWidthClassName="sm:max-w-lg"
@@ -108,30 +193,36 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
               { value: "Tư Vấn Thêm", label: "Cần tư vấn thêm" },
             ]}
           />
-
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block font-label-md text-dark-slate mb-1">Ngày *</label>
-            <Input
-              name="preferredDate"
-              type="date"
-              value={formData.preferredDate}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label className="block font-label-md text-dark-slate mb-1">Giờ *</label>
-            <Input
-              name="preferredTime"
-              type="time"
-              value={formData.preferredTime}
-              onChange={handleChange}
-              required
-            />
-          </div>
+        {/* Chọn ngày */}
+        <div>
+          <label className="block font-label-md text-dark-slate mb-1">Ngày *</label>
+          <DatePicker
+            value={formData.preferredDate}
+            onChange={handleDateChange}
+            error={dateError}
+            placeholder="dd/mm/yyyy"
+          />
+        </div>
+
+        {/* Chọn giờ – hiện sau khi chọn ngày */}
+        <div>
+          <label className="block font-label-md text-dark-slate mb-1">
+            Giờ *
+            {formData.preferredDate && !slotsLoading && (
+              <span className="ml-2 text-[10px] font-normal text-on-surface-variant/50">
+                (các ô xám đã hết lịch)
+              </span>
+            )}
+          </label>
+          <TimeSlotPicker
+            slots={slots}
+            value={formData.preferredTime}
+            onChange={handleTimeChange}
+            loading={slotsLoading}
+            error={timeError}
+          />
         </div>
 
         <div>
@@ -147,10 +238,10 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
         </div>
 
         <div className="pt-4 border-t border-glass-border flex justify-end gap-3">
-          <Button variant="danger" onClick={onClose} type="button">
+          <Button variant="danger" onClick={() => { onClose(); resetForm(); }} type="button">
             Hủy
           </Button>
-          <Button variant="primary" type="submit" disabled={loading}>
+          <Button variant="primary" type="submit" disabled={loading || !formData.preferredTime}>
             {loading ? "Đang gửi..." : "Xác nhận đặt chỗ"}
           </Button>
         </div>

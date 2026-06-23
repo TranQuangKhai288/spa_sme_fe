@@ -46,7 +46,7 @@ export function EditAppointmentModal({
   useEffect(() => {
     if (apt) {
       setServiceName(apt.service ?? "");
-      setTherapistId(apt.therapistId);
+      setTherapistId(apt.therapistId || "");
       setPrice(formatNumberString(String(apt.price)));
       setNotes(apt.notes ?? "");
       setStartTime(apt.startTime);
@@ -90,10 +90,13 @@ export function EditAppointmentModal({
     }
   };
 
-  const therapistOptions = therapists.map((t) => ({
-    value: t.id,
-    label: `${t.name} — ${t.specialty}`,
-  }));
+  const therapistOptions = [
+    { value: "", label: "Chưa phân bổ (Chờ chỉ định)" },
+    ...therapists.map((t) => ({
+      value: t.id,
+      label: `${t.name} — ${t.specialty}`,
+    })),
+  ];
 
   const statusOptions = [
     { value: "confirmed", label: "Đã xác nhận (Confirmed)" },

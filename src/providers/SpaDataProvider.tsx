@@ -11,7 +11,6 @@ import {
 } from "react";
 import Pusher from "pusher-js";
 import { api } from "@/lib/api";
-import { showToast } from "@/components/ui/Toast";
 import type {
   Appointment,
   CalendarDay,
@@ -122,25 +121,8 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
     loadData(false);
   }, [loadData]);
 
-  // Listen for new bookings globally
-  useEffect(() => {
-    const pusherKey = process.env.NEXT_PUBLIC_PUSHER_KEY;
-    const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
-    if (!pusherKey || !pusherCluster) return;
-
-    const pusher = new Pusher(pusherKey, { cluster: pusherCluster });
-    const channel = pusher.subscribe("spa-channel");
-    channel.bind("new-booking", (data: any) => {
-      setPendingOnlineBookingsCount((prev) => prev + 1);
-      showToast(`Có đơn đặt chỗ mới từ ${data?.guestName || 'khách hàng'}!`, "success");
-    });
-
-    return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
-      pusher.disconnect();
-    };
-  }, []);
+  // Pusher listener đã được chuyển sang hook useOperatorPusher
+  // và chỉ được gọi trong layout của dashboard/portal.
 
   // Recalculate stats based on appointments (keeps frontend responsive & matches server calculations)
   useEffect(() => {
@@ -401,6 +383,7 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       switchRole,
       pendingOnlineBookingsCount,
       decrementPendingOnlineBookingsCount,
+      loadData,
     }),
     [
       spa,
@@ -431,6 +414,7 @@ export function SpaDataProvider({ children }: { children: ReactNode }) {
       switchRole,
       pendingOnlineBookingsCount,
       decrementPendingOnlineBookingsCount,
+      loadData,
     ]
   );
 

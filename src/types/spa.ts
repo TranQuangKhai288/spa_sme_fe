@@ -188,4 +188,5 @@ export interface SpaDataContextValue {
   switchRole: (role: string) => Promise<void>;
   pendingOnlineBookingsCount: number;
   decrementPendingOnlineBookingsCount: () => void;
+  loadData: (isSilent?: boolean) => Promise<void>;
 }

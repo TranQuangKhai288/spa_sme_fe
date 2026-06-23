@@ -10,6 +10,7 @@ interface DatePickerProps {
   error?: string;
   className?: string;
   disabled?: boolean;
+  placeholder?: string;
 }
 
 export function DatePicker({
@@ -19,6 +20,7 @@ export function DatePicker({
   error,
   className = "",
   disabled = false,
+  placeholder = "dd/mm/yyyy",
 }: DatePickerProps) {
   const [showCalendar, setShowCalendar] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -128,15 +130,17 @@ export function DatePicker({
           }
           setShowCalendar(!showCalendar);
         }}
-        className={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-sm flex items-center justify-between text-dark-slate font-medium text-left outline-none transition-all ${
+        className={`w-full rounded-xl border bg-white px-4 py-2.5 text-sm flex items-center justify-between text-dark-slate font-medium text-left outline-none transition-all ${
           error
             ? "border-red-500 focus:border-red-500"
             : "border-glass-border focus:border-primary/40 hover:border-primary/20"
         } ${
-          disabled ? "bg-surface/50 text-on-surface-variant/70 cursor-not-allowed opacity-80" : "focus:ring-2 focus:ring-primary/20 hover:bg-white/70"
+          disabled ? "bg-surface/50 text-on-surface-variant/70 cursor-not-allowed opacity-80" : "focus:ring-2 focus:ring-primary/20"
         }`}
       >
-        <span>{formatDisplayDate(value)}</span>
+        <span className={!value ? "text-on-surface-variant/40 font-normal" : ""}>
+          {value ? formatDisplayDate(value) : placeholder}
+        </span>
         <Calendar size={18} className="text-on-surface-variant/80" />
       </button>
 

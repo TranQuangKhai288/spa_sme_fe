@@ -1,11 +1,17 @@
+"use client";
+
 import { PortalPageHeader } from "@/components/portal/PortalPageHeader";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { useOperatorPusher } from "@/hooks/useOperatorPusher";
 
 export default function PortalLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Nhân viên dùng portal cũng nhận thông báo booking mới
+  useOperatorPusher();
+
   return (
     <div className="min-h-screen bg-milky-white">
       <PortalPageHeader />
@@ -18,3 +24,4 @@ export default function PortalLayout({
     </div>
   );
 }
+

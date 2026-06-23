@@ -32,19 +32,19 @@ const SERVICES = [
   {
     title: "Trị Liệu Massage",
     desc: "Phục hồi năng lượng sâu từ bên trong.",
-    img: "https://lh3.googleusercontent.com/aida/AP1WRLt9XG_fLFTTeL3n0O1-EC7dfiLREyBAbqqbPAsIdXYFZvT12vrCP57uqT9BF0KJtMpzOPianNKDlsuX7ESzcAH2U_BgoV7yKPf8FZlxEsz1MkxS0OPAfyWw67JnnGvnJznyMbIqfI1bshUcfdMzLcuKnHDdJg10COoUeObBAbM0GDxi09YJLs26L9It3Nv90M7qO3odSRJd4r8MnGEKh1PCUzVfZjMWB00xGOZkpmD4UMsAj_1oaMOECaQ",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDehOlPSsEr3Tjro0Op1tP8Aohtt5OxtAB_suIdn7tJbEqNabPerKQL0BUzskhJbbtpu6Kp79EXD_vtOv_AtkFSCulqdWleXs1LkLLoJ2o7LXAyHvA82TSYS4lTiTkPEunrSrnR0QYaiecHTYJQDE50yjjC3rSHWJ7bYCQp38x5XnXtlmB0m9pxi1-otXf8T0a-tWymKUx5lI8w22mx8W2VA2LPLhzwGSYyTISW-uUGn9ZvHaRq5_H3xAn8qSKySuN36Rf1y5WWPSA",
     delay: "0s",
   },
   {
     title: "Chăm Sóc Da Mặt",
     desc: "Đánh thức vẻ rạng rỡ tự nhiên của làn da.",
-    img: "https://lh3.googleusercontent.com/aida/AP1WRLswjeZCvjJDCwa0hwlfuAKfiNWeBF8bc5JeSlN4iCi7C9fxnRCb8kcP-IR-d69QcjcC0YbP_iHVVBzZveB6qs5mZo9nyrdn3zVktRx3vduPNtuqzqpXyrapzCAgX-0QdAj19poMrSCjstew4rnmv4vkELJsi3BrdDyRjMxkAryeYHTqEelExdg0Fht99D3WeObaLj-L069o71EUSdtwIH3QMQyjtcE0hQwIQl400TMaB1ddklQ6GKX3SEk",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDehOlPSsEr3Tjro0Op1tP8Aohtt5OxtAB_suIdn7tJbEqNabPerKQL0BUzskhJbbtpu6Kp79EXD_vtOv_AtkFSCulqdWleXs1LkLLoJ2o7LXAyHvA82TSYS4lTiTkPEunrSrnR0QYaiecHTYJQDE50yjjC3rSHWJ7bYCQp38x5XnXtlmB0m9pxi1-otXf8T0a-tWymKUx5lI8w22mx8W2VA2LPLhzwGSYyTISW-uUGn9ZvHaRq5_H3xAn8qSKySuN36Rf1y5WWPSA",
     delay: "0.1s",
   },
   {
     title: "Chăm Sóc Thể Chất",
     desc: "Sự tỉ mỉ trong từng chi tiết nhỏ nhất.",
-    img: "https://lh3.googleusercontent.com/aida/AP1WRLsuDgyUi-DzCEBfCvuWTo50bFK6-la4-4bqO7n2KfI5SHXlzXUTOnte68Ys07aX_7loGH0kfU1RClrgkKN1IrffCJKmudwJHGl6WHidpa_Ti1A7kI0X7EUTZ0IlC7KKvhj5dbozsrw9cI6--1nagmY60_-ZXHpN0UqetZlA77vO2vP9IW-RUa1TnShr20AUKtMWXyZiXkS8tVzt_LjnzNQrfFqb4-54-T7yBTuv90-DQzEg2hRbPmpPnxE",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDehOlPSsEr3Tjro0Op1tP8Aohtt5OxtAB_suIdn7tJbEqNabPerKQL0BUzskhJbbtpu6Kp79EXD_vtOv_AtkFSCulqdWleXs1LkLLoJ2o7LXAyHvA82TSYS4lTiTkPEunrSrnR0QYaiecHTYJQDE50yjjC3rSHWJ7bYCQp38x5XnXtlmB0m9pxi1-otXf8T0a-tWymKUx5lI8w22mx8W2VA2LPLhzwGSYyTISW-uUGn9ZvHaRq5_H3xAn8qSKySuN36Rf1y5WWPSA",
     delay: "0.2s",
   },
 ];
@@ -328,7 +328,7 @@ export default function VIPLandingPage() {
           <h2 className="font-headline-lg text-4xl md:text-headline-lg text-white mb-6">
             Sẵn sàng cho sự khởi đầu mới?
           </h2>
-          <p className="font-body-lg text-body-lg text-inverse-on-surface mb-8">
+          <p className="font-body-lg text-body-lg text-inverse-on-surface mb-8 text-white">
             Hãy để chúng tôi chăm sóc bạn, ngay hôm nay.
           </p>
           <button onClick={() => setShowBookingModal(true)} className="inline-block bg-champagne-gold text-charcoal-black font-label-md text-label-md px-10 py-4 rounded-full hover:bg-primary-fixed transition-colors duration-300 shadow-lg">

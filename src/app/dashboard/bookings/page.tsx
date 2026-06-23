@@ -22,7 +22,7 @@ interface Booking {
 export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
-  const { addAppointment, decrementPendingOnlineBookingsCount } = useSpaData();
+  const { decrementPendingOnlineBookingsCount, loadData } = useSpaData();
 
   const fetchBookings = async () => {
     try {
@@ -73,7 +73,7 @@ export default function BookingsPage() {
     };
   }, []);
 
-  const handleUpdateStatus = async (id: string, newStatus: string, bookingData?: Booking) => {
+  const handleUpdateStatus = async (id: string, newStatus: string) => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${apiUrl}/bookings/${id}/status`, {
@@ -82,42 +82,35 @@ export default function BookingsPage() {
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (!res.ok) throw new Error("Cập nhật thất bại");
+      const data = await res.json();
+      if (!res.ok) {
+        showToast(data.error || "Cập nhật thất bại", "error");
+        return;
+      }
 
       setBookings((prev) =>
         prev.map((b) => (b.id === id ? { ...b, status: newStatus } : b))
       );
-      // Giảm số lượng thông báo nếu booking đó đang từ trạng thái pending sang trạng thái khác
+
+      // Giảm counter pending nếu booking đang ở trạng thái pending
       const oldBooking = bookings.find((b) => b.id === id);
       if (oldBooking?.status === "pending") {
         decrementPendingOnlineBookingsCount();
       }
 
-      showToast(`Đã ${newStatus === "confirmed" ? "xác nhận" : "từ chối"} đơn đặt chỗ.`, "success");
+      // Reload spa data to sync new appointments/notifications
+      loadData(true);
 
-      // Nếu confirm thì tự động tạo Appointment (Tạm gán cho nhân viên đầu tiên hoặc để trống)
-      // Chú ý: Ở hệ thống thực tế có thể cần Modal chọn nhân viên. Ở đây gán ID tạm.
-      if (newStatus === "confirmed" && bookingData) {
-        await addAppointment({
-          clientId: "guest", // Trong thực tế, cần tạo Client record nếu chưa có
-          clientName: bookingData.guestName,
-          clientTier: "Thành viên",
-          clientAvatar: "https://i.pravatar.cc/150?u=" + bookingData.guestPhone,
-          service: bookingData.serviceRequested,
-          therapist: "Chưa phân bổ",
-          therapistId: "unassigned",
-          startTime: bookingData.preferredTime,
-          endTime: bookingData.preferredTime, // Có thể cộng thêm phút
-          date: bookingData.preferredDate,
-          price: 0,
-          notes: bookingData.notes,
-        });
-        showToast("Đã tạo Lịch hẹn thành công, vui lòng phân bổ nhân viên sau.", "info");
+      if (newStatus === "confirmed") {
+        showToast("Đã xác nhận! Lịch hẹn đã được tạo, vui lòng phân bổ nhân viên.", "success");
+      } else {
+        showToast("Đã từ chối đơn đặt chỗ.", "info" as any);
       }
-    } catch (error) {
+    } catch {
       showToast("Có lỗi xảy ra", "error");
     }
   };
+
 
   if (loading) {
     return (
@@ -173,7 +166,7 @@ export default function BookingsPage() {
                   <Button variant="secondary" className="flex-1 !py-2 text-sm text-red-500 border-red-500/30 hover:bg-red-500/10" onClick={() => handleUpdateStatus(b.id, "rejected")}>
                     Từ chối
                   </Button>
-                  <Button variant="primary" className="flex-1 !py-2 text-sm" onClick={() => handleUpdateStatus(b.id, "confirmed", b)}>
+                  <Button variant="primary" className="flex-1 !py-2 text-sm" onClick={() => handleUpdateStatus(b.id, "confirmed")}>
                     Xác nhận
                   </Button>
                 </div>

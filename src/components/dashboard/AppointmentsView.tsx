@@ -69,8 +69,13 @@ export function AppointmentsView() {
     });
 
   const visibleTherapists = therapists.filter((t) => selectedTherapists[t.id]);
+  // Lịch hẹn chưa phân bổ (từ booking khách vãng lai)
+  const unassignedApts = filtered.filter((a) => !a.therapistId || a.therapistId === "unassigned" || a.therapistId === null);
+  const hasUnassigned = unassignedApts.length > 0;
+  // Tổng số cột = therapists + (1 nếu có unassigned)
+  const totalColumns = visibleTherapists.length + (hasUnassigned ? 1 : 0);
 
-  const hours = Array.from({ length: 12 }, (_, i) => i + 9); // 09:00 to 20:00
+  const hours = Array.from({ length: 13 }, (_, i) => i + 8); // 08:00 to 20:00
 
   const parseTime = (time: string) => {
     const [h, m] = time.split(":").map(Number);
@@ -165,7 +170,7 @@ export function AppointmentsView() {
             <div
               className="flex-1 grid"
               style={{
-                gridTemplateColumns: `repeat(${Math.max(1, visibleTherapists.length)}, minmax(0, 1fr))`,
+                gridTemplateColumns: `repeat(${Math.max(1, totalColumns)}, minmax(0, 1fr))`,
               }}
             >
               {visibleTherapists.map((t) => (
@@ -183,7 +188,17 @@ export function AppointmentsView() {
                   </span>
                 </div>
               ))}
-              {visibleTherapists.length === 0 && (
+              {hasUnassigned && (
+                <div className="p-4 text-center border-r border-surface-container last:border-r-0 flex flex-col items-center justify-center gap-1 bg-soft-gold/5">
+                  <div className="w-8 h-8 rounded-full bg-soft-gold/20 border border-soft-gold/40 flex items-center justify-center text-soft-gold text-xs font-bold animate-pulse">
+                    ?
+                  </div>
+                  <span className="font-bold text-sm text-soft-gold truncate max-w-full">
+                    Chưa phân bổ
+                  </span>
+                </div>
+              )}
+              {totalColumns === 0 && (
                 <div className="p-4 text-center text-on-surface-variant/60">
                   Vui lòng chọn ít nhất 1 Nhân viên bên trái.
                 </div>
@@ -211,16 +226,16 @@ export function AppointmentsView() {
                     <div
                       className="flex-1 grid"
                       style={{
-                        gridTemplateColumns: `repeat(${Math.max(1, visibleTherapists.length)}, minmax(0, 1fr))`,
+                        gridTemplateColumns: `repeat(${Math.max(1, totalColumns)}, minmax(0, 1fr))`,
                       }}
                     >
-                      {visibleTherapists.map((t) => (
+                      {Array.from({ length: totalColumns }).map((_, i) => (
                         <div
-                          key={t.id}
+                          key={i}
                           className="border-r border-surface-container/50 border-dashed last:border-r-0"
                         ></div>
                       ))}
-                      {visibleTherapists.length === 0 && <div></div>}
+                      {totalColumns === 0 && <div></div>}
                     </div>
                   </div>
                 ))}
@@ -231,19 +246,22 @@ export function AppointmentsView() {
                 <div
                   className="flex-1 grid"
                   style={{
-                    gridTemplateColumns: `repeat(${Math.max(1, visibleTherapists.length)}, minmax(0, 1fr))`,
+                    gridTemplateColumns: `repeat(${Math.max(1, totalColumns)}, minmax(0, 1fr))`,
                   }}
                 >
                   {visibleTherapists.map((t) => {
                     const therapistApts = filtered.filter(
-                      (a) => a.therapist === t.name || a.therapistId === t.id,
+                      (a) =>
+                        (a.therapist === t.name || a.therapistId === t.id) &&
+                        a.therapistId &&
+                        a.therapistId !== "unassigned"
                     );
                     return (
                       <div key={t.id} className="relative h-full w-full">
                         {therapistApts.map((apt) => {
                           const startH = parseTime(apt.startTime);
                           const endH = parseTime(apt.endTime);
-                          const top = (startH - 9) * 100;
+                          const top = (startH - 8) * 100;
                           const height = (endH - startH) * 100;
 
                           let colorClass =
@@ -317,6 +335,54 @@ export function AppointmentsView() {
                       </div>
                     );
                   })}
+                  {/* Unassigned column */}
+                  {hasUnassigned && (
+                    <div className="relative h-full w-full bg-soft-gold/[0.02]">
+                      {unassignedApts.map((apt) => {
+                        const startH = parseTime(apt.startTime);
+                        const endH = parseTime(apt.endTime);
+                        const top = (startH - 8) * 100;
+                        const height = (endH - startH) * 100;
+
+                        return (
+                          <div
+                            key={apt.id}
+                            onClick={() => {
+                              setEditAptId(apt.id);
+                              setEditModalOpen(true);
+                            }}
+                            className="absolute overflow-hidden w-[calc(100%-16px)] ml-[8px] bg-white rounded-xl p-3 border-l-4 border-y border-r shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 hover:z-50 transition-all duration-300 cursor-pointer pointer-events-auto flex flex-col justify-between border-l-soft-gold border-soft-gold/20"
+                            style={{
+                              top: `${top + 1}px`,
+                              height: `${height - 2}px`,
+                              zIndex: 10,
+                            }}
+                          >
+                            <div className="w-full flex justify-between items-start gap-1">
+                              <h4 className="font-bold text-dark-slate truncate pr-2 flex-1 leading-tight">
+                                {apt.clientName}
+                              </h4>
+                              <span className="text-[9px] px-2 py-0.5 rounded-full font-bold uppercase shrink-0 bg-soft-gold/10 text-soft-gold">
+                                Cần PB
+                              </span>
+                            </div>
+
+                            <div className="w-full">
+                              <p className="text-xs font-bold truncate text-soft-gold mb-1.5">
+                                {apt.service || "Chưa chọn dịch vụ"}
+                              </p>
+                              <div className="flex items-center text-[11px] font-medium text-on-surface-variant/80 w-full">
+                                <span className="flex items-center gap-1 opacity-70">
+                                  <Clock size={12} />
+                                  {apt.startTime} - {apt.endTime}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
